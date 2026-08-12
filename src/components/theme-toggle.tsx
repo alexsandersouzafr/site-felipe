@@ -6,7 +6,15 @@ import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 
-export function ThemeToggle({ className }: { className?: string }) {
+export function ThemeToggle({
+  className,
+  lightLabel = "Ativar tema claro",
+  darkLabel = "Ativar tema escuro",
+}: {
+  className?: string;
+  lightLabel?: string;
+  darkLabel?: string;
+}) {
   const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -22,7 +30,7 @@ export function ThemeToggle({ className }: { className?: string }) {
       variant="outline"
       size="icon"
       className={className}
-      aria-label={isDark ? "Ativar tema claro" : "Ativar tema escuro"}
+      aria-label={isDark ? lightLabel : darkLabel}
       isDisabled={!mounted}
       onPress={() => setTheme(isDark ? "light" : "dark")}
     >

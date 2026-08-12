@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { ThemeToggle } from "@/components/admin/theme-toggle";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function AdminAuthLayout({ children }: { children: ReactNode }) {
   return (

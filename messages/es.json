@@ -1,18 +1,94 @@
 {
   "Navigation": {
     "home": "Inicio",
-    "news": "Noticias",
+    "news": "Blog",
     "bio": "Biografía",
     "schedule": "Agenda",
     "videos": "Videos",
     "photos": "Fotos",
-    "contact": "Contacto"
+    "contact": "Contacto",
+    "brand": "Felipe Magalhães",
+    "menu": "Menú",
+    "closeMenu": "Cerrar menú"
+  },
+  "LocaleSwitcher": {
+    "label": "Idioma",
+    "pt": "PT",
+    "en": "EN",
+    "es": "ES"
+  },
+  "ThemeToggle": {
+    "light": "Activar tema claro",
+    "dark": "Activar tema oscuro"
+  },
+  "Footer": {
+    "tagline": "Música que acerca mundos.",
+    "contact": "Contactar"
   },
   "Home": {
-    "eyebrow": "Director de orquesta",
+    "eyebrow": "Felipe Magalhães",
     "title": "Música que acerca mundos.",
     "description": "Conozca el trabajo, los próximos conciertos y las historias detrás de cada interpretación.",
     "schedule": "Ver agenda",
-    "bio": "Conocer al maestro"
+    "bio": "Conocer a Felipe Magalhães",
+    "bioSummaryTitle": "El maestro",
+    "upcomingTitle": "Próximos conciertos",
+    "upcomingEmpty": "Ningún concierto anunciado por ahora.",
+    "recentPostsTitle": "Del blog",
+    "recentPostsEmpty": "Aún no hay publicaciones.",
+    "viewAllSchedule": "Agenda completa",
+    "viewAllBlog": "Ver todas las publicaciones"
+  },
+  "Blog": {
+    "title": "Blog",
+    "description": "Notas, ensayos e historias del recorrido.",
+    "empty": "No hay publicaciones disponibles por ahora.",
+    "readMore": "Leer publicación",
+    "backToList": "Volver al blog"
+  },
+  "Bio": {
+    "title": "Biografía",
+    "highlightsTitle": "Destacados",
+    "empty": "La biografía se publicará pronto."
+  },
+  "Schedule": {
+    "title": "Agenda",
+    "description": "Conciertos y compromisos.",
+    "upcoming": "Próximos",
+    "past": "Anteriores",
+    "upcomingEmpty": "Ningún concierto futuro anunciado.",
+    "pastEmpty": "Ningún concierto anterior listado.",
+    "tickets": "Entradas",
+    "venue": "Lugar"
+  },
+  "Videos": {
+    "title": "Videos",
+    "description": "Presentaciones y registros en video.",
+    "empty": "Ningún video publicado por ahora."
+  },
+  "Photos": {
+    "title": "Fotos",
+    "description": "Galería de imágenes.",
+    "empty": "Ninguna foto publicada por ahora.",
+    "credit": "Crédito"
+  },
+  "Contact": {
+    "title": "Contacto",
+    "description": "Invitaciones, alianzas y prensa.",
+    "email": "Correo",
+    "phone": "Teléfono",
+    "social": "Redes",
+    "formName": "Nombre",
+    "formEmail": "Correo",
+    "formSubject": "Asunto",
+    "formMessage": "Mensaje",
+    "submit": "Enviar mensaje",
+    "submitting": "Enviando…",
+    "success": "Mensaje enviado. Gracias por contactar.",
+    "error": "No se pudo enviar. Inténtelo de nuevo.",
+    "validationError": "Complete todos los campos correctamente."
+  },
+  "Common": {
+    "empty": "Contenido no disponible."
   }
 }

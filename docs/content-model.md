@@ -4,12 +4,14 @@ Each editorial entity has an `id`, `status` (`draft`, `scheduled`, or `published
 
 | Entity | Key fields |
 | --- | --- |
-| Bio | title, body, `show_on_page`, and highlights |
+| Bio | singleton: top image, TipTap body, home summary; highlights listed on the Bio page |
 | Highlight | title, description, `display_order`, `show_on_page` |
 | Blog post (`news_items`) | slug, title, cover image path, ordered `blocks` |
 | Event | title, image, venue, city, country, start, end, and link |
 | Video | title, YouTube URL/ID, description, cover, and date |
-| Photo | file, alternative text, credit, collection, and order |
+| Photo (gallery) | file, alternative text, credit, collection, and order |
+| Home photo | ordered HD parallax bands for the home page |
+| Page cover | one top image per public page key (`home`, `bio`, `blog`, `agenda`, `videos`, `fotos`, `contato`) |
 | Contact | email, phone, social links, and introduction text |
 | Message | name, email, subject, content, status, and date |
 
@@ -21,15 +23,29 @@ Blog posts no longer use TipTap or excerpts. The body is a shared list of blocks
 - `image` — Storage path under the public `media` bucket + optional localized caption
 - `video` — YouTube URL
 
-Cover images are chosen by upload (`blog/covers/...`) or by selecting an existing photo from the gallery. Block images upload to `blog/blocks/...`. Soft upload limit: **2 MB**, JPEG/PNG/WebP/GIF.
+Cover images are chosen by upload (`blog/covers/...`) or by selecting an existing photo from the gallery. Block images upload to `blog/blocks/...`. Soft upload limit: **5 MB**, JPEG/PNG/WebP/GIF.
 
-## Bio page selection
+## Home photos and page covers
 
-The public Bio page shows at most **one biography** and up to **10 highlights**.
+- **Home photos** (`home_photos`) are ordered full-width parallax bands. The first is the home hero; the rest appear between home sections.
+- **Page covers** (`page_covers`) set the top image for each public page. Bio falls back to `biographies.image_path` when no page cover is set.
+- Home/cover uploads use the HD soft limit: **15 MB**, JPEG/PNG/WebP/GIF, under `home/parallax/...` and `covers/...`.
 
-- Admins choose content with `show_on_page`.
+## Biography
+
+There is a single biography record. Saving in the admin panel overwrites it (no version history).
+
+- Fields: `image_path` (top image in the public `media` bucket under `bio/cover/...`), localized TipTap `content_*`, and localized plain-text `summary_*` for the home page.
+- Portuguese body and summary are required; English/Spanish are optional with Portuguese fallback.
+- The public Bio page title comes from i18n, not from an editorial title field.
+- Saving always publishes the biography (`status = published`, `show_on_page = true`).
+
+## Bio page highlights
+
+The public Bio page also shows up to **10 highlights**.
+
+- Admins choose highlights with `show_on_page`.
 - Public reads require both `show_on_page = true` and public visibility (`published`, or `scheduled` with `publish_at <= now`).
-- At most one biography may have `show_on_page = true` (enforced by a partial unique index).
 - Highlight order on the page follows `display_order` among the selected items.
 
 ## Translations

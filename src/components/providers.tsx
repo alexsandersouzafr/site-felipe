@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
 import { type ReactNode, useState } from "react";
 
-import { LocomotiveScrollRoot } from "@/components/locomotive-scroll-root";
+import { GsapScrollRoot } from "@/components/gsap-scroll-root";
 
 export function Providers({ children }: { children: ReactNode }) {
   const [queryClient] = useState(() => new QueryClient());
@@ -12,7 +12,7 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <QueryClientProvider client={queryClient}>
-        <LocomotiveScrollRoot />
+        <GsapScrollRoot />
         {children}
       </QueryClientProvider>
     </ThemeProvider>

@@ -162,15 +162,19 @@ export function BlogBlocksEditor({
     });
   }
 
+  const paragraphCount = blocks.filter(
+    (block) => block.type === "paragraph",
+  ).length;
+
   return (
     <div className="space-y-4">
       <div className="space-y-1">
         <p className="text-sm font-bold">Conteúdo do post</p>
         <FieldDescription>
           Monte a postagem com parágrafos (texto rico por idioma), imagens e
-          vídeos do YouTube. Use as barras antes e depois de cada bloco para
-          inserir novos componentes. Português é obrigatório; EN/ES são
-          opcionais.
+          vídeos do YouTube. É obrigatório ter ao menos um parágrafo em
+          português. Use as barras antes e depois de cada bloco para inserir
+          novos componentes. EN/ES são opcionais.
         </FieldDescription>
       </div>
 
@@ -251,7 +255,9 @@ export function BlogBlocksEditor({
                     variant="destructive"
                     size="icon-sm"
                     aria-label="Remover bloco"
-                    isDisabled={blocks.length === 1}
+                    isDisabled={
+                      block.type === "paragraph" && paragraphCount <= 1
+                    }
                     onPress={() =>
                       setBlocks((current) =>
                         current.filter((item) => item.id !== block.id),

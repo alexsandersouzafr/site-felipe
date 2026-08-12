@@ -17,8 +17,8 @@ export default async function AdminPhotosPage() {
   return (
     <div className="space-y-6">
       <AdminPageHeader
-        title="Fotos"
-        description="Envie imagens para o armazenamento do site, defina texto alternativo, crédito e coleção, e controle a ordem e a publicação na galeria pública."
+        title="Galeria"
+        description="Envie imagens para a galeria pública do site, defina texto alternativo, crédito e coleção, e controle a ordem e a publicação."
         action={
           <AdminCreateLink href="/admin/fotos/nova">Nova foto</AdminCreateLink>
         }

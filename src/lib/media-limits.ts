@@ -1,6 +1,10 @@
 /** Soft limits for admin uploads. Supabase project limits may be higher. */
-export const MAX_BLOG_IMAGE_BYTES = 2 * 1024 * 1024;
+export const MAX_BLOG_IMAGE_BYTES = 5 * 1024 * 1024;
 export const MAX_BLOG_IMAGE_MB = MAX_BLOG_IMAGE_BYTES / (1024 * 1024);
+
+/** High-definition uploads for home parallax bands and page covers. */
+export const MAX_HD_IMAGE_BYTES = 15 * 1024 * 1024;
+export const MAX_HD_IMAGE_MB = MAX_HD_IMAGE_BYTES / (1024 * 1024);
 
 export const ALLOWED_IMAGE_MIME_TYPES = [
   "image/jpeg",

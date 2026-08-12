@@ -1,112 +1,114 @@
 "use client";
 
+import { FloppyDiskIcon } from "@phosphor-icons/react";
 import { useActionState } from "react";
 
 import type { EditorialActionState } from "@/app/admin/(protected)/editorial/actions";
+import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { LocalizedRichTextEditor } from "@/components/admin/localized-rich-text-editor";
-import { PublishingControls } from "@/components/admin/publishing-fields";
-import { ShowOnPageField } from "@/components/admin/show-on-page-field";
+import { Button } from "@/components/ui/button";
 import {
   Field,
+  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import type { ContentStatus } from "@/lib/content-visibility";
+import { Textarea } from "@/components/ui/textarea";
+import { MAX_BLOG_IMAGE_MB } from "@/lib/media-limits";
 import type { RichTextDocument } from "@/lib/rich-text";
 
 export function BiographyForm({
   action,
   initialValues,
-  mode,
 }: {
   action: (
     prev: EditorialActionState,
     formData: FormData,
   ) => Promise<EditorialActionState>;
   initialValues?: {
-    status?: ContentStatus;
-    publishAt?: string;
-    showOnPage?: boolean;
-    titlePt?: string;
-    titleEn?: string | null;
-    titleEs?: string | null;
+    imagePath?: string | null;
+    summaryPt?: string;
+    summaryEn?: string | null;
+    summaryEs?: string | null;
     contentPt?: RichTextDocument | null;
     contentEn?: RichTextDocument | null;
     contentEs?: RichTextDocument | null;
   };
-  mode: "create" | "edit";
 }) {
   const [state, formAction, pending] = useActionState(action, {});
 
   return (
     <form action={formAction} className="space-y-8">
-      <PublishingControls
-        mode={mode}
-        initialStatus={initialValues?.status}
-        publishAt={initialValues?.publishAt}
-        pending={pending}
-      >
-        {({ schedule, actions }) => (
-          <>
-            <FieldGroup>
-              <ShowOnPageField
-                defaultSelected={initialValues?.showOnPage}
-                help="Só uma biografia pode aparecer no site. Ativar esta remove a seleção anterior."
-              />
-              <Field>
-                <FieldLabel htmlFor="titlePt" required>
-                  Título (PT)
-                </FieldLabel>
-                <Input
-                  id="titlePt"
-                  name="titlePt"
-                  required
-                  defaultValue={initialValues?.titlePt ?? ""}
-                />
-              </Field>
-              <div className="grid gap-4 md:grid-cols-2">
-                <Field>
-                  <FieldLabel htmlFor="titleEn">Título (EN)</FieldLabel>
-                  <Input
-                    id="titleEn"
-                    name="titleEn"
-                    defaultValue={initialValues?.titleEn ?? ""}
-                  />
-                </Field>
-                <Field>
-                  <FieldLabel htmlFor="titleEs">Título (ES)</FieldLabel>
-                  <Input
-                    id="titleEs"
-                    name="titleEs"
-                    defaultValue={initialValues?.titleEs ?? ""}
-                  />
-                </Field>
-              </div>
+      <FieldGroup>
+        <ImageUploadField
+          id="imageFile"
+          name="imageFile"
+          label="Imagem no topo"
+          existingPath={initialValues?.imagePath}
+          existingPathFieldName="imagePath"
+          description={`JPEG, PNG, WebP ou GIF. Máximo ${MAX_BLOG_IMAGE_MB} MB.`}
+        />
 
-              {schedule}
+        <Field>
+          <FieldLabel htmlFor="summaryPt" required>
+            Resumo para a home (PT)
+          </FieldLabel>
+          <Textarea
+            id="summaryPt"
+            name="summaryPt"
+            required
+            rows={4}
+            defaultValue={initialValues?.summaryPt ?? ""}
+          />
+          <FieldDescription>
+            Texto curto exibido na página inicial. EN/ES são opcionais.
+          </FieldDescription>
+        </Field>
 
-              <LocalizedRichTextEditor
-                label="Biografia"
-                required
-                names={{
-                  pt: "contentPt",
-                  en: "contentEn",
-                  es: "contentEs",
-                }}
-                values={{
-                  pt: initialValues?.contentPt ?? null,
-                  en: initialValues?.contentEn ?? null,
-                  es: initialValues?.contentEs ?? null,
-                }}
-              />
-            </FieldGroup>
-            {state.error && <FieldError>{state.error}</FieldError>}
-            {actions}
-          </>
-        )}
-      </PublishingControls>
+        <div className="grid gap-4 md:grid-cols-2">
+          <Field>
+            <FieldLabel htmlFor="summaryEn">Resumo (EN)</FieldLabel>
+            <Textarea
+              id="summaryEn"
+              name="summaryEn"
+              rows={4}
+              defaultValue={initialValues?.summaryEn ?? ""}
+            />
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="summaryEs">Resumo (ES)</FieldLabel>
+            <Textarea
+              id="summaryEs"
+              name="summaryEs"
+              rows={4}
+              defaultValue={initialValues?.summaryEs ?? ""}
+            />
+          </Field>
+        </div>
+
+        <LocalizedRichTextEditor
+          label="Biografia"
+          required
+          names={{
+            pt: "contentPt",
+            en: "contentEn",
+            es: "contentEs",
+          }}
+          values={{
+            pt: initialValues?.contentPt ?? null,
+            en: initialValues?.contentEn ?? null,
+            es: initialValues?.contentEs ?? null,
+          }}
+        />
+      </FieldGroup>
+
+      {state.error ? <FieldError>{state.error}</FieldError> : null}
+
+      <Button type="submit" isDisabled={pending}>
+        <FloppyDiskIcon className="size-4" data-icon="inline-start" />
+        {pending ? "Salvando..." : "Salvar biografia"}
+      </Button>
     </form>
   );
 }

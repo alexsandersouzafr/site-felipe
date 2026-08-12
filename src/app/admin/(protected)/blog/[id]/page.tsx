@@ -6,7 +6,7 @@ import {
   updateBlogPost,
 } from "@/app/admin/(protected)/blog/actions";
 import { BlogPostForm } from "@/components/admin/blog-post-form";
-import { blogBlocksSchema } from "@/lib/blog-blocks";
+import { parseBlogBlocks } from "@/lib/blog-blocks";
 import { toDateTimeLocalValue } from "@/lib/datetime-local";
 import { createClient } from "@/lib/supabase/server";
 
@@ -34,8 +34,6 @@ export default async function EditBlogPostPage({
     formData: FormData,
   ) => Promise<BlogActionState>;
 
-  const blocks = blogBlocksSchema.safeParse(data.blocks);
-
   return (
     <div className="space-y-6">
       <div className="space-y-2">
@@ -62,7 +60,7 @@ export default async function EditBlogPostPage({
           titlePt: data.title_pt,
           titleEn: data.title_en,
           titleEs: data.title_es,
-          blocks: blocks.success ? blocks.data : [],
+          blocks: parseBlogBlocks(data.blocks),
           coverImagePath: data.cover_image_path,
         }}
       />

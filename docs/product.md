@@ -14,7 +14,7 @@ Present the conductor's work, facilitate professional contact, and let the condu
 
 - Home: editorial summary, upcoming events, and entry points to primary content.
 - Blog: posts built from paragraph, image, and YouTube video blocks.
-- Bio: complete biography and highlights.
+- Bio: single biography (top image + rich text), home summary, and highlights.
 - Schedule: upcoming concerts and past engagements.
 - Videos: embedded YouTube videos.
 - Photos: image gallery.

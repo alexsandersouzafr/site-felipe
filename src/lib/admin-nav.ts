@@ -4,6 +4,8 @@ export type AdminNavIconName =
   | "news"
   | "bio"
   | "highlights"
+  | "homePhotos"
+  | "covers"
   | "photos"
   | "videos"
   | "contact"
@@ -41,7 +43,7 @@ export const adminNavItems: AdminNavItem[] = [
     href: "/admin/bio",
     label: "Biografia",
     description:
-      "Mantenha versões da biografia e escolha qual texto aparece no site",
+      "Edite o texto da biografia, a imagem do topo e o resumo da home",
     icon: "bio",
   },
   {
@@ -52,10 +54,24 @@ export const adminNavItems: AdminNavItem[] = [
     icon: "highlights",
   },
   {
-    href: "/admin/fotos",
-    label: "Fotos",
+    href: "/admin/home-fotos",
+    label: "Fotos da home",
     description:
-      "Envie imagens, organize coleções e defina o que entra na galeria",
+      "Capa/hero da home e faixas de parallax entre as seções de conteúdo",
+    icon: "homePhotos",
+  },
+  {
+    href: "/admin/capas",
+    label: "Capas",
+    description:
+      "Capa de topo de cada página pública (biografia, blog, agenda e demais)",
+    icon: "covers",
+  },
+  {
+    href: "/admin/fotos",
+    label: "Galeria",
+    description:
+      "Envie imagens, organize coleções e defina o que entra na galeria pública",
     icon: "photos",
   },
   {

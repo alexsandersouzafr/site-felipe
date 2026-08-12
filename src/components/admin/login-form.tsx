@@ -31,7 +31,7 @@ export function LoginForm({ unauthorized }: { unauthorized?: boolean }) {
       <CardHeader>
         <CardTitle>Entrar no painel</CardTitle>
         <CardDescription>
-          Use a conta do maestro para gerenciar o conteúdo do site.
+          Use a conta de Felipe Magalhães para gerenciar o conteúdo do site.
         </CardDescription>
       </CardHeader>
       <CardContent>

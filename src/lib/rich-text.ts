@@ -79,3 +79,31 @@ export function isRichTextEmpty(document: RichTextDocument) {
 
   return !content.some((node) => nodeHasVisibleText(node));
 }
+
+function collectPlainText(node: unknown, parts: string[]) {
+  if (!node || typeof node !== "object") {
+    return;
+  }
+
+  const record = node as Record<string, unknown>;
+
+  if (typeof record.text === "string" && record.text.length > 0) {
+    parts.push(record.text);
+  }
+
+  if (Array.isArray(record.content)) {
+    for (const child of record.content) {
+      collectPlainText(child, parts);
+    }
+  }
+}
+
+export function richTextToPlainText(document: RichTextDocument) {
+  const parts: string[] = [];
+  for (const node of document.content ?? []) {
+    collectPlainText(node, parts);
+    parts.push(" ");
+  }
+
+  return parts.join("").replace(/\s+/g, " ").trim();
+}

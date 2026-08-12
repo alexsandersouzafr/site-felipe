@@ -1,18 +1,94 @@
 {
   "Navigation": {
     "home": "Início",
-    "news": "Notícias",
+    "news": "Blog",
     "bio": "Biografia",
     "schedule": "Agenda",
     "videos": "Vídeos",
     "photos": "Fotos",
-    "contact": "Contato"
+    "contact": "Contato",
+    "brand": "Felipe Magalhães",
+    "menu": "Menu",
+    "closeMenu": "Fechar menu"
+  },
+  "LocaleSwitcher": {
+    "label": "Idioma",
+    "pt": "PT",
+    "en": "EN",
+    "es": "ES"
+  },
+  "ThemeToggle": {
+    "light": "Ativar tema claro",
+    "dark": "Ativar tema escuro"
+  },
+  "Footer": {
+    "tagline": "Música que aproxima mundos.",
+    "contact": "Entre em contato"
   },
   "Home": {
-    "eyebrow": "Maestro",
+    "eyebrow": "Felipe Magalhães",
     "title": "Música que aproxima mundos.",
-    "description": "Conheça o trabalho, os próximos concertos e as histórias por trás de cada interpretação.",
+    "description": "Conheça o trabalho, os próximos concertos e a histórias do maestro.",
     "schedule": "Ver agenda",
-    "bio": "Conhecer o maestro"
+    "bio": "Conhecer Felipe Magalhães",
+    "bioSummaryTitle": "O maestro",
+    "upcomingTitle": "Próximos concertos",
+    "upcomingEmpty": "Nenhum concerto anunciado no momento.",
+    "recentPostsTitle": "Do blog",
+    "recentPostsEmpty": "Nenhuma publicação disponível ainda.",
+    "viewAllSchedule": "Agenda completa",
+    "viewAllBlog": "Ver todas as publicações"
+  },
+  "Blog": {
+    "title": "Blog",
+    "description": "Notas, ensaios e histórias da trajetória.",
+    "empty": "Nenhuma publicação disponível no momento.",
+    "readMore": "Ler publicação",
+    "backToList": "Voltar ao blog"
+  },
+  "Bio": {
+    "title": "Biografia",
+    "highlightsTitle": "Destaques",
+    "empty": "A biografia será publicada em breve."
+  },
+  "Schedule": {
+    "title": "Agenda",
+    "description": "Concertos e engajamentos.",
+    "upcoming": "Próximos",
+    "past": "Anteriores",
+    "upcomingEmpty": "Nenhum concerto futuro anunciado.",
+    "pastEmpty": "Nenhum concerto anterior listado.",
+    "tickets": "Ingressos",
+    "venue": "Local"
+  },
+  "Videos": {
+    "title": "Vídeos",
+    "description": "Apresentações e registros em vídeo.",
+    "empty": "Nenhum vídeo publicado no momento."
+  },
+  "Photos": {
+    "title": "Fotos",
+    "description": "Galeria de imagens.",
+    "empty": "Nenhuma foto publicada no momento.",
+    "credit": "Crédito"
+  },
+  "Contact": {
+    "title": "Contato",
+    "description": "Convites, parcerias e imprensa.",
+    "email": "E-mail",
+    "phone": "Telefone",
+    "social": "Redes",
+    "formName": "Nome",
+    "formEmail": "E-mail",
+    "formSubject": "Assunto",
+    "formMessage": "Mensagem",
+    "submit": "Enviar mensagem",
+    "submitting": "Enviando…",
+    "success": "Mensagem enviada. Obrigado pelo contato.",
+    "error": "Não foi possível enviar. Tente novamente.",
+    "validationError": "Preencha todos os campos corretamente."
+  },
+  "Common": {
+    "empty": "Conteúdo indisponível."
   }
 }

@@ -2,10 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-
+import { routing } from "@/i18n/routing";
 import {
   booleanField,
   integerField,
+  optionalText,
   readLocalizedPair,
   readPublishingFields,
   requireScheduledPublishAt,
@@ -14,6 +15,7 @@ import {
   canEnableHighlightOnPage,
   MAX_BIO_PAGE_HIGHLIGHTS,
 } from "@/lib/bio-page";
+import { validateImageFile } from "@/lib/media-limits";
 import { isRichTextEmpty, parseRichTextInput } from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
 
@@ -21,40 +23,49 @@ export type EditorialActionState = {
   error?: string;
 };
 
-export async function createBiography(
-  _prev: EditorialActionState,
-  formData: FormData,
-): Promise<EditorialActionState> {
-  return saveBiography(null, formData);
+function revalidateBiographyPaths() {
+  revalidatePath("/admin/bio");
+  for (const locale of routing.locales) {
+    revalidatePath(`/${locale}`);
+    revalidatePath(`/${locale}/bio`);
+  }
 }
 
-export async function updateBiography(
-  id: string,
-  _prev: EditorialActionState,
-  formData: FormData,
-): Promise<EditorialActionState> {
-  return saveBiography(id, formData);
-}
-
-async function saveBiography(
-  id: string | null,
-  formData: FormData,
-): Promise<EditorialActionState> {
-  const { status, publishAt } = readPublishingFields(formData);
-  const scheduleError = requireScheduledPublishAt(status, publishAt);
-
-  if (scheduleError) {
-    return { error: scheduleError };
+async function uploadBiographyImage(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  file: File,
+) {
+  const validation = validateImageFile(file);
+  if (!validation.ok) {
+    return { ok: false as const, error: validation.error };
   }
 
-  const titles = readLocalizedPair(formData, {
-    pt: "titlePt",
-    en: "titleEn",
-    es: "titleEs",
+  const extension = file.name.split(".").pop() || "jpg";
+  const path = `bio/cover/${crypto.randomUUID()}.${extension}`;
+  const { error } = await supabase.storage.from("media").upload(path, file, {
+    contentType: file.type || "image/jpeg",
+    upsert: false,
   });
 
-  if (!titles.pt) {
-    return { error: "O título em português é obrigatório." };
+  if (error) {
+    return { ok: false as const, error: "Não foi possível enviar a imagem." };
+  }
+
+  return { ok: true as const, path };
+}
+
+export async function saveBiography(
+  _prev: EditorialActionState,
+  formData: FormData,
+): Promise<EditorialActionState> {
+  const summaries = readLocalizedPair(formData, {
+    pt: "summaryPt",
+    en: "summaryEn",
+    es: "summaryEs",
+  });
+
+  if (!summaries.pt) {
+    return { error: "O resumo em português é obrigatório." };
   }
 
   const contentPt = parseRichTextInput(formData.get("contentPt"));
@@ -64,88 +75,75 @@ async function saveBiography(
 
   const contentEn = parseRichTextInput(formData.get("contentEn"));
   const contentEs = parseRichTextInput(formData.get("contentEs"));
-  const showOnPage = booleanField(formData, "showOnPage");
+
+  const supabase = await createClient();
+
+  let imagePath = optionalText(formData, "imagePath");
+  const imageFile = formData.get("imageFile");
+  if (imageFile instanceof File && imageFile.size > 0) {
+    const uploaded = await uploadBiographyImage(supabase, imageFile);
+    if (!uploaded.ok) {
+      return { error: uploaded.error };
+    }
+    imagePath = uploaded.path;
+  }
+
+  const { data: existing, error: existingError } = await supabase
+    .from("biographies")
+    .select("id")
+    .order("created_at", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+
+  if (existingError) {
+    return { error: "Não foi possível carregar a biografia." };
+  }
 
   const payload = {
-    status,
-    publish_at: publishAt,
-    title_pt: titles.pt,
-    title_en: titles.en,
-    title_es: titles.es,
+    status: "published" as const,
+    publish_at: null,
+    title_pt: "Biografia",
+    title_en: null,
+    title_es: null,
     content_pt: contentPt,
     content_en: isRichTextEmpty(contentEn) ? null : contentEn,
     content_es: isRichTextEmpty(contentEs) ? null : contentEs,
-    show_on_page: showOnPage,
+    summary_pt: summaries.pt,
+    summary_en: summaries.en,
+    summary_es: summaries.es,
+    image_path: imagePath,
+    show_on_page: true,
     updated_at: new Date().toISOString(),
   };
 
-  const supabase = await createClient();
-
-  if (showOnPage) {
-    const clearQuery = supabase
+  if (existing?.id) {
+    const { error: clearError } = await supabase
       .from("biographies")
-      .update({ show_on_page: false, updated_at: new Date().toISOString() })
-      .eq("show_on_page", true);
-
-    const { error: clearError } = id
-      ? await clearQuery.neq("id", id)
-      : await clearQuery;
+      .update({ show_on_page: false, updated_at: payload.updated_at })
+      .eq("show_on_page", true)
+      .neq("id", existing.id);
 
     if (clearError) {
-      return { error: "Não foi possível atualizar a biografia da página." };
+      return { error: "Não foi possível atualizar a biografia." };
+    }
+
+    const { error } = await supabase
+      .from("biographies")
+      .update(payload)
+      .eq("id", existing.id);
+
+    if (error) {
+      return { error: "Não foi possível salvar a biografia." };
+    }
+  } else {
+    const { error } = await supabase.from("biographies").insert(payload);
+
+    if (error) {
+      return { error: "Não foi possível salvar a biografia." };
     }
   }
 
-  const { error } = id
-    ? await supabase.from("biographies").update(payload).eq("id", id)
-    : await supabase.from("biographies").insert(payload);
-
-  if (error) {
-    return { error: "Não foi possível salvar a biografia." };
-  }
-
-  revalidatePath("/admin/bio");
-  redirect("/admin/bio");
-}
-
-export async function setBiographyOnPage(formData: FormData) {
-  const id = String(formData.get("id") ?? "");
-
-  if (!id) {
-    return;
-  }
-
-  const supabase = await createClient();
-  const updatedAt = new Date().toISOString();
-
-  const { error: clearError } = await supabase
-    .from("biographies")
-    .update({ show_on_page: false, updated_at: updatedAt })
-    .eq("show_on_page", true)
-    .neq("id", id);
-
-  if (clearError) {
-    throw new Error("Não foi possível atualizar a biografia da página.");
-  }
-
-  const { error } = await supabase
-    .from("biographies")
-    .update({ show_on_page: true, updated_at: updatedAt })
-    .eq("id", id);
-
-  if (error) {
-    throw new Error("Não foi possível definir a biografia da página.");
-  }
-
-  revalidatePath("/admin/bio");
-  redirect("/admin/bio");
-}
-
-export async function deleteBiography(formData: FormData) {
-  const id = String(formData.get("id") ?? "");
-  const supabase = await createClient();
-  await supabase.from("biographies").delete().eq("id", id);
-  revalidatePath("/admin/bio");
+  revalidateBiographyPaths();
   redirect("/admin/bio");
 }
 

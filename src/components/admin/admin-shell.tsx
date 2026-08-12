@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 import { AdminNavIcon } from "@/components/admin/admin-nav-icon";
 import { SignOutButton } from "@/components/admin/sign-out-button";
-import { ThemeToggle } from "@/components/admin/theme-toggle";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import {
   SheetClose,
@@ -58,7 +58,10 @@ function DesktopNav({ pathname }: { pathname: string }) {
         const isActive =
           item.href === "/admin"
             ? pathname === "/admin"
-            : pathname.startsWith(item.href);
+            : item.href === "/admin/fotos"
+              ? pathname === "/admin/fotos" ||
+                pathname.startsWith("/admin/fotos/")
+              : pathname.startsWith(item.href);
 
         return (
           <Link
@@ -87,7 +90,10 @@ function MobileNav({ pathname }: { pathname: string }) {
         const isActive =
           item.href === "/admin"
             ? pathname === "/admin"
-            : pathname.startsWith(item.href);
+            : item.href === "/admin/fotos"
+              ? pathname === "/admin/fotos" ||
+                pathname.startsWith("/admin/fotos/")
+              : pathname.startsWith(item.href);
 
         return (
           <SheetClose
@@ -118,7 +124,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           <div className="mb-8 shrink-0 space-y-1 px-2">
             <p className="font-heading text-xl tracking-tight">Painel</p>
             <p className="text-sm text-muted-foreground">
-              Gestão do site do maestro
+              Gestão do site de Felipe Magalhães
             </p>
           </div>
           <div className="min-h-0 flex-1 overflow-y-auto">

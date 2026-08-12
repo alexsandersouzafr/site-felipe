@@ -31,6 +31,7 @@ export function ImageUploadField({
   existingPathFieldName,
   required = false,
   description,
+  onFileChange,
 }: {
   id: string;
   name: string;
@@ -39,6 +40,7 @@ export function ImageUploadField({
   existingPathFieldName?: string;
   required?: boolean;
   description?: string;
+  onFileChange?: (file: File | null) => void;
 }) {
   const [localPreview, setLocalPreview] = useState<string | null>(null);
   const remotePreview = mediaPublicUrl(existingPath);
@@ -65,6 +67,7 @@ export function ImageUploadField({
         required={required && !existingPath}
         onChange={(event) => {
           const file = readFileFromChange(event);
+          onFileChange?.(file);
           setLocalPreview((previous) => {
             if (previous) {
               URL.revokeObjectURL(previous);

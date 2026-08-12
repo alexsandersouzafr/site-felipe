@@ -8,14 +8,14 @@ import { cn } from "@/lib/utils";
 
 const heading = Playfair_Display({
   subsets: ["latin"],
-  variable: "--font-heading",
+  variable: "--font-playfair",
 });
 
 const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
-  title: { default: "Maestro", template: "%s | Maestro" },
-  description: "Site oficial do maestro.",
+  title: { default: "Felipe Magalhães", template: "%s | Felipe Magalhães" },
+  description: "Site oficial do maestro Felipe Magalhães.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

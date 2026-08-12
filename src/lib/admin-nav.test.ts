@@ -10,6 +10,8 @@ describe("adminNavItems", () => {
       "/admin/blog",
       "/admin/bio",
       "/admin/destaques",
+      "/admin/home-fotos",
+      "/admin/capas",
       "/admin/fotos",
       "/admin/videos",
       "/admin/contato",
