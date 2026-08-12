@@ -1,0 +1,18 @@
+{
+  "Navigation": {
+    "home": "Início",
+    "news": "Notícias",
+    "bio": "Biografia",
+    "schedule": "Agenda",
+    "videos": "Vídeos",
+    "photos": "Fotos",
+    "contact": "Contato"
+  },
+  "Home": {
+    "eyebrow": "Maestro",
+    "title": "Música que aproxima mundos.",
+    "description": "Conheça o trabalho, os próximos concertos e as histórias por trás de cada interpretação.",
+    "schedule": "Ver agenda",
+    "bio": "Conhecer o maestro"
+  }
+}

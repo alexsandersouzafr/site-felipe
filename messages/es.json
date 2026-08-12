@@ -1,0 +1,18 @@
+{
+  "Navigation": {
+    "home": "Inicio",
+    "news": "Noticias",
+    "bio": "Biografía",
+    "schedule": "Agenda",
+    "videos": "Videos",
+    "photos": "Fotos",
+    "contact": "Contacto"
+  },
+  "Home": {
+    "eyebrow": "Director de orquesta",
+    "title": "Música que acerca mundos.",
+    "description": "Conozca el trabajo, los próximos conciertos y las historias detrás de cada interpretación.",
+    "schedule": "Ver agenda",
+    "bio": "Conocer al maestro"
+  }
+}

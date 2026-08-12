@@ -1,0 +1,18 @@
+{
+  "Navigation": {
+    "home": "Home",
+    "news": "News",
+    "bio": "Biography",
+    "schedule": "Schedule",
+    "videos": "Videos",
+    "photos": "Photos",
+    "contact": "Contact"
+  },
+  "Home": {
+    "eyebrow": "Conductor",
+    "title": "Music that brings worlds together.",
+    "description": "Discover the work, upcoming concerts and stories behind every performance.",
+    "schedule": "View schedule",
+    "bio": "Meet the conductor"
+  }
+}
