@@ -5,6 +5,7 @@ import {
 import { DeleteEventButton } from "@/components/admin/delete-event-button";
 import { getEventLocalDateTime } from "@/lib/event-time";
 import type { EventRecord } from "@/lib/events";
+import { mediaPublicUrl } from "@/lib/media-url";
 import { createClient } from "@/lib/supabase/server";
 
 const statusLabel = {
@@ -73,7 +74,21 @@ export default async function AdminAgendaPage() {
                     key={event.id}
                     className="border-b border-border/60 last:border-0"
                   >
-                    <td className="px-4 py-3 font-medium">{event.title_pt}</td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-3">
+                        {event.image_path ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={mediaPublicUrl(event.image_path) ?? undefined}
+                            alt=""
+                            className="size-10 shrink-0 rounded-xl object-cover"
+                          />
+                        ) : (
+                          <span className="size-10 shrink-0 rounded-xl bg-muted" />
+                        )}
+                        <span className="font-medium">{event.title_pt}</span>
+                      </div>
+                    </td>
                     <td className="px-4 py-3">
                       {event.venue} · {event.city}
                     </td>

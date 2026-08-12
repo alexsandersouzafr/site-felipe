@@ -44,7 +44,9 @@ export function ForgotPasswordForm() {
         <form action={formAction} className="space-y-4">
           <FieldGroup>
             <Field>
-              <FieldLabel htmlFor="email">E-mail</FieldLabel>
+              <FieldLabel htmlFor="email" required>
+                E-mail
+              </FieldLabel>
               <Input
                 id="email"
                 name="email"

@@ -25,10 +25,10 @@ export default function AdminHomePage() {
             className="rounded-3xl border border-border/80 bg-background/70 p-5 transition-colors hover:border-foreground/20 hover:bg-muted/40"
           >
             <div className="flex items-start gap-3">
-              <span className="flex size-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <span className="flex size-16 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                 <AdminNavIcon
                   name={item.icon}
-                  className="size-5"
+                  className="size-9"
                   weight="duotone"
                 />
               </span>

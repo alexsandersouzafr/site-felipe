@@ -31,10 +31,10 @@ export const adminNavItems: AdminNavItem[] = [
     icon: "agenda",
   },
   {
-    href: "/admin/noticias",
-    label: "Notícias",
+    href: "/admin/blog",
+    label: "Blog",
     description:
-      "Escreva e publique artigos com texto rico, resumo, capa e traduções",
+      "Monte postagens com parágrafos, imagens e vídeos do YouTube, com capa por upload ou galeria",
     icon: "news",
   },
   {

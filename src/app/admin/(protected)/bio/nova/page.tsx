@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { createBiography } from "@/app/admin/(protected)/noticias/actions";
+import { createBiography } from "@/app/admin/(protected)/editorial/actions";
 import { BiographyForm } from "@/components/admin/biography-form";
 
 export default function NewBiographyPage() {

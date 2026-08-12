@@ -1,4 +1,4 @@
-import { deleteBiography } from "@/app/admin/(protected)/noticias/actions";
+import { deleteBiography } from "@/app/admin/(protected)/editorial/actions";
 import {
   AdminCreateLink,
   AdminEditLink,

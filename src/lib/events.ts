@@ -20,6 +20,7 @@ export type EventRecord = {
   starts_at: string;
   ends_at: string | null;
   ticket_url: string | null;
+  image_path: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -40,6 +41,7 @@ export function toEventInsert(values: EventFormValues) {
       ? localDateTimeInZoneToUtc(values.endsAtLocal, values.timeZone)
       : null,
     ticket_url: values.ticketUrl,
+    image_path: values.imagePath,
     updated_at: new Date().toISOString(),
   };
 }
@@ -62,5 +64,6 @@ export function toEventFormValues(event: EventRecord): EventFormValues {
       ? utcToLocalDateTimeInput(event.ends_at, event.time_zone)
       : null,
     ticketUrl: event.ticket_url,
+    imagePath: event.image_path,
   };
 }

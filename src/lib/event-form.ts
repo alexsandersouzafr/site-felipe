@@ -15,6 +15,7 @@ export const eventFormSchema = publishingFieldsSchema
     startsAtLocal: z.string().trim().min(1, "Informe a data/hora de início."),
     endsAtLocal: z.string().optional(),
     ticketUrl: z.string().optional(),
+    imagePath: z.string().optional(),
   })
   .transform((value) => {
     const titles = toNullableLocalizedText({
@@ -36,6 +37,7 @@ export const eventFormSchema = publishingFieldsSchema
       startsAtLocal: value.startsAtLocal,
       endsAtLocal: value.endsAtLocal?.trim() ? value.endsAtLocal.trim() : null,
       ticketUrl: value.ticketUrl?.trim() ? value.ticketUrl.trim() : null,
+      imagePath: value.imagePath?.trim() ? value.imagePath.trim() : null,
     };
   });
 

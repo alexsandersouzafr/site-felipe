@@ -7,7 +7,7 @@ describe("adminNavItems", () => {
     expect(adminNavItems.map((item) => item.href)).toEqual([
       "/admin",
       "/admin/agenda",
-      "/admin/noticias",
+      "/admin/blog",
       "/admin/bio",
       "/admin/destaques",
       "/admin/fotos",

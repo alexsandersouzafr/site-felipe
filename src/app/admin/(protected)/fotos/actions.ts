@@ -10,6 +10,7 @@ import {
   readPublishingFields,
   requireScheduledPublishAt,
 } from "@/lib/admin-form";
+import { validateImageFile } from "@/lib/media-limits";
 import { createClient } from "@/lib/supabase/server";
 
 export type MediaActionState = {
@@ -57,6 +58,11 @@ async function savePhoto(
   let storagePath = optionalText(formData, "storagePath");
 
   if (file instanceof File && file.size > 0) {
+    const validation = validateImageFile(file);
+    if (!validation.ok) {
+      return { error: validation.error };
+    }
+
     const extension = file.name.split(".").pop() || "jpg";
     const path = `photos/${crypto.randomUUID()}.${extension}`;
     const { error: uploadError } = await supabase.storage

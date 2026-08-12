@@ -1,4 +1,4 @@
-import { deleteHighlight } from "@/app/admin/(protected)/noticias/actions";
+import { deleteHighlight } from "@/app/admin/(protected)/editorial/actions";
 import {
   AdminCreateLink,
   AdminEditLink,

@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import {
   type EditorialActionState,
   updateHighlight,
-} from "@/app/admin/(protected)/noticias/actions";
+} from "@/app/admin/(protected)/editorial/actions";
 import { HighlightForm } from "@/components/admin/highlight-form";
 import { toDateTimeLocalValue } from "@/lib/datetime-local";
 import { createClient } from "@/lib/supabase/server";

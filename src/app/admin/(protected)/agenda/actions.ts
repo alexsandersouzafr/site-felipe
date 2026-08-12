@@ -3,8 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import { optionalText } from "@/lib/admin-form";
 import { eventFormSchema } from "@/lib/event-form";
 import { toEventInsert } from "@/lib/events";
+import { validateImageFile } from "@/lib/media-limits";
 import { intentFromFormData, statusFromIntent } from "@/lib/publishing-intent";
 import { createClient } from "@/lib/supabase/server";
 
@@ -27,7 +29,36 @@ function formDataToObject(formData: FormData) {
     startsAtLocal: formData.get("startsAtLocal"),
     endsAtLocal: formData.get("endsAtLocal") ?? "",
     ticketUrl: formData.get("ticketUrl") ?? "",
+    imagePath: formData.get("imagePath") ?? "",
   };
+}
+
+async function resolveEventImagePath(
+  formData: FormData,
+  supabase: Awaited<ReturnType<typeof createClient>>,
+) {
+  const file = formData.get("imageFile");
+  if (file instanceof File && file.size > 0) {
+    const validation = validateImageFile(file);
+    if (!validation.ok) {
+      return { ok: false as const, error: validation.error };
+    }
+
+    const extension = file.name.split(".").pop() || "jpg";
+    const path = `events/${crypto.randomUUID()}.${extension}`;
+    const { error } = await supabase.storage.from("media").upload(path, file, {
+      contentType: file.type || "image/jpeg",
+      upsert: false,
+    });
+
+    if (error) {
+      return { ok: false as const, error: "Não foi possível enviar a imagem." };
+    }
+
+    return { ok: true as const, path };
+  }
+
+  return { ok: true as const, path: optionalText(formData, "imagePath") };
 }
 
 export async function createEvent(
@@ -41,9 +72,17 @@ export async function createEvent(
   }
 
   const supabase = await createClient();
-  const { error } = await supabase
-    .from("events")
-    .insert(toEventInsert(parsed.data));
+  const image = await resolveEventImagePath(formData, supabase);
+  if (!image.ok) {
+    return { error: image.error };
+  }
+
+  const { error } = await supabase.from("events").insert(
+    toEventInsert({
+      ...parsed.data,
+      imagePath: image.path,
+    }),
+  );
 
   if (error) {
     return { error: "Não foi possível criar o evento." };
@@ -65,9 +104,19 @@ export async function updateEvent(
   }
 
   const supabase = await createClient();
+  const image = await resolveEventImagePath(formData, supabase);
+  if (!image.ok) {
+    return { error: image.error };
+  }
+
   const { error } = await supabase
     .from("events")
-    .update(toEventInsert(parsed.data))
+    .update(
+      toEventInsert({
+        ...parsed.data,
+        imagePath: image.path,
+      }),
+    )
     .eq("id", id);
 
   if (error) {

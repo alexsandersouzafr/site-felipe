@@ -38,7 +38,9 @@ export function LoginForm({ unauthorized }: { unauthorized?: boolean }) {
         <form action={formAction} className="space-y-4">
           <FieldGroup>
             <Field>
-              <FieldLabel htmlFor="email">E-mail</FieldLabel>
+              <FieldLabel htmlFor="email" required>
+                E-mail
+              </FieldLabel>
               <Input
                 id="email"
                 name="email"
@@ -48,7 +50,9 @@ export function LoginForm({ unauthorized }: { unauthorized?: boolean }) {
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="password">Senha</FieldLabel>
+              <FieldLabel htmlFor="password" required>
+                Senha
+              </FieldLabel>
               <Input
                 id="password"
                 name="password"

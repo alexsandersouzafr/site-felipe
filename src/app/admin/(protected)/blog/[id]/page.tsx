@@ -2,42 +2,46 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import {
-  type EditorialActionState,
-  updateNewsItem,
-} from "@/app/admin/(protected)/noticias/actions";
-import { NewsForm } from "@/components/admin/news-form";
+  type BlogActionState,
+  updateBlogPost,
+} from "@/app/admin/(protected)/blog/actions";
+import { BlogPostForm } from "@/components/admin/blog-post-form";
+import { blogBlocksSchema } from "@/lib/blog-blocks";
 import { toDateTimeLocalValue } from "@/lib/datetime-local";
-import type { RichTextDocument } from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
 
-export default async function EditNewsPage({
+export default async function EditBlogPostPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
   const supabase = await createClient();
-  const { data } = await supabase
-    .from("news_items")
-    .select("*")
-    .eq("id", id)
-    .maybeSingle();
+  const [{ data }, { data: photos }] = await Promise.all([
+    supabase.from("news_items").select("*").eq("id", id).maybeSingle(),
+    supabase
+      .from("photos")
+      .select("storage_path, alt_pt")
+      .order("display_order", { ascending: true }),
+  ]);
 
   if (!data) {
     notFound();
   }
 
-  const action = updateNewsItem.bind(null, data.id) as (
-    prev: EditorialActionState,
+  const action = updateBlogPost.bind(null, data.id) as (
+    prev: BlogActionState,
     formData: FormData,
-  ) => Promise<EditorialActionState>;
+  ) => Promise<BlogActionState>;
+
+  const blocks = blogBlocksSchema.safeParse(data.blocks);
 
   return (
     <div className="space-y-6">
       <div className="space-y-2">
         <p className="text-sm text-muted-foreground">
-          <Link href="/admin/noticias" className="underline underline-offset-4">
-            Notícias
+          <Link href="/admin/blog" className="underline underline-offset-4">
+            Blog
           </Link>{" "}
           / Editar
         </p>
@@ -45,22 +49,20 @@ export default async function EditNewsPage({
           {data.title_pt}
         </h1>
       </div>
-      <NewsForm
+      <BlogPostForm
         action={action}
         mode="edit"
+        coverLibrary={(photos ?? []).map((photo) => ({
+          storagePath: photo.storage_path,
+          label: photo.alt_pt,
+        }))}
         initialValues={{
           status: data.status,
           publishAt: toDateTimeLocalValue(data.publish_at),
-          slug: data.slug,
           titlePt: data.title_pt,
           titleEn: data.title_en,
           titleEs: data.title_es,
-          excerptPt: data.excerpt_pt,
-          excerptEn: data.excerpt_en,
-          excerptEs: data.excerpt_es,
-          contentPt: data.content_pt as RichTextDocument,
-          contentEn: data.content_en as RichTextDocument | null,
-          contentEs: data.content_es as RichTextDocument | null,
+          blocks: blocks.success ? blocks.data : [],
           coverImagePath: data.cover_image_path,
         }}
       />

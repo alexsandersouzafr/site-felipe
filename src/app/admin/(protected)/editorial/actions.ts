@@ -6,7 +6,6 @@ import { redirect } from "next/navigation";
 import {
   booleanField,
   integerField,
-  optionalText,
   readLocalizedPair,
   readPublishingFields,
   requireScheduledPublishAt,
@@ -16,128 +15,11 @@ import {
   MAX_BIO_PAGE_HIGHLIGHTS,
 } from "@/lib/bio-page";
 import { isRichTextEmpty, parseRichTextInput } from "@/lib/rich-text";
-import { slugify } from "@/lib/slug";
 import { createClient } from "@/lib/supabase/server";
 
 export type EditorialActionState = {
   error?: string;
 };
-
-function parseNewsForm(formData: FormData) {
-  const { status, publishAt } = readPublishingFields(formData);
-  const scheduleError = requireScheduledPublishAt(status, publishAt);
-
-  if (scheduleError) {
-    return { ok: false as const, error: scheduleError };
-  }
-
-  const titles = readLocalizedPair(formData, {
-    pt: "titlePt",
-    en: "titleEn",
-    es: "titleEs",
-  });
-  const excerpts = readLocalizedPair(formData, {
-    pt: "excerptPt",
-    en: "excerptEn",
-    es: "excerptEs",
-  });
-
-  if (!titles.pt || !excerpts.pt) {
-    return {
-      ok: false as const,
-      error: "Título e resumo em português são obrigatórios.",
-    };
-  }
-
-  const contentPt = parseRichTextInput(formData.get("contentPt"));
-  if (isRichTextEmpty(contentPt)) {
-    return {
-      ok: false as const,
-      error: "O corpo da notícia em português é obrigatório.",
-    };
-  }
-
-  const contentEnRaw = parseRichTextInput(formData.get("contentEn"));
-  const contentEsRaw = parseRichTextInput(formData.get("contentEs"));
-  const slugInput = String(formData.get("slug") ?? "").trim();
-  const slug = slugify(slugInput || titles.pt);
-
-  if (!slug) {
-    return { ok: false as const, error: "Informe um slug válido." };
-  }
-
-  return {
-    ok: true as const,
-    data: {
-      status,
-      publish_at: publishAt,
-      slug,
-      title_pt: titles.pt,
-      title_en: titles.en,
-      title_es: titles.es,
-      excerpt_pt: excerpts.pt,
-      excerpt_en: excerpts.en,
-      excerpt_es: excerpts.es,
-      content_pt: contentPt,
-      content_en: isRichTextEmpty(contentEnRaw) ? null : contentEnRaw,
-      content_es: isRichTextEmpty(contentEsRaw) ? null : contentEsRaw,
-      cover_image_path: optionalText(formData, "coverImagePath"),
-      updated_at: new Date().toISOString(),
-    },
-  };
-}
-
-export async function createNewsItem(
-  _prev: EditorialActionState,
-  formData: FormData,
-): Promise<EditorialActionState> {
-  const parsed = parseNewsForm(formData);
-  if (!parsed.ok) {
-    return { error: parsed.error };
-  }
-
-  const supabase = await createClient();
-  const { error } = await supabase.from("news_items").insert(parsed.data);
-
-  if (error) {
-    return { error: "Não foi possível criar a notícia." };
-  }
-
-  revalidatePath("/admin/noticias");
-  redirect("/admin/noticias");
-}
-
-export async function updateNewsItem(
-  id: string,
-  _prev: EditorialActionState,
-  formData: FormData,
-): Promise<EditorialActionState> {
-  const parsed = parseNewsForm(formData);
-  if (!parsed.ok) {
-    return { error: parsed.error };
-  }
-
-  const supabase = await createClient();
-  const { error } = await supabase
-    .from("news_items")
-    .update(parsed.data)
-    .eq("id", id);
-
-  if (error) {
-    return { error: "Não foi possível atualizar a notícia." };
-  }
-
-  revalidatePath("/admin/noticias");
-  redirect("/admin/noticias");
-}
-
-export async function deleteNewsItem(formData: FormData) {
-  const id = String(formData.get("id") ?? "");
-  const supabase = await createClient();
-  await supabase.from("news_items").delete().eq("id", id);
-  revalidatePath("/admin/noticias");
-  redirect("/admin/noticias");
-}
 
 export async function createBiography(
   _prev: EditorialActionState,

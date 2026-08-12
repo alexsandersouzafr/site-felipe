@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import {
   type EditorialActionState,
   updateBiography,
-} from "@/app/admin/(protected)/noticias/actions";
+} from "@/app/admin/(protected)/editorial/actions";
 import { BiographyForm } from "@/components/admin/biography-form";
 import { toDateTimeLocalValue } from "@/lib/datetime-local";
 import type { RichTextDocument } from "@/lib/rich-text";

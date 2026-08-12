@@ -1,4 +1,4 @@
-import { deleteNewsItem } from "@/app/admin/(protected)/noticias/actions";
+import { deleteBlogPost } from "@/app/admin/(protected)/blog/actions";
 import {
   AdminCreateLink,
   AdminEditLink,
@@ -7,7 +7,7 @@ import { AdminDataTable, AdminPageHeader } from "@/components/admin/admin-list";
 import { ConfirmDeleteButton } from "@/components/admin/confirm-delete-button";
 import { createClient } from "@/lib/supabase/server";
 
-export default async function AdminNewsPage() {
+export default async function AdminBlogPage() {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("news_items")
@@ -17,21 +17,19 @@ export default async function AdminNewsPage() {
   return (
     <div className="space-y-6">
       <AdminPageHeader
-        title="Notícias"
-        description="Escreva artigos com editor de texto rico, resumo, capa e slug. Publique de imediato, agende ou salve como rascunho, com português obrigatório e traduções opcionais."
+        title="Blog"
+        description="Publique postagens montadas com blocos de parágrafo, imagem e vídeo do YouTube. Defina a capa por upload ou pela galeria de fotos, com português obrigatório e traduções opcionais."
         action={
-          <AdminCreateLink href="/admin/noticias/nova">
-            Nova notícia
-          </AdminCreateLink>
+          <AdminCreateLink href="/admin/blog/nova">Novo post</AdminCreateLink>
         }
       />
       {error && (
         <p className="text-sm text-destructive">
-          Não foi possível carregar as notícias.
+          Não foi possível carregar os posts do blog.
         </p>
       )}
       {!error && (data?.length ?? 0) === 0 && (
-        <p className="text-sm text-muted-foreground">Nenhuma notícia ainda.</p>
+        <p className="text-sm text-muted-foreground">Nenhum post ainda.</p>
       )}
       {(data?.length ?? 0) > 0 && (
         <AdminDataTable headers={["Título", "Slug", "Status", "Ações"]}>
@@ -45,8 +43,8 @@ export default async function AdminNewsPage() {
               <td className="px-4 py-3">{item.status}</td>
               <td className="px-4 py-3">
                 <div className="flex justify-end gap-2">
-                  <AdminEditLink href={`/admin/noticias/${item.id}`} />
-                  <ConfirmDeleteButton action={deleteNewsItem} id={item.id} />
+                  <AdminEditLink href={`/admin/blog/${item.id}`} />
+                  <ConfirmDeleteButton action={deleteBlogPost} id={item.id} />
                 </div>
               </td>
             </tr>

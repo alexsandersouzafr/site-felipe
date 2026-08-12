@@ -2,7 +2,7 @@
 
 import { CheckCircleIcon } from "@phosphor-icons/react";
 
-import { setBiographyOnPage } from "@/app/admin/(protected)/noticias/actions";
+import { setBiographyOnPage } from "@/app/admin/(protected)/editorial/actions";
 import { Button } from "@/components/ui/button";
 
 export function SetBiographyOnPageButton({

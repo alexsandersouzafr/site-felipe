@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { createHighlight } from "@/app/admin/(protected)/noticias/actions";
+import { createHighlight } from "@/app/admin/(protected)/editorial/actions";
 import { HighlightForm } from "@/components/admin/highlight-form";
 import { createClient } from "@/lib/supabase/server";
 

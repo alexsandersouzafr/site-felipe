@@ -41,7 +41,7 @@ function NavItemContent({
       <AdminNavIcon
         name={icon}
         className={cn(
-          "size-4",
+          "size-5",
           isActive ? "text-primary-foreground" : "text-primary",
         )}
         weight={isActive ? "duotone" : "regular"}
@@ -112,17 +112,19 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,_oklch(0.97_0.02_20),_transparent_40%),var(--background)] text-foreground dark:bg-[radial-gradient(circle_at_top_left,_oklch(0.28_0.03_20),_transparent_45%),var(--background)]">
-      <div className="mx-auto grid min-h-screen max-w-7xl lg:grid-cols-[16rem_1fr]">
-        <aside className="hidden border-r border-border/80 px-4 py-6 lg:block">
-          <div className="mb-8 space-y-1 px-2">
+    <div className="min-h-svh bg-background text-foreground">
+      <div className="mx-auto grid min-h-svh max-w-7xl lg:grid-cols-[16rem_1fr]">
+        <aside className="sticky top-0 hidden h-svh flex-col border-r border-border/80 px-4 py-6 lg:flex">
+          <div className="mb-8 shrink-0 space-y-1 px-2">
             <p className="font-heading text-xl tracking-tight">Painel</p>
             <p className="text-sm text-muted-foreground">
               Gestão do site do maestro
             </p>
           </div>
-          <DesktopNav pathname={pathname} />
-          <div className="mt-8 px-2">
+          <div className="min-h-0 flex-1 overflow-y-auto">
+            <DesktopNav pathname={pathname} />
+          </div>
+          <div className="mt-6 shrink-0 px-2">
             <SignOutButton />
           </div>
         </aside>

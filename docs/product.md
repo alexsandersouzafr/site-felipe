@@ -13,7 +13,7 @@ Present the conductor's work, facilitate professional contact, and let the condu
 ## Public Pages
 
 - Home: editorial summary, upcoming events, and entry points to primary content.
-- News: published news and articles.
+- Blog: posts built from paragraph, image, and YouTube video blocks.
 - Bio: complete biography and highlights.
 - Schedule: upcoming concerts and past engagements.
 - Videos: embedded YouTube videos.

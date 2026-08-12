@@ -39,7 +39,9 @@ export function UpdatePasswordForm() {
         <form action={formAction} className="space-y-4">
           <FieldGroup>
             <Field>
-              <FieldLabel htmlFor="password">Nova senha</FieldLabel>
+              <FieldLabel htmlFor="password" required>
+                Nova senha
+              </FieldLabel>
               <Input
                 id="password"
                 name="password"
@@ -49,7 +51,9 @@ export function UpdatePasswordForm() {
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="confirmPassword">Confirmar senha</FieldLabel>
+              <FieldLabel htmlFor="confirmPassword" required>
+                Confirmar senha
+              </FieldLabel>
               <Input
                 id="confirmPassword"
                 name="confirmPassword"

@@ -63,7 +63,9 @@ export function ContactSettingsForm({
           </Field>
         </div>
         <Field>
-          <FieldLabel htmlFor="introPt">Introdução (PT)</FieldLabel>
+          <FieldLabel htmlFor="introPt" required>
+            Introdução (PT)
+          </FieldLabel>
           <Textarea
             id="introPt"
             name="introPt"
