@@ -4,8 +4,8 @@
 
 **Blocked by:** 02 — Admin shell.
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Biography and news bodies use TipTap-compatible content.
-- [ ] Empty EN/ES values persist as null and keep Portuguese intact.
-- [ ] News supports slug, excerpt, cover path, and publication status.
+- [x] Biography and news bodies use TipTap-compatible content.
+- [x] Empty EN/ES values persist as null and keep Portuguese intact.
+- [x] News supports slug, excerpt, cover path, and publication status.

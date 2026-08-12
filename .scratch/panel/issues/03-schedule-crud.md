@@ -4,8 +4,8 @@
 
 **Blocked by:** 02 — Admin shell.
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Event forms validate required Portuguese title and schedule fields.
-- [ ] Scheduled events require `publish_at`.
-- [ ] The conductor can delete an event after confirmation.
+- [x] Event forms validate required Portuguese title and schedule fields.
+- [x] Scheduled events require `publish_at`.
+- [x] The conductor can delete an event after confirmation.

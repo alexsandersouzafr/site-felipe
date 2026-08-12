@@ -4,7 +4,9 @@ import { ListIcon } from "@phosphor-icons/react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
+import { AdminNavIcon } from "@/components/admin/admin-nav-icon";
 import { SignOutButton } from "@/components/admin/sign-out-button";
+import { ThemeToggle } from "@/components/admin/theme-toggle";
 import { Button } from "@/components/ui/button";
 import {
   SheetClose,
@@ -13,7 +15,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { adminNavItems } from "@/lib/admin-nav";
+import { type AdminNavIconName, adminNavItems } from "@/lib/admin-nav";
 import { cn } from "@/lib/utils";
 
 function navItemClassName(isActive: boolean) {
@@ -27,25 +29,25 @@ function navItemClassName(isActive: boolean) {
 
 function NavItemContent({
   label,
-  description,
+  icon,
   isActive,
 }: {
   label: string;
-  description: string;
+  icon: AdminNavIconName;
   isActive: boolean;
 }) {
   return (
-    <>
-      <span className="block font-medium">{label}</span>
-      <span
+    <span className="flex items-center gap-3">
+      <AdminNavIcon
+        name={icon}
         className={cn(
-          "block text-xs",
-          isActive ? "text-primary-foreground/80" : "text-muted-foreground",
+          "size-4",
+          isActive ? "text-primary-foreground" : "text-primary",
         )}
-      >
-        {description}
-      </span>
-    </>
+        weight={isActive ? "duotone" : "regular"}
+      />
+      <span className="font-medium">{label}</span>
+    </span>
   );
 }
 
@@ -66,7 +68,7 @@ function DesktopNav({ pathname }: { pathname: string }) {
           >
             <NavItemContent
               label={item.label}
-              description={item.description}
+              icon={item.icon}
               isActive={isActive}
             />
           </Link>
@@ -96,7 +98,7 @@ function MobileNav({ pathname }: { pathname: string }) {
           >
             <NavItemContent
               label={item.label}
-              description={item.description}
+              icon={item.icon}
               isActive={isActive}
             />
           </SheetClose>
@@ -110,7 +112,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,_oklch(0.97_0.02_20),_transparent_40%),var(--background)] text-foreground">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,_oklch(0.97_0.02_20),_transparent_40%),var(--background)] text-foreground dark:bg-[radial-gradient(circle_at_top_left,_oklch(0.28_0.03_20),_transparent_45%),var(--background)]">
       <div className="mx-auto grid min-h-screen max-w-7xl lg:grid-cols-[16rem_1fr]">
         <aside className="hidden border-r border-border/80 px-4 py-6 lg:block">
           <div className="mb-8 space-y-1 px-2">
@@ -144,7 +146,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
                   </SheetContent>
                 </SheetTrigger>
               </div>
-              <div>
+              <div className="min-w-0 flex-1">
                 <p className="font-heading text-lg tracking-tight lg:hidden">
                   Painel
                 </p>
@@ -152,6 +154,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
                   Conteúdo, agenda, mídia e mensagens
                 </p>
               </div>
+              <ThemeToggle />
             </div>
           </header>
 

@@ -4,8 +4,8 @@
 
 **Blocked by:** 02 — Admin shell.
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] A single settings row stores contact details and intro copy.
-- [ ] Contact messages are listed and viewable in detail.
-- [ ] The inbox is read-only in this release.
+- [x] A single settings row stores contact details and intro copy.
+- [x] Contact messages are listed and viewable in detail.
+- [x] The inbox is read-only in this release.
