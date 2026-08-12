@@ -4,8 +4,8 @@
 
 **Blocked by:** 01 — Content foundation.
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Bio, highlight, and news records support TipTap-compatible rich content.
-- [ ] Portuguese content is required; missing English and Spanish values fall back to Portuguese.
-- [ ] Only public editorial records are returned to anonymous visitors.
+- [x] Bio, highlight, and news records support TipTap-compatible rich content.
+- [x] Portuguese content is required; missing English and Spanish values fall back to Portuguese.
+- [x] Only public editorial records are returned to anonymous visitors.
