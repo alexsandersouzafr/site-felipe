@@ -1,19 +1,17 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Roboto } from "next/font/google";
+import { DM_Sans, Playfair_Display, Roboto } from "next/font/google";
 
 import { Providers } from "@/components/providers";
 
 import "./globals.css";
+import { cn } from "@/lib/utils";
 
 const heading = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-heading",
 });
 
-const roboto = Roboto({
-  subsets: ["latin"],
-  variable: "--font-sans",
-});
+const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
   title: { default: "Maestro", template: "%s | Maestro" },
@@ -22,8 +20,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
-      <body className={`${roboto.variable} ${heading.variable} min-h-screen`}>
+    <html
+      lang="pt-BR"
+      suppressHydrationWarning
+      className={cn("font-sans", dmSans.variable)}
+    >
+      <body className={`${dmSans.variable} ${heading.variable} min-h-screen`}>
         <Providers>{children}</Providers>
       </body>
     </html>

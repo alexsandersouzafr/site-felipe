@@ -4,8 +4,8 @@
 
 **Blocked by:** 01 — Auth gate and session.
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Authenticated admins see a consistent `/admin` shell with section navigation.
-- [ ] The shell remains usable on small screens.
-- [ ] Sign-out is available from the shell.
+- [x] Authenticated admins see a consistent `/admin` shell with section navigation.
+- [x] The shell remains usable on small screens.
+- [x] Sign-out is available from the shell.
