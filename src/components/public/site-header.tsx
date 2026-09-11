@@ -16,6 +16,7 @@ const navItems = [
   { href: "/agenda", key: "schedule" as const },
   { href: "/videos", key: "videos" as const },
   { href: "/fotos", key: "photos" as const },
+  { href: "/imprensa", key: "press" as const },
   { href: "/contato", key: "contact" as const },
 ];
 

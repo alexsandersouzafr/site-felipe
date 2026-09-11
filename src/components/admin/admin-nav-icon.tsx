@@ -5,6 +5,7 @@ import {
   HouseIcon,
   ImageIcon,
   ImagesIcon,
+  MegaphoneIcon,
   NewspaperIcon,
   StarIcon,
   TrayIcon,
@@ -25,6 +26,7 @@ const icons = {
   covers: FrameCornersIcon,
   photos: ImageIcon,
   videos: YoutubeLogoIcon,
+  press: MegaphoneIcon,
   contact: EnvelopeSimpleIcon,
   messages: TrayIcon,
 } satisfies Record<

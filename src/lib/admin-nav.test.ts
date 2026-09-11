@@ -14,6 +14,7 @@ describe("adminNavItems", () => {
       "/admin/capas",
       "/admin/fotos",
       "/admin/videos",
+      "/admin/imprensa",
       "/admin/contato",
       "/admin/mensagens",
     ]);

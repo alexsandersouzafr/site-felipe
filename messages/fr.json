@@ -9,7 +9,8 @@
     "contact": "Contact",
     "brand": "Felipe Magalhães",
     "menu": "Menu",
-    "closeMenu": "Fermer le menu"
+    "closeMenu": "Fermer le menu",
+    "press": "Presse"
   },
   "LocaleSwitcher": {
     "label": "Langue",
@@ -64,7 +65,8 @@
   "Photos": {
     "title": "Photos",
     "empty": "Aucune photo publiée pour le moment.",
-    "credit": "Crédit"
+    "credit": "Crédit",
+    "pressCta": "Accéder aux kits de presse pour des photos en haute résolution"
   },
   "Contact": {
     "title": "Contact",
@@ -84,5 +86,10 @@
   },
   "Common": {
     "empty": "Contenu indisponible."
+  },
+  "Press": {
+    "title": "Presse",
+    "empty": "Aucune photo de presse publiée pour le moment.",
+    "credit": "Crédit"
   }
 }

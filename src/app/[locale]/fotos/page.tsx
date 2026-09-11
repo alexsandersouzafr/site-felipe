@@ -4,6 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { PageHero } from "@/components/public/page-hero";
 import { SectionReveal } from "@/components/public/section-reveal";
+import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { listPhotos } from "@/lib/public/media";
 import { getPageCover } from "@/lib/public/site-images";
@@ -38,6 +39,13 @@ export default async function PhotosPage({ params }: PhotosPageProps) {
       />
 
       <SectionReveal className="mx-auto max-w-6xl px-6 py-14 sm:py-20">
+        <Link
+          href="/imprensa"
+          className="mb-10 inline-flex text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
+        >
+          {t("pressCta")}
+        </Link>
+
         {photos.length === 0 ? (
           <p className="text-muted-foreground">{t("empty")}</p>
         ) : (

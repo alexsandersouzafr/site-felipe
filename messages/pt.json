@@ -9,7 +9,8 @@
     "contact": "Contato",
     "brand": "Felipe Magalhães",
     "menu": "Menu",
-    "closeMenu": "Fechar menu"
+    "closeMenu": "Fechar menu",
+    "press": "Imprensa"
   },
   "LocaleSwitcher": {
     "label": "Idioma",
@@ -64,7 +65,8 @@
   "Photos": {
     "title": "Fotos",
     "empty": "Nenhuma foto publicada no momento.",
-    "credit": "Crédito"
+    "credit": "Crédito",
+    "pressCta": "Acessar kits de imprensa para fotos em alta resolução"
   },
   "Contact": {
     "title": "Contato",
@@ -84,5 +86,10 @@
   },
   "Common": {
     "empty": "Conteúdo indisponível."
+  },
+  "Press": {
+    "title": "Imprensa",
+    "empty": "Nenhuma foto de imprensa publicada no momento.",
+    "credit": "Crédito"
   }
 }

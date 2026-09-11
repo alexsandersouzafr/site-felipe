@@ -8,6 +8,7 @@ export type AdminNavIconName =
   | "covers"
   | "photos"
   | "videos"
+  | "press"
   | "contact"
   | "messages";
 
@@ -42,8 +43,7 @@ export const adminNavItems: AdminNavItem[] = [
   {
     href: "/admin/bio",
     label: "Biografia",
-    description:
-      "Edite o texto da biografia, a imagem do topo e o resumo da home",
+    description: "Edite o texto da biografia e o resumo da home",
     icon: "bio",
   },
   {
@@ -80,6 +80,13 @@ export const adminNavItems: AdminNavItem[] = [
     description:
       "Cadastre vídeos do YouTube com título, descrição e ordem de exibição",
     icon: "videos",
+  },
+  {
+    href: "/admin/imprensa",
+    label: "Imprensa",
+    description:
+      "Fotos em alta resolução com crédito para o kit de imprensa público",
+    icon: "press",
   },
   {
     href: "/admin/contato",
