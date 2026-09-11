@@ -1,11 +1,12 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 
 import type { MediaActionState } from "@/app/admin/(protected)/fotos/actions";
 import { PublishingControls } from "@/components/admin/publishing-fields";
 import {
   Field,
+  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -13,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import type { ContentStatus } from "@/lib/content-visibility";
+import { extractYouTubeId } from "@/lib/youtube";
 
 export function VideoForm({
   action,
@@ -37,6 +39,8 @@ export function VideoForm({
   mode: "create" | "edit";
 }) {
   const [state, formAction, pending] = useActionState(action, {});
+  const [youtubeUrl, setYoutubeUrl] = useState(initialValues?.youtubeUrl ?? "");
+  const youtubeId = extractYouTubeId(youtubeUrl.trim());
 
   return (
     <form action={formAction} className="space-y-8">
@@ -59,8 +63,26 @@ export function VideoForm({
                   type="url"
                   required
                   placeholder="https://www.youtube.com/watch?v=..."
-                  defaultValue={initialValues?.youtubeUrl ?? ""}
+                  value={youtubeUrl}
+                  onChange={(event) => setYoutubeUrl(event.target.value)}
                 />
+                {youtubeUrl.trim() ? (
+                  youtubeId ? (
+                    <div className="mt-3 overflow-hidden rounded-2xl border border-border/80 bg-muted/30">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={`https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`}
+                        alt="Pré-visualização do vídeo"
+                        className="aspect-video w-full max-w-sm object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <FieldDescription className="text-destructive">
+                      Não foi possível reconhecer essa URL como um vídeo do
+                      YouTube.
+                    </FieldDescription>
+                  )
+                ) : null}
               </Field>
               <Field>
                 <FieldLabel htmlFor="titlePt" required>
