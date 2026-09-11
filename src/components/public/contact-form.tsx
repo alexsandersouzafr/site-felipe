@@ -22,6 +22,20 @@ export function ContactForm() {
 
   return (
     <form action={formAction} className="space-y-5">
+      <label
+        aria-hidden="true"
+        className="absolute -left-[9999px] top-auto size-px overflow-hidden"
+      >
+        Deixe este campo em branco
+        <input
+          type="text"
+          name="website"
+          tabIndex={-1}
+          autoComplete="off"
+          defaultValue=""
+        />
+      </label>
+
       <div className="grid gap-5 sm:grid-cols-2">
         <label className="space-y-2 text-sm">
           <span>
@@ -65,7 +79,11 @@ export function ContactForm() {
 
       {state.status === "error" ? (
         <p className="text-sm text-destructive" role="alert">
-          {state.message === "validation" ? t("validationError") : t("error")}
+          {state.message === "validation"
+            ? t("validationError")
+            : state.message === "rateLimited"
+              ? t("rateLimitedError")
+              : t("error")}
         </p>
       ) : null}
 

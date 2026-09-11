@@ -79,7 +79,8 @@
     "submitting": "Envoi en cours…",
     "success": "Message envoyé. Merci de nous avoir contactés.",
     "error": "Impossible d'envoyer. Veuillez réessayer.",
-    "validationError": "Veuillez remplir correctement tous les champs."
+    "validationError": "Veuillez remplir correctement tous les champs.",
+    "rateLimitedError": "Trop de tentatives en peu de temps. Veuillez patienter quelques minutes et réessayer."
   },
   "Common": {
     "empty": "Contenu indisponible."

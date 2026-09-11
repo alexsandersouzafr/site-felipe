@@ -79,7 +79,8 @@
     "submitting": "Sending…",
     "success": "Message sent. Thank you for reaching out.",
     "error": "Could not send. Please try again.",
-    "validationError": "Please fill in all fields correctly."
+    "validationError": "Please fill in all fields correctly.",
+    "rateLimitedError": "Too many attempts in a short time. Please wait a few minutes and try again."
   },
   "Common": {
     "empty": "Content unavailable."

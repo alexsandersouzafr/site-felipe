@@ -79,7 +79,8 @@
     "submitting": "Enviando…",
     "success": "Mensagem enviada. Obrigado pelo contato.",
     "error": "Não foi possível enviar. Tente novamente.",
-    "validationError": "Preencha todos os campos corretamente."
+    "validationError": "Preencha todos os campos corretamente.",
+    "rateLimitedError": "Muitas tentativas em pouco tempo. Aguarde alguns minutos e tente novamente."
   },
   "Common": {
     "empty": "Conteúdo indisponível."
