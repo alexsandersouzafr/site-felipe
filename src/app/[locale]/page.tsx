@@ -38,7 +38,6 @@ export default async function HomePage({ params }: HomePageProps) {
   const heroImage =
     heroPhoto?.src ??
     homeCover?.src ??
-    bioSummary?.imageUrl ??
     upcoming.find((event) => event.imageUrl)?.imageUrl ??
     null;
   const heroObjectPosition =

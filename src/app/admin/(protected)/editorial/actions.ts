@@ -5,7 +5,6 @@ import { redirect } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import {
   booleanField,
-  optionalText,
   readLocalizedPair,
   readPublishingFields,
   requireScheduledPublishAt,
@@ -14,7 +13,6 @@ import {
   canEnableHighlightOnPage,
   MAX_BIO_PAGE_HIGHLIGHTS,
 } from "@/lib/bio-page";
-import { validateImageFile } from "@/lib/media-limits";
 import {
   nextDisplayOrder,
   parseReorderDirection,
@@ -33,29 +31,6 @@ function revalidateBiographyPaths() {
     revalidatePath(`/${locale}`);
     revalidatePath(`/${locale}/bio`);
   }
-}
-
-async function uploadBiographyImage(
-  supabase: Awaited<ReturnType<typeof createClient>>,
-  file: File,
-) {
-  const validation = validateImageFile(file);
-  if (!validation.ok) {
-    return { ok: false as const, error: validation.error };
-  }
-
-  const extension = file.name.split(".").pop() || "jpg";
-  const path = `bio/cover/${crypto.randomUUID()}.${extension}`;
-  const { error } = await supabase.storage.from("media").upload(path, file, {
-    contentType: file.type || "image/jpeg",
-    upsert: false,
-  });
-
-  if (error) {
-    return { ok: false as const, error: "Não foi possível enviar a imagem." };
-  }
-
-  return { ok: true as const, path };
 }
 
 export async function saveBiography(
@@ -82,16 +57,6 @@ export async function saveBiography(
 
   const supabase = await createClient();
 
-  let imagePath = optionalText(formData, "imagePath");
-  const imageFile = formData.get("imageFile");
-  if (imageFile instanceof File && imageFile.size > 0) {
-    const uploaded = await uploadBiographyImage(supabase, imageFile);
-    if (!uploaded.ok) {
-      return { error: uploaded.error };
-    }
-    imagePath = uploaded.path;
-  }
-
   const { data: existing, error: existingError } = await supabase
     .from("biographies")
     .select("id")
@@ -115,7 +80,6 @@ export async function saveBiography(
     summary_pt: summaries.pt,
     summary_en: summaries.en,
     summary_fr: summaries.fr,
-    image_path: imagePath,
     show_on_page: true,
     updated_at: new Date().toISOString(),
   };

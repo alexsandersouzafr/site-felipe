@@ -9,7 +9,7 @@ export default async function AdminBioPage() {
   const { data, error } = await supabase
     .from("biographies")
     .select(
-      "id, image_path, summary_pt, summary_en, summary_fr, content_pt, content_en, content_fr",
+      "id, summary_pt, summary_en, summary_fr, content_pt, content_en, content_fr",
     )
     .order("created_at", { ascending: true })
     .limit(1)
@@ -19,7 +19,7 @@ export default async function AdminBioPage() {
     <div className="space-y-6">
       <AdminPageHeader
         title="Biografia"
-        description="Edite o texto da biografia, a imagem do topo e o resumo exibido na home. Salvar substitui o conteúdo anterior."
+        description="Edite o texto da biografia e o resumo exibido na home. A imagem de topo é a capa da página, em Capas. Salvar substitui o conteúdo anterior."
       />
       {error ? (
         <p className="text-sm text-destructive">
@@ -31,7 +31,6 @@ export default async function AdminBioPage() {
           initialValues={
             data
               ? {
-                  imagePath: data.image_path,
                   summaryPt: data.summary_pt,
                   summaryEn: data.summary_en,
                   summaryFr: data.summary_fr,

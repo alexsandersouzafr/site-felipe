@@ -2,14 +2,12 @@ import type { Locale } from "@/i18n/routing";
 import { selectHighlightsForPage } from "@/lib/bio-page";
 import type { ContentStatus } from "@/lib/content-visibility";
 import { getLocalizedValue } from "@/lib/localized-value";
-import { mediaPublicUrl } from "@/lib/media-url";
 import type { RichTextDocument } from "@/lib/rich-text";
 import { coerceRichTextDocument } from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
 
 type BiographyRow = {
   id: string;
-  image_path: string | null;
   summary_pt: string;
   summary_en: string | null;
   summary_fr: string | null;
@@ -34,7 +32,6 @@ type HighlightRow = {
 
 export type PublicBiography = {
   id: string;
-  imageUrl: string | null;
   summary: string;
   body: RichTextDocument;
 };
@@ -66,7 +63,6 @@ function localizeRichText(
 function toPublicBiography(row: BiographyRow, locale: Locale): PublicBiography {
   return {
     id: row.id,
-    imageUrl: mediaPublicUrl(row.image_path),
     summary: getLocalizedValue(
       {
         pt: row.summary_pt,
@@ -91,7 +87,7 @@ export async function getBioPage(locale: Locale) {
     supabase
       .from("biographies")
       .select(
-        "id, image_path, summary_pt, summary_en, summary_fr, content_pt, content_en, content_fr",
+        "id, summary_pt, summary_en, summary_fr, content_pt, content_en, content_fr",
       )
       .order("created_at", { ascending: true })
       .limit(1)
@@ -149,7 +145,7 @@ export async function getBioSummary(locale: Locale) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("biographies")
-    .select("image_path, summary_pt, summary_en, summary_fr")
+    .select("summary_pt, summary_en, summary_fr")
     .order("created_at", { ascending: true })
     .limit(1)
     .maybeSingle();
@@ -175,8 +171,5 @@ export async function getBioSummary(locale: Locale) {
     return null;
   }
 
-  return {
-    summary,
-    imageUrl: mediaPublicUrl(data.image_path as string | null),
-  };
+  return { summary };
 }

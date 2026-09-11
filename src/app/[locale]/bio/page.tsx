@@ -29,44 +29,44 @@ export default async function BioPage({ params }: BioPageProps) {
     getPageCover("bio"),
   ]);
 
-  const imageUrl = pageCover?.src ?? biography?.imageUrl ?? null;
-
   return (
     <main>
       <PageHero
         title={t("title")}
-        imageUrl={imageUrl}
+        imageUrl={pageCover?.src}
         objectPosition={pageCover?.objectPosition}
       />
 
       <div className="mx-auto max-w-6xl px-6 py-14 sm:py-20">
-        <SectionReveal className="max-w-3xl">
-          {biography ? (
-            <RichTextView document={biography.body} />
-          ) : (
-            <p className="text-lg text-muted-foreground">{t("empty")}</p>
-          )}
-        </SectionReveal>
-
-        {highlights.length > 0 ? (
-          <SectionReveal className="mt-20 max-w-3xl">
-            <h2 className="font-heading text-3xl tracking-tight">
-              {t("highlightsTitle")}
-            </h2>
-            <ul className="mt-8 divide-y divide-border/70">
-              {highlights.map((item) => (
-                <li key={item.id} className="py-6">
-                  <h3 className="font-heading text-xl tracking-tight">
-                    {item.title}
-                  </h3>
-                  <p className="mt-2 text-muted-foreground">
-                    {item.description}
-                  </p>
-                </li>
-              ))}
-            </ul>
+        <div className="grid gap-12 lg:grid-cols-[1fr_320px] lg:items-start lg:gap-16">
+          <SectionReveal className="order-2 lg:order-1">
+            {biography ? (
+              <RichTextView document={biography.body} />
+            ) : (
+              <p className="text-lg text-muted-foreground">{t("empty")}</p>
+            )}
           </SectionReveal>
-        ) : null}
+
+          {highlights.length > 0 ? (
+            <SectionReveal className="order-1 lg:sticky lg:top-24 lg:order-2 lg:self-start">
+              <h2 className="font-heading text-2xl tracking-tight">
+                {t("highlightsTitle")}
+              </h2>
+              <ul className="mt-6 divide-y divide-border/70">
+                {highlights.map((item) => (
+                  <li key={item.id} className="py-5">
+                    <h3 className="font-heading text-lg tracking-tight">
+                      {item.title}
+                    </h3>
+                    <p className="mt-1.5 text-sm text-muted-foreground">
+                      {item.description}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </SectionReveal>
+          ) : null}
+        </div>
       </div>
     </main>
   );

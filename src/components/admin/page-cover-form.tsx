@@ -35,6 +35,7 @@ export function PageCoverForm({
 }) {
   const [state, formAction, pending] = useActionState(action, {});
   const [cleared, setCleared] = useState(false);
+  const isRequired = pageKey === "bio";
 
   return (
     <form
@@ -46,6 +47,7 @@ export function PageCoverForm({
         Capa em alta definição (até {MAX_HD_IMAGE_MB} MB) para o topo da página{" "}
         {PAGE_COVER_LABELS[pageKey]}. Ajuste o enquadramento para preservar
         rostos e pontos importantes.
+        {isRequired ? " Esta capa é obrigatória." : ""}
       </FieldDescription>
 
       <FieldGroup className="gap-6">
@@ -55,6 +57,7 @@ export function PageCoverForm({
           label="Arquivo"
           existingPath={cleared ? null : initialCover.storagePath}
           existingPathFieldName="existing"
+          required={isRequired && !initialCover.storagePath}
           description="JPEG, PNG, WebP ou GIF em alta definição."
         />
         <ImageFocusField
@@ -63,7 +66,7 @@ export function PageCoverForm({
           defaultValue={initialCover.objectPosition || DEFAULT_IMAGE_FOCUS}
         />
         <input type="hidden" name="clear" value={cleared ? "true" : "false"} />
-        {initialCover.storagePath && !cleared ? (
+        {initialCover.storagePath && !cleared && !isRequired ? (
           <Button
             type="button"
             variant="outline"

@@ -79,6 +79,10 @@ export async function savePageCover(
     storagePath = uploaded.path;
   }
 
+  if (!storagePath && pageKey === "bio") {
+    return { error: "A capa da Biografia é obrigatória." };
+  }
+
   const { error } = await supabase.from("page_covers").upsert({
     page_key: pageKey,
     storage_path: storagePath,

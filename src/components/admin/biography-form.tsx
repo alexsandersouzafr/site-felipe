@@ -4,7 +4,6 @@ import { FloppyDiskIcon } from "@phosphor-icons/react";
 import { useActionState } from "react";
 
 import type { EditorialActionState } from "@/app/admin/(protected)/editorial/actions";
-import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { LocalizedRichTextEditor } from "@/components/admin/localized-rich-text-editor";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,7 +14,6 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
-import { MAX_BLOG_IMAGE_MB } from "@/lib/media-limits";
 import type { RichTextDocument } from "@/lib/rich-text";
 
 export function BiographyForm({
@@ -27,7 +25,6 @@ export function BiographyForm({
     formData: FormData,
   ) => Promise<EditorialActionState>;
   initialValues?: {
-    imagePath?: string | null;
     summaryPt?: string;
     summaryEn?: string | null;
     summaryFr?: string | null;
@@ -41,15 +38,6 @@ export function BiographyForm({
   return (
     <form action={formAction} className="space-y-8">
       <FieldGroup>
-        <ImageUploadField
-          id="imageFile"
-          name="imageFile"
-          label="Imagem no topo"
-          existingPath={initialValues?.imagePath}
-          existingPathFieldName="imagePath"
-          description={`JPEG, PNG, WebP ou GIF. Máximo ${MAX_BLOG_IMAGE_MB} MB.`}
-        />
-
         <Field>
           <FieldLabel htmlFor="summaryPt" required>
             Resumo para a home (PT)

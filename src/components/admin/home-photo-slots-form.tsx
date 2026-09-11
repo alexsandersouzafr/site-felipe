@@ -103,7 +103,14 @@ export function HomePhotoSlotsForm({
                 label="Imagem"
                 existingPath={isCleared ? null : values.storagePath}
                 existingPathFieldName={`existing_${slot.key}`}
-                description={`JPEG, PNG, WebP ou GIF. Máximo ${MAX_HD_IMAGE_MB} MB.`}
+                required={
+                  slot.key === "hero" && !isCleared && !values.storagePath
+                }
+                description={
+                  slot.key === "hero"
+                    ? `Obrigatória. JPEG, PNG, WebP ou GIF. Máximo ${MAX_HD_IMAGE_MB} MB.`
+                    : `JPEG, PNG, WebP ou GIF. Máximo ${MAX_HD_IMAGE_MB} MB.`
+                }
                 onFileChange={(file) =>
                   setPendingFiles((current) => ({
                     ...current,
@@ -163,7 +170,7 @@ export function HomePhotoSlotsForm({
                 value={isCleared ? "true" : "false"}
               />
 
-              {values.storagePath && !isCleared ? (
+              {values.storagePath && !isCleared && slot.key !== "hero" ? (
                 <Button
                   type="button"
                   variant="outline"

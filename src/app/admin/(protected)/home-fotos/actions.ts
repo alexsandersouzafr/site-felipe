@@ -71,21 +71,16 @@ export async function saveHomePhotoSlots(
     );
 
     if (clear) {
+      if (slotKey === "hero") {
+        return { error: "A capa/hero da home é obrigatória e não pode ser removida." };
+      }
+
       const { error } = await supabase
         .from("home_photos")
         .delete()
         .eq("slot", slotKey);
       if (error) {
         return { error: `Não foi possível remover ${slot.label}.` };
-      }
-
-      if (slotKey === "hero") {
-        await supabase.from("page_covers").upsert({
-          page_key: "home",
-          storage_path: null,
-          object_position: objectPosition,
-          updated_at: updatedAt,
-        });
       }
       continue;
     }
@@ -105,6 +100,9 @@ export async function saveHomePhotoSlots(
         return {
           error: `${slot.label}: não foi possível usar o arquivo enviado.`,
         };
+      }
+      if (slotKey === "hero") {
+        return { error: "A capa/hero da home é obrigatória." };
       }
       continue;
     }
