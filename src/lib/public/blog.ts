@@ -39,7 +39,23 @@ function publishedAt(row: BlogRow) {
   return row.publish_at ?? row.created_at;
 }
 
-function toSummary(row: BlogRow, locale: Locale): PublicBlogPostSummary {
+async function getBlogFallbackCoverUrl(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+) {
+  const { data } = await supabase
+    .from("site_settings")
+    .select("blog_fallback_cover_path")
+    .limit(1)
+    .maybeSingle();
+
+  return mediaPublicUrl(data?.blog_fallback_cover_path ?? null);
+}
+
+function toSummary(
+  row: BlogRow,
+  locale: Locale,
+  fallbackCoverUrl: string | null,
+): PublicBlogPostSummary {
   const blocks = parseBlogBlocks(row.blocks);
 
   return {
@@ -50,7 +66,7 @@ function toSummary(row: BlogRow, locale: Locale): PublicBlogPostSummary {
       locale,
     ),
     excerpt: getBlogPreviewExcerpt(blocks, locale),
-    coverUrl: mediaPublicUrl(row.cover_image_path),
+    coverUrl: mediaPublicUrl(row.cover_image_path) ?? fallbackCoverUrl,
     publishedAt: publishedAt(row),
   };
 }
@@ -69,24 +85,32 @@ export async function listBlogPosts(locale: Locale, limit?: number) {
     query = query.limit(limit);
   }
 
-  const { data, error } = await query;
+  const [{ data, error }, fallbackCoverUrl] = await Promise.all([
+    query,
+    getBlogFallbackCoverUrl(supabase),
+  ]);
 
   if (error) {
     throw new Error(error.message);
   }
 
-  return ((data ?? []) as BlogRow[]).map((row) => toSummary(row, locale));
+  return ((data ?? []) as BlogRow[]).map((row) =>
+    toSummary(row, locale, fallbackCoverUrl),
+  );
 }
 
 export async function getBlogPostBySlug(slug: string, locale: Locale) {
   const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("news_items")
-    .select(
-      "id, slug, title_pt, title_en, title_fr, cover_image_path, blocks, publish_at, created_at, updated_at",
-    )
-    .eq("slug", slug)
-    .maybeSingle();
+  const [{ data, error }, fallbackCoverUrl] = await Promise.all([
+    supabase
+      .from("news_items")
+      .select(
+        "id, slug, title_pt, title_en, title_fr, cover_image_path, blocks, publish_at, created_at, updated_at",
+      )
+      .eq("slug", slug)
+      .maybeSingle(),
+    getBlogFallbackCoverUrl(supabase),
+  ]);
 
   if (error) {
     throw new Error(error.message);
@@ -97,7 +121,7 @@ export async function getBlogPostBySlug(slug: string, locale: Locale) {
   }
 
   const row = data as BlogRow;
-  const summary = toSummary(row, locale);
+  const summary = toSummary(row, locale, fallbackCoverUrl);
 
   return {
     ...summary,

@@ -29,7 +29,7 @@ export default async function AdminContactPage() {
     <div className="space-y-6">
       <AdminPageHeader
         title="Contato"
-        description="Atualize e-mail, telefone, redes sociais e o texto introdutório da página pública de contato. Essas informações são as que os visitantes veem ao entrar em contato."
+        description="Atualize e-mail, telefone, redes sociais, o texto introdutório da página pública de contato e a imagem de fallback do blog."
       />
       <ContactSettingsForm
         settings={{
@@ -43,6 +43,7 @@ export default async function AdminContactPage() {
             label: string;
             url: string;
           }> | null,
+          blog_fallback_cover_path: data.blog_fallback_cover_path,
         }}
       />
     </div>

@@ -5,6 +5,7 @@ import { useActionState } from "react";
 
 import type { ContactActionState } from "@/app/admin/(protected)/contato/actions";
 import { updateContactSettings } from "@/app/admin/(protected)/contato/actions";
+import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -14,6 +15,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { MAX_BLOG_IMAGE_MB } from "@/lib/media-limits";
 
 type ContactSettings = {
   id: string;
@@ -23,6 +25,7 @@ type ContactSettings = {
   intro_en: string | null;
   intro_fr: string | null;
   social_links: Array<{ label: string; url: string }> | null;
+  blog_fallback_cover_path: string | null;
 };
 
 export function ContactSettingsForm({
@@ -40,7 +43,11 @@ export function ContactSettingsForm({
     .join("\n");
 
   return (
-    <form action={formAction} className="space-y-8">
+    <form
+      action={formAction}
+      className="space-y-8"
+      encType="multipart/form-data"
+    >
       <input type="hidden" name="id" value={settings.id} />
       <FieldGroup>
         <div className="grid gap-4 md:grid-cols-2">
@@ -103,6 +110,14 @@ export function ContactSettingsForm({
             placeholder="Instagram|https://instagram.com/..."
           />
         </Field>
+        <ImageUploadField
+          id="blogFallbackCoverFile"
+          name="blogFallbackCoverFile"
+          label="Imagem de fallback do blog"
+          existingPath={settings.blog_fallback_cover_path}
+          existingPathFieldName="blogFallbackCoverPath"
+          description={`Usada como capa de posts do blog sem imagem própria (deixe em branco para não usar nenhuma). JPEG, PNG, WebP ou GIF. Máximo ${MAX_BLOG_IMAGE_MB} MB.`}
+        />
       </FieldGroup>
       {state.error && <FieldError>{state.error}</FieldError>}
       {state.success && (
