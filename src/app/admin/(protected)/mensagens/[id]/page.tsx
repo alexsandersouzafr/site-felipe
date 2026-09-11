@@ -20,6 +20,13 @@ export default async function MessageDetailPage({
     notFound();
   }
 
+  if (!data.is_read) {
+    await supabase
+      .from("contact_messages")
+      .update({ is_read: true })
+      .eq("id", id);
+  }
+
   return (
     <div className="space-y-6">
       <div className="space-y-2">

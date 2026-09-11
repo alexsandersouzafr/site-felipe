@@ -2,12 +2,13 @@ import Link from "next/link";
 
 import { AdminDataTable, AdminPageHeader } from "@/components/admin/admin-list";
 import { createClient } from "@/lib/supabase/server";
+import { cn } from "@/lib/utils";
 
 export default async function AdminMessagesPage() {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("contact_messages")
-    .select("id, name, email, subject, created_at")
+    .select("id, name, email, subject, created_at, is_read")
     .order("created_at", { ascending: false });
 
   return (
@@ -29,14 +30,33 @@ export default async function AdminMessagesPage() {
       )}
       {(data?.length ?? 0) > 0 && (
         <AdminDataTable
-          headers={["Nome", "E-mail", "Assunto", "Data", "Ações"]}
+          headers={["", "Nome", "E-mail", "Assunto", "Data", "Ações"]}
         >
           {data?.map((item) => (
             <tr
               key={item.id}
-              className="border-b border-border/60 last:border-0"
+              className={cn(
+                "border-b border-border/60 last:border-0",
+                !item.is_read && "bg-primary/5",
+              )}
             >
-              <td className="px-4 py-3 font-medium">{item.name}</td>
+              <td className="px-4 py-3">
+                {!item.is_read ? (
+                  <span
+                    role="status"
+                    className="inline-block size-2 rounded-full bg-primary"
+                    aria-label="Não lida"
+                  />
+                ) : null}
+              </td>
+              <td
+                className={cn(
+                  "px-4 py-3",
+                  !item.is_read ? "font-semibold" : "font-medium",
+                )}
+              >
+                {item.name}
+              </td>
               <td className="px-4 py-3">{item.email}</td>
               <td className="px-4 py-3">{item.subject}</td>
               <td className="px-4 py-3">
