@@ -1,12 +1,18 @@
+import { StarIcon } from "@phosphor-icons/react/dist/ssr";
+import Link from "next/link";
+
+import { toggleEventFeatured } from "@/app/admin/(protected)/agenda/actions";
 import {
   AdminCreateLink,
   AdminEditLink,
 } from "@/components/admin/admin-action-links";
 import { DeleteEventButton } from "@/components/admin/delete-event-button";
+import { Button } from "@/components/ui/button";
 import { getEventLocalDateTime } from "@/lib/event-time";
 import type { EventRecord } from "@/lib/events";
 import { mediaPublicUrl } from "@/lib/media-url";
 import { createClient } from "@/lib/supabase/server";
+import { cn } from "@/lib/utils";
 
 const statusLabel = {
   draft: "Rascunho",
@@ -14,14 +20,24 @@ const statusLabel = {
   published: "Publicado",
 } as const;
 
-export default async function AdminAgendaPage() {
+export default async function AdminAgendaPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ filter?: string }>;
+}) {
+  const { filter } = await searchParams;
+  const onlyFeatured = filter === "favoritos";
+
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("events")
     .select("*")
     .order("starts_at", { ascending: false });
 
-  const events = (data ?? []) as EventRecord[];
+  const allEvents = (data ?? []) as EventRecord[];
+  const events = onlyFeatured
+    ? allEvents.filter((event) => event.is_featured)
+    : allEvents;
 
   return (
     <div className="space-y-6">
@@ -31,11 +47,41 @@ export default async function AdminAgendaPage() {
           <p className="max-w-2xl text-muted-foreground">
             Crie, edite, agende e publique concertos e compromissos. Informe
             local, cidade e o fuso horário do evento para que a data pública
-            apareça corretamente para o público.
+            apareça corretamente para o público. Favorite os eventos que devem
+            aparecer na home.
           </p>
         </div>
         <AdminCreateLink href="/admin/agenda/nova">Novo evento</AdminCreateLink>
       </div>
+
+      <nav
+        className="inline-flex rounded-2xl border border-border/80 p-1 text-sm"
+        aria-label="Filtrar eventos"
+      >
+        <Link
+          href="/admin/agenda"
+          className={cn(
+            "rounded-xl px-3 py-1.5 transition-colors",
+            !onlyFeatured
+              ? "bg-muted font-medium"
+              : "text-muted-foreground hover:text-foreground",
+          )}
+        >
+          Todos
+        </Link>
+        <Link
+          href="/admin/agenda?filter=favoritos"
+          className={cn(
+            "inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 transition-colors",
+            onlyFeatured
+              ? "bg-muted font-medium"
+              : "text-muted-foreground hover:text-foreground",
+          )}
+        >
+          <StarIcon className="size-3.5" weight={onlyFeatured ? "fill" : "regular"} />
+          Favoritos
+        </Link>
+      </nav>
 
       {error && (
         <p className="text-sm text-destructive">
@@ -46,7 +92,9 @@ export default async function AdminAgendaPage() {
 
       {!error && events.length === 0 && (
         <p className="text-sm text-muted-foreground">
-          Nenhum evento cadastrado ainda.
+          {onlyFeatured
+            ? "Nenhum evento favoritado ainda."
+            : "Nenhum evento cadastrado ainda."}
         </p>
       )}
 
@@ -55,6 +103,7 @@ export default async function AdminAgendaPage() {
           <table className="w-full min-w-[40rem] text-left text-sm">
             <thead className="border-b border-border/80 text-muted-foreground">
               <tr>
+                <th className="px-4 py-3 font-medium" aria-label="Favorito" />
                 <th className="px-4 py-3 font-medium">Evento</th>
                 <th className="px-4 py-3 font-medium">Local</th>
                 <th className="px-4 py-3 font-medium">Data</th>
@@ -74,6 +123,36 @@ export default async function AdminAgendaPage() {
                     key={event.id}
                     className="border-b border-border/60 last:border-0"
                   >
+                    <td className="px-4 py-3">
+                      <form action={toggleEventFeatured}>
+                        <input type="hidden" name="id" value={event.id} />
+                        <input
+                          type="hidden"
+                          name="isFeatured"
+                          value={String(event.is_featured)}
+                        />
+                        <Button
+                          type="submit"
+                          variant="ghost"
+                          size="icon-sm"
+                          aria-label={
+                            event.is_featured
+                              ? "Remover dos favoritos"
+                              : "Adicionar aos favoritos"
+                          }
+                        >
+                          <StarIcon
+                            className={cn(
+                              "size-4",
+                              event.is_featured
+                                ? "text-amber-500"
+                                : "text-muted-foreground",
+                            )}
+                            weight={event.is_featured ? "fill" : "regular"}
+                          />
+                        </Button>
+                      </form>
+                    </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         {event.image_path ? (

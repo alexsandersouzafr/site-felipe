@@ -21,6 +21,7 @@ export type EventRecord = {
   ends_at: string | null;
   ticket_url: string | null;
   image_path: string | null;
+  is_featured: boolean;
   created_at: string;
   updated_at: string;
 };

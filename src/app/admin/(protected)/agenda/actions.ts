@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import { routing } from "@/i18n/routing";
 import { optionalText } from "@/lib/admin-form";
 import { eventFormSchema } from "@/lib/event-form";
 import { toEventInsert } from "@/lib/events";
@@ -126,6 +127,30 @@ export async function updateEvent(
   revalidatePath("/admin/agenda");
   revalidatePath(`/admin/agenda/${id}`);
   redirect("/admin/agenda");
+}
+
+export async function toggleEventFeatured(formData: FormData) {
+  const id = String(formData.get("id") ?? "");
+  const isFeatured = String(formData.get("isFeatured") ?? "") === "true";
+
+  if (!id) {
+    return;
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("events")
+    .update({ is_featured: !isFeatured })
+    .eq("id", id);
+
+  if (error) {
+    throw new Error("Não foi possível atualizar o destaque do evento.");
+  }
+
+  revalidatePath("/admin/agenda");
+  for (const locale of routing.locales) {
+    revalidatePath(`/${locale}`);
+  }
 }
 
 export async function deleteEvent(formData: FormData) {

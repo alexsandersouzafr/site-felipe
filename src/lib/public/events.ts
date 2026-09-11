@@ -18,6 +18,7 @@ type EventRow = {
   ends_at: string | null;
   ticket_url: string | null;
   image_path: string | null;
+  is_featured: boolean;
 };
 
 export type PublicEvent = {
@@ -33,6 +34,7 @@ export type PublicEvent = {
   imageUrl: string | null;
   localDate: string;
   localTime: string;
+  isFeatured: boolean;
 };
 
 function toPublicEvent(row: EventRow, locale: Locale): PublicEvent {
@@ -54,6 +56,7 @@ function toPublicEvent(row: EventRow, locale: Locale): PublicEvent {
     imageUrl: mediaPublicUrl(row.image_path),
     localDate: local.date,
     localTime: local.time,
+    isFeatured: row.is_featured,
   };
 }
 
@@ -62,7 +65,7 @@ async function fetchVisibleEvents() {
   const { data, error } = await supabase
     .from("events")
     .select(
-      "id, title_pt, title_en, title_fr, venue, city, country, time_zone, starts_at, ends_at, ticket_url, image_path",
+      "id, title_pt, title_en, title_fr, venue, city, country, time_zone, starts_at, ends_at, ticket_url, image_path, is_featured",
     )
     .order("starts_at", { ascending: true });
 
@@ -81,5 +84,6 @@ export async function listPublicEvents(locale: Locale) {
 
 export async function listUpcomingEvents(locale: Locale, limit = 3) {
   const { upcoming } = await listPublicEvents(locale);
-  return upcoming.slice(0, limit);
+  const featured = upcoming.filter((event) => event.isFeatured);
+  return (featured.length > 0 ? featured : upcoming).slice(0, limit);
 }
