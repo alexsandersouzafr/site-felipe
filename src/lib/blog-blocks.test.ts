@@ -35,9 +35,34 @@ describe("blogBlocksSchema", () => {
         type: "video",
         youtubeUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
       },
+      {
+        id: "4",
+        type: "audio",
+        provider: "spotify",
+        url: "https://open.spotify.com/track/abc123",
+      },
     ]);
 
     expect(result.success).toBe(true);
+  });
+
+  it("rejects an audio block whose URL doesn't match the provider", () => {
+    const result = blogBlocksSchema.safeParse([
+      {
+        id: "1",
+        type: "paragraph",
+        title: { pt: null, en: null, fr: null },
+        body: { pt: textToRichTextDocument("Olá"), en: null, fr: null },
+      },
+      {
+        id: "2",
+        type: "audio",
+        provider: "spotify",
+        url: "https://soundcloud.com/artista/faixa",
+      },
+    ]);
+
+    expect(result.success).toBe(false);
   });
 
   it("coerces plain-string paragraph bodies", () => {

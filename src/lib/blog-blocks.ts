@@ -2,6 +2,11 @@ import { z } from "zod";
 
 import type { Locale } from "@/i18n/routing";
 import {
+  AUDIO_PROVIDERS,
+  type AudioProvider,
+  isAudioEmbedUrl,
+} from "@/lib/audio-embed";
+import {
   coerceRichTextDocument,
   emptyRichTextDocument,
   isRichTextEmpty,
@@ -80,10 +85,18 @@ export const blogVideoBlockSchema = z.object({
     .refine(isYouTubeUrl, "Informe uma URL válida do YouTube."),
 });
 
+export const blogAudioBlockSchema = z.object({
+  id: z.string().min(1),
+  type: z.literal("audio"),
+  provider: z.enum(AUDIO_PROVIDERS),
+  url: z.string().trim().min(1, "Informe a URL da faixa."),
+});
+
 export const blogBlockSchema = z.discriminatedUnion("type", [
   blogParagraphBlockSchema,
   blogImageBlockSchema,
   blogVideoBlockSchema,
+  blogAudioBlockSchema,
 ]);
 
 export const blogBlocksArraySchema = z.array(blogBlockSchema);
@@ -104,6 +117,16 @@ export const blogBlocksSchema = blogBlocksArraySchema.superRefine(
         message: REQUIRED_PARAGRAPH_ERROR,
       });
     }
+
+    blocks.forEach((block, index) => {
+      if (block.type === "audio" && !isAudioEmbedUrl(block.provider, block.url)) {
+        ctx.addIssue({
+          code: "custom",
+          path: [index, "url"],
+          message: "Informe uma URL válida para o serviço selecionado.",
+        });
+      }
+    });
   },
 );
 
@@ -119,7 +142,12 @@ export type BlogParagraphBlock = {
 };
 export type BlogImageBlock = z.infer<typeof blogImageBlockSchema>;
 export type BlogVideoBlock = z.infer<typeof blogVideoBlockSchema>;
-export type BlogBlock = BlogParagraphBlock | BlogImageBlock | BlogVideoBlock;
+export type BlogAudioBlock = z.infer<typeof blogAudioBlockSchema>;
+export type BlogBlock =
+  | BlogParagraphBlock
+  | BlogImageBlock
+  | BlogVideoBlock
+  | BlogAudioBlock;
 export type BlogBlocks = BlogBlock[];
 
 export function emptyLocalizedText(pt: string | null = null) {
@@ -153,6 +181,17 @@ export function createVideoBlock(): BlogVideoBlock {
     id: crypto.randomUUID(),
     type: "video",
     youtubeUrl: "",
+  };
+}
+
+export function createAudioBlock(
+  provider: AudioProvider = "spotify",
+): BlogAudioBlock {
+  return {
+    id: crypto.randomUUID(),
+    type: "audio",
+    provider,
+    url: "",
   };
 }
 
@@ -249,10 +288,18 @@ export type LocalizedBlogVideoBlock = {
   youtubeUrl: string;
 };
 
+export type LocalizedBlogAudioBlock = {
+  id: string;
+  type: "audio";
+  provider: AudioProvider;
+  url: string;
+};
+
 export type LocalizedBlogBlock =
   | LocalizedBlogParagraphBlock
   | LocalizedBlogImageBlock
-  | LocalizedBlogVideoBlock;
+  | LocalizedBlogVideoBlock
+  | LocalizedBlogAudioBlock;
 
 function localizeRichTextBody(
   body: BlogParagraphBlock["body"],
@@ -285,6 +332,15 @@ export function resolveBlogBlocksForLocale(
         type: "image",
         storagePath: block.storagePath,
         caption: localizeBlogText(block.caption, locale),
+      };
+    }
+
+    if (block.type === "audio") {
+      return {
+        id: block.id,
+        type: "audio",
+        provider: block.provider,
+        url: block.url,
       };
     }
 

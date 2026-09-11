@@ -4,6 +4,7 @@ import {
   ArrowDownIcon,
   ArrowUpIcon,
   ImageIcon,
+  MusicNotesIcon,
   ParagraphIcon,
   PlusIcon,
   TrashIcon,
@@ -22,7 +23,14 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
+  AUDIO_PROVIDER_LABELS,
+  AUDIO_PROVIDERS,
+  type AudioProvider,
+  isAudioEmbedUrl,
+} from "@/lib/audio-embed";
+import {
   type BlogBlock,
+  createAudioBlock,
   createImageBlock,
   createParagraphBlock,
   createVideoBlock,
@@ -96,6 +104,16 @@ function InsertBlockBar({
         <PlusIcon className="size-3.5" data-icon="inline-start" />
         <YoutubeLogoIcon className="size-3.5" />
         Vídeo
+      </Button>
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
+        onPress={() => onInsert(createAudioBlock())}
+      >
+        <PlusIcon className="size-3.5" data-icon="inline-start" />
+        <MusicNotesIcon className="size-3.5" />
+        Áudio
       </Button>
     </div>
   );
@@ -171,10 +189,11 @@ export function BlogBlocksEditor({
       <div className="space-y-1">
         <p className="text-sm font-bold">Conteúdo do post</p>
         <FieldDescription>
-          Monte a postagem com parágrafos (texto rico por idioma), imagens e
-          vídeos do YouTube. É obrigatório ter ao menos um parágrafo em
-          português. Use as barras antes e depois de cada bloco para inserir
-          novos componentes. EN/FR são opcionais.
+          Monte a postagem com parágrafos (texto rico por idioma), imagens,
+          vídeos do YouTube e faixas de áudio (Spotify, YouTube Music ou
+          SoundCloud). É obrigatório ter ao menos um parágrafo em português.
+          Use as barras antes e depois de cada bloco para inserir novos
+          componentes. EN/FR são opcionais.
         </FieldDescription>
       </div>
 
@@ -220,7 +239,9 @@ export function BlogBlocksEditor({
                     ? "Parágrafo"
                     : block.type === "image"
                       ? "Imagem"
-                      : "Vídeo"}
+                      : block.type === "audio"
+                        ? "Áudio"
+                        : "Vídeo"}
                 </p>
                 <div className="flex items-center gap-2">
                   <p className="text-xs text-muted-foreground">
@@ -418,6 +439,77 @@ export function BlogBlocksEditor({
                     }
                   />
                 </Field>
+              ) : null}
+
+              {block.type === "audio" ? (
+                <FieldGroup>
+                  <Field>
+                    <FieldLabel htmlFor={`audio-provider-${block.id}`} required>
+                      Serviço
+                    </FieldLabel>
+                    <select
+                      id={`audio-provider-${block.id}`}
+                      value={block.provider}
+                      onChange={(event) =>
+                        updateBlock(block.id, (current) =>
+                          current.type === "audio"
+                            ? {
+                                ...current,
+                                provider: event.target
+                                  .value as AudioProvider,
+                              }
+                            : current,
+                        )
+                      }
+                      className="flex h-9 w-full cursor-pointer rounded-2xl border border-input bg-transparent px-3 text-sm outline-none"
+                    >
+                      {AUDIO_PROVIDERS.map((provider) => (
+                        <option key={provider} value={provider}>
+                          {AUDIO_PROVIDER_LABELS[provider]}
+                        </option>
+                      ))}
+                    </select>
+                  </Field>
+                  <Field>
+                    <FieldLabel htmlFor={`audio-url-${block.id}`} required>
+                      URL da faixa
+                    </FieldLabel>
+                    <Input
+                      id={`audio-url-${block.id}`}
+                      type="url"
+                      required
+                      placeholder={
+                        block.provider === "spotify"
+                          ? "https://open.spotify.com/track/..."
+                          : block.provider === "soundcloud"
+                            ? "https://soundcloud.com/artista/faixa"
+                            : "https://music.youtube.com/watch?v=..."
+                      }
+                      value={block.url}
+                      onChange={(event) =>
+                        updateBlock(block.id, (current) =>
+                          current.type === "audio"
+                            ? { ...current, url: event.target.value }
+                            : current,
+                        )
+                      }
+                    />
+                    {block.url.trim() &&
+                    !isAudioEmbedUrl(block.provider, block.url) ? (
+                      <FieldDescription className="text-destructive">
+                        Essa URL não parece ser do{" "}
+                        {AUDIO_PROVIDER_LABELS[block.provider]}.
+                      </FieldDescription>
+                    ) : null}
+                  </Field>
+                  {block.provider === "youtube-music" &&
+                  isAudioEmbedUrl(block.provider, block.url) ? (
+                    <FieldDescription>
+                      O YouTube Music não tem player de incorporação oficial:
+                      no site, essa faixa aparece como um cartão com link.
+                    </FieldDescription>
+                  ) : null}
+                </FieldGroup>
               ) : null}
             </div>
 
