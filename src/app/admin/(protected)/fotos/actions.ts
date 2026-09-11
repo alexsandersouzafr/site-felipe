@@ -4,13 +4,17 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import {
-  integerField,
   optionalText,
   readLocalizedPair,
   readPublishingFields,
   requireScheduledPublishAt,
 } from "@/lib/admin-form";
 import { validateImageFile } from "@/lib/media-limits";
+import {
+  nextDisplayOrder,
+  parseReorderDirection,
+  swapDisplayOrder,
+} from "@/lib/reorder";
 import { createClient } from "@/lib/supabase/server";
 
 export type MediaActionState = {
@@ -91,13 +95,15 @@ async function savePhoto(
     alt_fr: alts.fr,
     credit: optionalText(formData, "credit"),
     collection: optionalText(formData, "collection"),
-    display_order: integerField(formData, "displayOrder"),
     updated_at: new Date().toISOString(),
   };
 
   const { error } = id
     ? await supabase.from("photos").update(payload).eq("id", id)
-    : await supabase.from("photos").insert(payload);
+    : await supabase.from("photos").insert({
+        ...payload,
+        display_order: await nextDisplayOrder(supabase, "photos"),
+      });
 
   if (error) {
     return { error: "Não foi possível salvar a foto." };
@@ -105,6 +111,25 @@ async function savePhoto(
 
   revalidatePath("/admin/fotos");
   redirect("/admin/fotos");
+}
+
+export async function movePhoto(formData: FormData) {
+  const id = String(formData.get("id") ?? "");
+  const direction = parseReorderDirection(formData.get("direction"));
+
+  if (!id || !direction) {
+    return;
+  }
+
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("photos")
+    .select("id, display_order")
+    .order("display_order", { ascending: true });
+
+  await swapDisplayOrder(supabase, "photos", data ?? [], id, direction);
+
+  revalidatePath("/admin/fotos");
 }
 
 export async function deletePhoto(formData: FormData) {
@@ -181,14 +206,16 @@ async function saveVideo(
     description_pt: descriptions.pt,
     description_en: descriptions.en,
     description_fr: descriptions.fr,
-    display_order: integerField(formData, "displayOrder"),
     updated_at: new Date().toISOString(),
   };
 
   const supabase = await createClient();
   const { error } = id
     ? await supabase.from("videos").update(payload).eq("id", id)
-    : await supabase.from("videos").insert(payload);
+    : await supabase.from("videos").insert({
+        ...payload,
+        display_order: await nextDisplayOrder(supabase, "videos"),
+      });
 
   if (error) {
     return { error: "Não foi possível salvar o vídeo." };
@@ -204,4 +231,23 @@ export async function deleteVideo(formData: FormData) {
   await supabase.from("videos").delete().eq("id", id);
   revalidatePath("/admin/videos");
   redirect("/admin/videos");
+}
+
+export async function moveVideo(formData: FormData) {
+  const id = String(formData.get("id") ?? "");
+  const direction = parseReorderDirection(formData.get("direction"));
+
+  if (!id || !direction) {
+    return;
+  }
+
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("videos")
+    .select("id, display_order")
+    .order("display_order", { ascending: true });
+
+  await swapDisplayOrder(supabase, "videos", data ?? [], id, direction);
+
+  revalidatePath("/admin/videos");
 }

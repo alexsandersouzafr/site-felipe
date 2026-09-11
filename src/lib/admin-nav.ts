@@ -69,7 +69,7 @@ export const adminNavItems: AdminNavItem[] = [
   },
   {
     href: "/admin/fotos",
-    label: "Galeria",
+    label: "Fotos",
     description:
       "Envie imagens, organize coleções e defina o que entra na galeria pública",
     icon: "photos",

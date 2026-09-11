@@ -5,13 +5,14 @@ import {
 } from "@/components/admin/admin-action-links";
 import { AdminDataTable, AdminPageHeader } from "@/components/admin/admin-list";
 import { ConfirmDeleteButton } from "@/components/admin/confirm-delete-button";
+import { mediaPublicUrl } from "@/lib/media-url";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function AdminBlogPage() {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("news_items")
-    .select("id, title_pt, slug, status, created_at")
+    .select("id, title_pt, slug, status, created_at, cover_image_path")
     .order("created_at", { ascending: false });
 
   return (
@@ -32,13 +33,27 @@ export default async function AdminBlogPage() {
         <p className="text-sm text-muted-foreground">Nenhum post ainda.</p>
       )}
       {(data?.length ?? 0) > 0 && (
-        <AdminDataTable headers={["Título", "Slug", "Status", "Ações"]}>
+        <AdminDataTable headers={["Post", "Slug", "Status", "Ações"]}>
           {data?.map((item) => (
             <tr
               key={item.id}
               className="border-b border-border/60 last:border-0"
             >
-              <td className="px-4 py-3 font-medium">{item.title_pt}</td>
+              <td className="px-4 py-3">
+                <div className="flex items-center gap-3">
+                  {item.cover_image_path ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={mediaPublicUrl(item.cover_image_path) ?? undefined}
+                      alt=""
+                      className="size-10 shrink-0 rounded-xl object-cover"
+                    />
+                  ) : (
+                    <span className="size-10 shrink-0 rounded-xl bg-muted" />
+                  )}
+                  <span className="font-medium">{item.title_pt}</span>
+                </div>
+              </td>
               <td className="px-4 py-3">{item.slug}</td>
               <td className="px-4 py-3">{item.status}</td>
               <td className="px-4 py-3">

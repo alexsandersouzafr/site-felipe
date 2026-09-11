@@ -57,7 +57,6 @@ export default async function EditVideoPage({
           descriptionPt: data.description_pt,
           descriptionEn: data.description_en,
           descriptionFr: data.description_fr,
-          displayOrder: data.display_order,
         }}
       />
     </div>

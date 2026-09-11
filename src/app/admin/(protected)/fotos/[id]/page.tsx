@@ -54,7 +54,6 @@ export default async function EditPhotoPage({
           altFr: data.alt_fr,
           credit: data.credit,
           collection: data.collection,
-          displayOrder: data.display_order,
         }}
       />
     </div>

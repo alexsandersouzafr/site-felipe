@@ -32,7 +32,6 @@ export function PhotoForm({
     altFr?: string | null;
     credit?: string | null;
     collection?: string | null;
-    displayOrder?: number;
   };
   mode: "create" | "edit";
 }) {
@@ -97,7 +96,7 @@ export function PhotoForm({
 
               {schedule}
 
-              <div className="grid gap-4 md:grid-cols-3">
+              <div className="grid gap-4 md:grid-cols-2">
                 <Field>
                   <FieldLabel htmlFor="credit">Crédito</FieldLabel>
                   <Input
@@ -112,15 +111,6 @@ export function PhotoForm({
                     id="collection"
                     name="collection"
                     defaultValue={initialValues?.collection ?? ""}
-                  />
-                </Field>
-                <Field>
-                  <FieldLabel htmlFor="displayOrder">Ordem</FieldLabel>
-                  <Input
-                    id="displayOrder"
-                    name="displayOrder"
-                    type="number"
-                    defaultValue={initialValues?.displayOrder ?? 0}
                   />
                 </Field>
               </div>

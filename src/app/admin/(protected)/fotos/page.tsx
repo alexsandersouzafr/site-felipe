@@ -1,10 +1,12 @@
-import { deletePhoto } from "@/app/admin/(protected)/fotos/actions";
+import { deletePhoto, movePhoto } from "@/app/admin/(protected)/fotos/actions";
 import {
   AdminCreateLink,
   AdminEditLink,
 } from "@/components/admin/admin-action-links";
 import { AdminDataTable, AdminPageHeader } from "@/components/admin/admin-list";
 import { ConfirmDeleteButton } from "@/components/admin/confirm-delete-button";
+import { ReorderButtons } from "@/components/admin/reorder-buttons";
+import { mediaPublicUrl } from "@/lib/media-url";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function AdminPhotosPage() {
@@ -17,8 +19,8 @@ export default async function AdminPhotosPage() {
   return (
     <div className="space-y-6">
       <AdminPageHeader
-        title="Galeria"
-        description="Envie imagens para a galeria pública do site, defina texto alternativo, crédito e coleção, e controle a ordem e a publicação."
+        title="Fotos"
+        description="Envie imagens para a galeria pública do site, defina texto alternativo, crédito e coleção, e use as setas para reordenar."
         action={
           <AdminCreateLink href="/admin/fotos/nova">Nova foto</AdminCreateLink>
         }
@@ -33,16 +35,37 @@ export default async function AdminPhotosPage() {
       )}
       {(data?.length ?? 0) > 0 && (
         <AdminDataTable
-          headers={["Alt", "Coleção", "Ordem", "Status", "Ações"]}
+          headers={["Mover", "Foto", "Coleção", "Status", "Ações"]}
         >
-          {data?.map((item) => (
+          {data?.map((item, index) => (
             <tr
               key={item.id}
               className="border-b border-border/60 last:border-0"
             >
-              <td className="px-4 py-3 font-medium">{item.alt_pt}</td>
+              <td className="px-4 py-3">
+                <ReorderButtons
+                  action={movePhoto}
+                  id={item.id}
+                  disabledUp={index === 0}
+                  disabledDown={index === (data?.length ?? 0) - 1}
+                />
+              </td>
+              <td className="px-4 py-3">
+                <div className="flex items-center gap-3">
+                  {item.storage_path ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={mediaPublicUrl(item.storage_path) ?? undefined}
+                      alt=""
+                      className="size-10 shrink-0 rounded-xl object-cover"
+                    />
+                  ) : (
+                    <span className="size-10 shrink-0 rounded-xl bg-muted" />
+                  )}
+                  <span className="font-medium">{item.alt_pt}</span>
+                </div>
+              </td>
               <td className="px-4 py-3">{item.collection ?? "—"}</td>
-              <td className="px-4 py-3">{item.display_order}</td>
               <td className="px-4 py-3">{item.status}</td>
               <td className="px-4 py-3">
                 <div className="flex justify-end gap-2">

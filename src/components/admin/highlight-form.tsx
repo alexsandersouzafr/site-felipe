@@ -36,7 +36,6 @@ export function HighlightForm({
     descriptionPt?: string;
     descriptionEn?: string | null;
     descriptionFr?: string | null;
-    displayOrder?: number;
   };
   mode: "create" | "edit";
   onPageCount?: number;
@@ -126,15 +125,6 @@ export function HighlightForm({
                   />
                 </Field>
               </div>
-              <Field>
-                <FieldLabel htmlFor="displayOrder">Ordem</FieldLabel>
-                <Input
-                  id="displayOrder"
-                  name="displayOrder"
-                  type="number"
-                  defaultValue={initialValues?.displayOrder ?? 0}
-                />
-              </Field>
             </FieldGroup>
             {state.error && <FieldError>{state.error}</FieldError>}
             {actions}

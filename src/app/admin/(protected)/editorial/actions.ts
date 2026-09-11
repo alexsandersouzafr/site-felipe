@@ -5,7 +5,6 @@ import { redirect } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import {
   booleanField,
-  integerField,
   optionalText,
   readLocalizedPair,
   readPublishingFields,
@@ -16,6 +15,11 @@ import {
   MAX_BIO_PAGE_HIGHLIGHTS,
 } from "@/lib/bio-page";
 import { validateImageFile } from "@/lib/media-limits";
+import {
+  nextDisplayOrder,
+  parseReorderDirection,
+  swapDisplayOrder,
+} from "@/lib/reorder";
 import { isRichTextEmpty, parseRichTextInput } from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
 
@@ -228,14 +232,16 @@ async function saveHighlight(
     description_pt: descriptions.pt,
     description_en: descriptions.en,
     description_fr: descriptions.fr,
-    display_order: integerField(formData, "displayOrder"),
     show_on_page: showOnPage,
     updated_at: new Date().toISOString(),
   };
 
   const { error } = id
     ? await supabase.from("highlights").update(payload).eq("id", id)
-    : await supabase.from("highlights").insert(payload);
+    : await supabase.from("highlights").insert({
+        ...payload,
+        display_order: await nextDisplayOrder(supabase, "highlights"),
+      });
 
   if (error) {
     return { error: "Não foi possível salvar o destaque." };
@@ -251,4 +257,23 @@ export async function deleteHighlight(formData: FormData) {
   await supabase.from("highlights").delete().eq("id", id);
   revalidatePath("/admin/destaques");
   redirect("/admin/destaques");
+}
+
+export async function moveHighlight(formData: FormData) {
+  const id = String(formData.get("id") ?? "");
+  const direction = parseReorderDirection(formData.get("direction"));
+
+  if (!id || !direction) {
+    return;
+  }
+
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("highlights")
+    .select("id, display_order")
+    .order("display_order", { ascending: true });
+
+  await swapDisplayOrder(supabase, "highlights", data ?? [], id, direction);
+
+  revalidatePath("/admin/destaques");
 }
