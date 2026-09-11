@@ -216,9 +216,6 @@ function IntroCopy({
       <h1 className="max-w-2xl text-xl text-muted-foreground sm:text-2xl">
         {t("title")}
       </h1>
-      <p className="mt-5 max-w-xl text-base text-muted-foreground sm:text-lg">
-        {t("description")}
-      </p>
       {bioSummary ? (
         <p className="mt-8 text-lg leading-relaxed text-muted-foreground">
           {bioSummary}

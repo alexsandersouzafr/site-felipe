@@ -33,7 +33,6 @@ export default async function ContactPage({ params }: ContactPageProps) {
     <main>
       <PageHero
         title={t("title")}
-        description={settings?.intro || t("description")}
         imageUrl={pageCover?.src}
         objectPosition={pageCover?.objectPosition}
       />

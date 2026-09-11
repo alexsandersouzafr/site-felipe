@@ -22,13 +22,11 @@
     "dark": "Activer le thème sombre"
   },
   "Footer": {
-    "tagline": "Une musique qui rapproche les mondes.",
     "contact": "Entrer en contact"
   },
   "Home": {
     "eyebrow": "Felipe Magalhães",
     "title": "Une musique qui rapproche les mondes.",
-    "description": "Découvrez le travail, les prochains concerts et les histoires du maestro.",
     "schedule": "Voir l'agenda",
     "bio": "Découvrir Felipe Magalhães",
     "bioSummaryTitle": "Le maestro",
@@ -41,7 +39,6 @@
   },
   "Blog": {
     "title": "Blog",
-    "description": "Notes, essais et histoires du parcours.",
     "empty": "Aucune publication disponible pour le moment.",
     "readMore": "Lire la publication",
     "backToList": "Retour au blog"
@@ -53,7 +50,6 @@
   },
   "Schedule": {
     "title": "Agenda",
-    "description": "Concerts et engagements.",
     "upcoming": "À venir",
     "past": "Passés",
     "upcomingEmpty": "Aucun concert à venir annoncé.",
@@ -63,18 +59,15 @@
   },
   "Videos": {
     "title": "Vidéos",
-    "description": "Concerts et enregistrements vidéo.",
     "empty": "Aucune vidéo publiée pour le moment."
   },
   "Photos": {
     "title": "Photos",
-    "description": "Galerie d'images.",
     "empty": "Aucune photo publiée pour le moment.",
     "credit": "Crédit"
   },
   "Contact": {
     "title": "Contact",
-    "description": "Invitations, partenariats et presse.",
     "email": "E-mail",
     "phone": "Téléphone",
     "social": "Réseaux",

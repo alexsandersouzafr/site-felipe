@@ -22,13 +22,11 @@
     "dark": "Switch to dark theme"
   },
   "Footer": {
-    "tagline": "Music that brings worlds together.",
     "contact": "Get in touch"
   },
   "Home": {
     "eyebrow": "Felipe Magalhães",
     "title": "Music that brings worlds together.",
-    "description": "Discover the work, upcoming concerts and the story of the conductor.",
     "schedule": "View schedule",
     "bio": "Meet Felipe Magalhães",
     "bioSummaryTitle": "The conductor",
@@ -41,7 +39,6 @@
   },
   "Blog": {
     "title": "Blog",
-    "description": "Notes, essays, and stories from the journey.",
     "empty": "No posts available right now.",
     "readMore": "Read post",
     "backToList": "Back to blog"
@@ -53,7 +50,6 @@
   },
   "Schedule": {
     "title": "Schedule",
-    "description": "Concerts and engagements.",
     "upcoming": "Upcoming",
     "past": "Past",
     "upcomingEmpty": "No upcoming concerts announced.",
@@ -63,18 +59,15 @@
   },
   "Videos": {
     "title": "Videos",
-    "description": "Performances and video recordings.",
     "empty": "No videos published right now."
   },
   "Photos": {
     "title": "Photos",
-    "description": "Image gallery.",
     "empty": "No photos published right now.",
     "credit": "Credit"
   },
   "Contact": {
     "title": "Contact",
-    "description": "Invitations, partnerships, and press.",
     "email": "Email",
     "phone": "Phone",
     "social": "Social",

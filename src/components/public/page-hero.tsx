@@ -4,7 +4,6 @@ import { cn } from "@/lib/utils";
 
 type PageHeroProps = {
   title: string;
-  description?: string;
   imageUrl?: string | null;
   objectPosition?: string;
   className?: string;
@@ -12,7 +11,6 @@ type PageHeroProps = {
 
 export function PageHero({
   title,
-  description,
   imageUrl,
   objectPosition,
   className,
@@ -27,11 +25,6 @@ export function PageHero({
       <h1 className="font-heading animate-in fade-in slide-in-from-bottom-2 text-4xl tracking-tight duration-700 sm:text-5xl md:text-6xl">
         {title}
       </h1>
-      {description ? (
-        <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
-          {description}
-        </p>
-      ) : null}
     </div>
   );
 

@@ -32,7 +32,6 @@ export default async function VideosPage({ params }: VideosPageProps) {
     <main>
       <PageHero
         title={t("title")}
-        description={t("description")}
         imageUrl={pageCover?.src}
         objectPosition={pageCover?.objectPosition}
       />

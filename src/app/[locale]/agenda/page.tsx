@@ -33,7 +33,6 @@ export default async function AgendaPage({ params }: AgendaPageProps) {
     <main>
       <PageHero
         title={t("title")}
-        description={t("description")}
         imageUrl={pageCover?.src}
         objectPosition={pageCover?.objectPosition}
       />

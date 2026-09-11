@@ -33,7 +33,6 @@ export default async function PhotosPage({ params }: PhotosPageProps) {
     <main>
       <PageHero
         title={t("title")}
-        description={t("description")}
         imageUrl={pageCover?.src}
         objectPosition={pageCover?.objectPosition}
       />

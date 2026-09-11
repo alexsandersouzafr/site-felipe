@@ -34,7 +34,6 @@ export default async function BlogPage({ params }: BlogPageProps) {
     <main>
       <PageHero
         title={t("title")}
-        description={t("description")}
         imageUrl={pageCover?.src}
         objectPosition={pageCover?.objectPosition}
       />
