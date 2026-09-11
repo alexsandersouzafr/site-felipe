@@ -61,7 +61,7 @@ export async function saveBiography(
   const summaries = readLocalizedPair(formData, {
     pt: "summaryPt",
     en: "summaryEn",
-    es: "summaryEs",
+    fr: "summaryFr",
   });
 
   if (!summaries.pt) {
@@ -74,7 +74,7 @@ export async function saveBiography(
   }
 
   const contentEn = parseRichTextInput(formData.get("contentEn"));
-  const contentEs = parseRichTextInput(formData.get("contentEs"));
+  const contentFr = parseRichTextInput(formData.get("contentFr"));
 
   const supabase = await createClient();
 
@@ -104,13 +104,13 @@ export async function saveBiography(
     publish_at: null,
     title_pt: "Biografia",
     title_en: null,
-    title_es: null,
+    title_fr: null,
     content_pt: contentPt,
     content_en: isRichTextEmpty(contentEn) ? null : contentEn,
-    content_es: isRichTextEmpty(contentEs) ? null : contentEs,
+    content_fr: isRichTextEmpty(contentFr) ? null : contentFr,
     summary_pt: summaries.pt,
     summary_en: summaries.en,
-    summary_es: summaries.es,
+    summary_fr: summaries.fr,
     image_path: imagePath,
     show_on_page: true,
     updated_at: new Date().toISOString(),
@@ -176,12 +176,12 @@ async function saveHighlight(
   const titles = readLocalizedPair(formData, {
     pt: "titlePt",
     en: "titleEn",
-    es: "titleEs",
+    fr: "titleFr",
   });
   const descriptions = readLocalizedPair(formData, {
     pt: "descriptionPt",
     en: "descriptionEn",
-    es: "descriptionEs",
+    fr: "descriptionFr",
   });
 
   if (!titles.pt || !descriptions.pt) {
@@ -224,10 +224,10 @@ async function saveHighlight(
     publish_at: publishAt,
     title_pt: titles.pt,
     title_en: titles.en,
-    title_es: titles.es,
+    title_fr: titles.fr,
     description_pt: descriptions.pt,
     description_en: descriptions.en,
-    description_es: descriptions.es,
+    description_fr: descriptions.fr,
     display_order: integerField(formData, "displayOrder"),
     show_on_page: showOnPage,
     updated_at: new Date().toISOString(),

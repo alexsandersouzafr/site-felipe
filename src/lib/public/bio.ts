@@ -12,10 +12,10 @@ type BiographyRow = {
   image_path: string | null;
   summary_pt: string;
   summary_en: string | null;
-  summary_es: string | null;
+  summary_fr: string | null;
   content_pt: unknown;
   content_en: unknown;
-  content_es: unknown;
+  content_fr: unknown;
 };
 
 type HighlightRow = {
@@ -26,10 +26,10 @@ type HighlightRow = {
   display_order: number;
   title_pt: string;
   title_en: string | null;
-  title_es: string | null;
+  title_fr: string | null;
   description_pt: string;
   description_en: string | null;
-  description_es: string | null;
+  description_fr: string | null;
 };
 
 export type PublicBiography = {
@@ -48,14 +48,14 @@ export type PublicHighlight = {
 function localizeRichText(
   pt: unknown,
   en: unknown,
-  es: unknown,
+  fr: unknown,
   locale: Locale,
 ): RichTextDocument {
   if (locale === "pt") {
     return coerceRichTextDocument(pt);
   }
 
-  const localized = locale === "en" ? en : es;
+  const localized = locale === "en" ? en : fr;
   if (localized == null) {
     return coerceRichTextDocument(pt);
   }
@@ -71,14 +71,14 @@ function toPublicBiography(row: BiographyRow, locale: Locale): PublicBiography {
       {
         pt: row.summary_pt,
         en: row.summary_en,
-        es: row.summary_es,
+        fr: row.summary_fr,
       },
       locale,
     ),
     body: localizeRichText(
       row.content_pt,
       row.content_en,
-      row.content_es,
+      row.content_fr,
       locale,
     ),
   };
@@ -91,7 +91,7 @@ export async function getBioPage(locale: Locale) {
     supabase
       .from("biographies")
       .select(
-        "id, image_path, summary_pt, summary_en, summary_es, content_pt, content_en, content_es",
+        "id, image_path, summary_pt, summary_en, summary_fr, content_pt, content_en, content_fr",
       )
       .order("created_at", { ascending: true })
       .limit(1)
@@ -99,7 +99,7 @@ export async function getBioPage(locale: Locale) {
     supabase
       .from("highlights")
       .select(
-        "id, status, publish_at, show_on_page, display_order, title_pt, title_en, title_es, description_pt, description_en, description_es",
+        "id, status, publish_at, show_on_page, display_order, title_pt, title_en, title_fr, description_pt, description_en, description_fr",
       )
       .order("display_order", { ascending: true }),
   ]);
@@ -129,14 +129,14 @@ export async function getBioPage(locale: Locale) {
   const publicHighlights: PublicHighlight[] = selectedHighlights.map((row) => ({
     id: row.id,
     title: getLocalizedValue(
-      { pt: row.title_pt, en: row.title_en, es: row.title_es },
+      { pt: row.title_pt, en: row.title_en, fr: row.title_fr },
       locale,
     ),
     description: getLocalizedValue(
       {
         pt: row.description_pt,
         en: row.description_en,
-        es: row.description_es,
+        fr: row.description_fr,
       },
       locale,
     ),
@@ -149,7 +149,7 @@ export async function getBioSummary(locale: Locale) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("biographies")
-    .select("image_path, summary_pt, summary_en, summary_es")
+    .select("image_path, summary_pt, summary_en, summary_fr")
     .order("created_at", { ascending: true })
     .limit(1)
     .maybeSingle();
@@ -166,7 +166,7 @@ export async function getBioSummary(locale: Locale) {
     {
       pt: data.summary_pt as string,
       en: data.summary_en as string | null,
-      es: data.summary_es as string | null,
+      fr: data.summary_fr as string | null,
     },
     locale,
   ).trim();

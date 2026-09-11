@@ -8,12 +8,12 @@ export function readPublishingFields(formData: FormData) {
 
 export function readLocalizedPair(
   formData: FormData,
-  keys: { pt: string; en: string; es: string },
+  keys: { pt: string; en: string; fr: string },
 ) {
   return toNullableLocalizedText({
     pt: String(formData.get(keys.pt) ?? ""),
     en: String(formData.get(keys.en) ?? ""),
-    es: String(formData.get(keys.es) ?? ""),
+    fr: String(formData.get(keys.fr) ?? ""),
   });
 }
 

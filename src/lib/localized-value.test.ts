@@ -5,13 +5,13 @@ import { getLocalizedValue } from "./localized-value";
 describe("getLocalizedValue", () => {
   it("returns the requested localized value when available", () => {
     expect(
-      getLocalizedValue({ pt: "Português", en: "English", es: null }, "en"),
+      getLocalizedValue({ pt: "Português", en: "English", fr: null }, "en"),
     ).toBe("English");
   });
 
   it("falls back to Portuguese for missing translations", () => {
     expect(
-      getLocalizedValue({ pt: "Português", en: null, es: null }, "es"),
+      getLocalizedValue({ pt: "Português", en: null, fr: null }, "fr"),
     ).toBe("Português");
   });
 });

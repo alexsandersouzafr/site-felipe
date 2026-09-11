@@ -12,7 +12,7 @@ type HomePhotoRow = {
   storage_path: string;
   alt_pt: string;
   alt_en: string | null;
-  alt_es: string | null;
+  alt_fr: string | null;
   object_position: string | null;
 };
 
@@ -34,7 +34,7 @@ export async function listHomePhotos(locale: Locale) {
   const { data, error } = await supabase
     .from("home_photos")
     .select(
-      "id, slot, storage_path, alt_pt, alt_en, alt_es, object_position",
+      "id, slot, storage_path, alt_pt, alt_en, alt_fr, object_position",
     )
     .order("slot", { ascending: true });
 
@@ -54,7 +54,7 @@ export async function listHomePhotos(locale: Locale) {
         slot: row.slot,
         src,
         alt: getLocalizedValue(
-          { pt: row.alt_pt, en: row.alt_en, es: row.alt_es },
+          { pt: row.alt_pt, en: row.alt_en, fr: row.alt_fr },
           locale,
         ),
         objectPosition: normalizeImageFocus(row.object_position),

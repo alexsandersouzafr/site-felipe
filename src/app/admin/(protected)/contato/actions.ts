@@ -18,7 +18,7 @@ export async function updateContactSettings(
   const intros = readLocalizedPair(formData, {
     pt: "introPt",
     en: "introEn",
-    es: "introEs",
+    fr: "introFr",
   });
 
   if (!intros.pt) {
@@ -45,7 +45,7 @@ export async function updateContactSettings(
     contact_phone: optionalText(formData, "contactPhone"),
     intro_pt: intros.pt,
     intro_en: intros.en,
-    intro_es: intros.es,
+    intro_fr: intros.fr,
     social_links: socialLinks,
     updated_at: new Date().toISOString(),
   };

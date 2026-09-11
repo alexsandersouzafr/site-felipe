@@ -53,10 +53,10 @@ export default async function EditVideoPage({
           youtubeUrl: data.youtube_url,
           titlePt: data.title_pt,
           titleEn: data.title_en,
-          titleEs: data.title_es,
+          titleFr: data.title_fr,
           descriptionPt: data.description_pt,
           descriptionEn: data.description_en,
-          descriptionEs: data.description_es,
+          descriptionFr: data.description_fr,
           displayOrder: data.display_order,
         }}
       />

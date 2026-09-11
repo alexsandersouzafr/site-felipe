@@ -30,10 +30,10 @@ export function BiographyForm({
     imagePath?: string | null;
     summaryPt?: string;
     summaryEn?: string | null;
-    summaryEs?: string | null;
+    summaryFr?: string | null;
     contentPt?: RichTextDocument | null;
     contentEn?: RichTextDocument | null;
-    contentEs?: RichTextDocument | null;
+    contentFr?: RichTextDocument | null;
   };
 }) {
   const [state, formAction, pending] = useActionState(action, {});
@@ -62,7 +62,7 @@ export function BiographyForm({
             defaultValue={initialValues?.summaryPt ?? ""}
           />
           <FieldDescription>
-            Texto curto exibido na página inicial. EN/ES são opcionais.
+            Texto curto exibido na página inicial. EN/FR são opcionais.
           </FieldDescription>
         </Field>
 
@@ -77,12 +77,12 @@ export function BiographyForm({
             />
           </Field>
           <Field>
-            <FieldLabel htmlFor="summaryEs">Resumo (ES)</FieldLabel>
+            <FieldLabel htmlFor="summaryFr">Resumo (FR)</FieldLabel>
             <Textarea
-              id="summaryEs"
-              name="summaryEs"
+              id="summaryFr"
+              name="summaryFr"
               rows={4}
-              defaultValue={initialValues?.summaryEs ?? ""}
+              defaultValue={initialValues?.summaryFr ?? ""}
             />
           </Field>
         </div>
@@ -93,12 +93,12 @@ export function BiographyForm({
           names={{
             pt: "contentPt",
             en: "contentEn",
-            es: "contentEs",
+            fr: "contentFr",
           }}
           values={{
             pt: initialValues?.contentPt ?? null,
             en: initialValues?.contentEn ?? null,
-            es: initialValues?.contentEs ?? null,
+            fr: initialValues?.contentFr ?? null,
           }}
         />
       </FieldGroup>

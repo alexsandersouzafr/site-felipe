@@ -7,7 +7,7 @@ export const eventFormSchema = publishingFieldsSchema
   .extend({
     titlePt: z.string().trim().min(1, "Informe o título em português."),
     titleEn: z.string().optional(),
-    titleEs: z.string().optional(),
+    titleFr: z.string().optional(),
     venue: z.string().trim().min(1, "Informe o local."),
     city: z.string().trim().min(1, "Informe a cidade."),
     country: z.string().trim().min(1, "Informe o país."),
@@ -21,7 +21,7 @@ export const eventFormSchema = publishingFieldsSchema
     const titles = toNullableLocalizedText({
       pt: value.titlePt,
       en: value.titleEn,
-      es: value.titleEs,
+      fr: value.titleFr,
     });
 
     return {
@@ -29,7 +29,7 @@ export const eventFormSchema = publishingFieldsSchema
       publishAt: value.publishAt?.trim() ? value.publishAt.trim() : null,
       titlePt: titles.pt,
       titleEn: titles.en,
-      titleEs: titles.es,
+      titleFr: titles.fr,
       venue: value.venue,
       city: value.city,
       country: value.country,

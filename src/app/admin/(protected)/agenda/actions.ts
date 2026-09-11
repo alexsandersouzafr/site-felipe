@@ -21,7 +21,7 @@ function formDataToObject(formData: FormData) {
     publishAt: formData.get("publishAt") ?? "",
     titlePt: formData.get("titlePt"),
     titleEn: formData.get("titleEn") ?? "",
-    titleEs: formData.get("titleEs") ?? "",
+    titleFr: formData.get("titleFr") ?? "",
     venue: formData.get("venue"),
     city: formData.get("city"),
     country: formData.get("country"),

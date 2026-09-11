@@ -1,0 +1,94 @@
+{
+  "Navigation": {
+    "home": "Accueil",
+    "news": "Blog",
+    "bio": "Biographie",
+    "schedule": "Agenda",
+    "videos": "Vidéos",
+    "photos": "Photos",
+    "contact": "Contact",
+    "brand": "Felipe Magalhães",
+    "menu": "Menu",
+    "closeMenu": "Fermer le menu"
+  },
+  "LocaleSwitcher": {
+    "label": "Langue",
+    "pt": "PT",
+    "en": "EN",
+    "fr": "FR"
+  },
+  "ThemeToggle": {
+    "light": "Activer le thème clair",
+    "dark": "Activer le thème sombre"
+  },
+  "Footer": {
+    "tagline": "Une musique qui rapproche les mondes.",
+    "contact": "Entrer en contact"
+  },
+  "Home": {
+    "eyebrow": "Felipe Magalhães",
+    "title": "Une musique qui rapproche les mondes.",
+    "description": "Découvrez le travail, les prochains concerts et les histoires du maestro.",
+    "schedule": "Voir l'agenda",
+    "bio": "Découvrir Felipe Magalhães",
+    "bioSummaryTitle": "Le maestro",
+    "upcomingTitle": "Prochains concerts",
+    "upcomingEmpty": "Aucun concert annoncé pour le moment.",
+    "recentPostsTitle": "Sur le blog",
+    "recentPostsEmpty": "Aucune publication disponible pour le moment.",
+    "viewAllSchedule": "Agenda complet",
+    "viewAllBlog": "Voir toutes les publications"
+  },
+  "Blog": {
+    "title": "Blog",
+    "description": "Notes, essais et histoires du parcours.",
+    "empty": "Aucune publication disponible pour le moment.",
+    "readMore": "Lire la publication",
+    "backToList": "Retour au blog"
+  },
+  "Bio": {
+    "title": "Biographie",
+    "highlightsTitle": "Temps forts",
+    "empty": "La biographie sera bientôt publiée."
+  },
+  "Schedule": {
+    "title": "Agenda",
+    "description": "Concerts et engagements.",
+    "upcoming": "À venir",
+    "past": "Passés",
+    "upcomingEmpty": "Aucun concert à venir annoncé.",
+    "pastEmpty": "Aucun concert passé répertorié.",
+    "tickets": "Billets",
+    "venue": "Lieu"
+  },
+  "Videos": {
+    "title": "Vidéos",
+    "description": "Concerts et enregistrements vidéo.",
+    "empty": "Aucune vidéo publiée pour le moment."
+  },
+  "Photos": {
+    "title": "Photos",
+    "description": "Galerie d'images.",
+    "empty": "Aucune photo publiée pour le moment.",
+    "credit": "Crédit"
+  },
+  "Contact": {
+    "title": "Contact",
+    "description": "Invitations, partenariats et presse.",
+    "email": "E-mail",
+    "phone": "Téléphone",
+    "social": "Réseaux",
+    "formName": "Nom",
+    "formEmail": "E-mail",
+    "formSubject": "Sujet",
+    "formMessage": "Message",
+    "submit": "Envoyer le message",
+    "submitting": "Envoi en cours…",
+    "success": "Message envoyé. Merci de nous avoir contactés.",
+    "error": "Impossible d'envoyer. Veuillez réessayer.",
+    "validationError": "Veuillez remplir correctement tous les champs."
+  },
+  "Common": {
+    "empty": "Contenu indisponible."
+  }
+}

@@ -1,6 +1,6 @@
 # Content Model
 
-Each editorial entity has an `id`, `status` (`draft`, `scheduled`, or `published`), timestamps, and localized `pt`, `en`, and `es` fields where applicable.
+Each editorial entity has an `id`, `status` (`draft`, `scheduled`, or `published`), timestamps, and localized `pt`, `en`, and `fr` fields where applicable.
 
 | Entity | Key fields |
 | --- | --- |
@@ -19,7 +19,7 @@ Each editorial entity has an `id`, `status` (`draft`, `scheduled`, or `published
 
 Blog posts no longer use TipTap or excerpts. The body is a shared list of blocks stored in `blocks` (JSONB):
 
-- `paragraph` — optional localized title + TipTap rich text body (PT required; EN/ES optional), edited per-language tabs
+- `paragraph` — optional localized title + TipTap rich text body (PT required; EN/FR optional), edited per-language tabs
 - `image` — Storage path under the public `media` bucket + optional localized caption
 - `video` — YouTube URL
 
@@ -36,7 +36,7 @@ Cover images are chosen by upload (`blog/covers/...`) or by selecting an existin
 There is a single biography record. Saving in the admin panel overwrites it (no version history).
 
 - Fields: `image_path` (top image in the public `media` bucket under `bio/cover/...`), localized TipTap `content_*`, and localized plain-text `summary_*` for the home page.
-- Portuguese body and summary are required; English/Spanish are optional with Portuguese fallback.
+- Portuguese body and summary are required; English/French are optional with Portuguese fallback.
 - The public Bio page title comes from i18n, not from an editorial title field.
 - Saving always publishes the biography (`status = published`, `show_on_page = true`).
 
@@ -50,4 +50,4 @@ The public Bio page also shows up to **10 highlights**.
 
 ## Translations
 
-Portuguese is required. English and Spanish are optional: public reads select the requested locale field and fall back to Portuguese when it is empty.
+Portuguese is required. English and French are optional: public reads select the requested locale field and fall back to Portuguese when it is empty.

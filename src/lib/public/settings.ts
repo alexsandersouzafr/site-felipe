@@ -13,7 +13,7 @@ type SettingsRow = {
   contact_phone: string | null;
   intro_pt: string;
   intro_en: string | null;
-  intro_es: string | null;
+  intro_fr: string | null;
   social_links: SocialLink[] | null;
 };
 
@@ -31,7 +31,7 @@ export async function getSiteSettings(
   const { data, error } = await supabase
     .from("site_settings")
     .select(
-      "id, contact_email, contact_phone, intro_pt, intro_en, intro_es, social_links",
+      "id, contact_email, contact_phone, intro_pt, intro_en, intro_fr, social_links",
     )
     .limit(1)
     .maybeSingle();
@@ -48,7 +48,7 @@ export async function getSiteSettings(
 
   return {
     intro: getLocalizedValue(
-      { pt: row.intro_pt, en: row.intro_en, es: row.intro_es },
+      { pt: row.intro_pt, en: row.intro_en, fr: row.intro_fr },
       locale,
     ),
     email: row.contact_email,

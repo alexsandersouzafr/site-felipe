@@ -29,7 +29,7 @@ export function PhotoForm({
     storagePath?: string;
     altPt?: string;
     altEn?: string | null;
-    altEs?: string | null;
+    altFr?: string | null;
     credit?: string | null;
     collection?: string | null;
     displayOrder?: number;
@@ -84,13 +84,13 @@ export function PhotoForm({
                   />
                 </Field>
                 <Field>
-                  <FieldLabel htmlFor="altEs">
-                    Texto alternativo (ES)
+                  <FieldLabel htmlFor="altFr">
+                    Texto alternativo (FR)
                   </FieldLabel>
                   <Input
-                    id="altEs"
-                    name="altEs"
-                    defaultValue={initialValues?.altEs ?? ""}
+                    id="altFr"
+                    name="altFr"
+                    defaultValue={initialValues?.altFr ?? ""}
                   />
                 </Field>
               </div>

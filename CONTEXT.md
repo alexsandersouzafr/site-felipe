@@ -4,7 +4,7 @@
 
 - **Conductor**: the sole administrator who maintains the website content.
 - **Public content**: a published record visible on the website, as opposed to a draft.
-- **Translation**: a field version in `pt`, `en`, or `es`. When `en` or `es` is unavailable, the public experience uses the Portuguese value.
+- **Translation**: a field version in `pt`, `en`, or `fr`. When `en` or `fr` is unavailable, the public experience uses the Portuguese value.
 - **Event**: a performance, concert, or engagement listed in the schedule.
 - **Highlight**: a concise editorial item summarizing an achievement by the conductor.
 

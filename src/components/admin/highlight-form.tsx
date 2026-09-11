@@ -32,10 +32,10 @@ export function HighlightForm({
     showOnPage?: boolean;
     titlePt?: string;
     titleEn?: string | null;
-    titleEs?: string | null;
+    titleFr?: string | null;
     descriptionPt?: string;
     descriptionEn?: string | null;
-    descriptionEs?: string | null;
+    descriptionFr?: string | null;
     displayOrder?: number;
   };
   mode: "create" | "edit";
@@ -82,11 +82,11 @@ export function HighlightForm({
                   />
                 </Field>
                 <Field>
-                  <FieldLabel htmlFor="titleEs">Título (ES)</FieldLabel>
+                  <FieldLabel htmlFor="titleFr">Título (FR)</FieldLabel>
                   <Input
-                    id="titleEs"
-                    name="titleEs"
-                    defaultValue={initialValues?.titleEs ?? ""}
+                    id="titleFr"
+                    name="titleFr"
+                    defaultValue={initialValues?.titleFr ?? ""}
                   />
                 </Field>
               </div>
@@ -116,13 +116,13 @@ export function HighlightForm({
                   />
                 </Field>
                 <Field>
-                  <FieldLabel htmlFor="descriptionEs">
-                    Descrição (ES)
+                  <FieldLabel htmlFor="descriptionFr">
+                    Descrição (FR)
                   </FieldLabel>
                   <Textarea
-                    id="descriptionEs"
-                    name="descriptionEs"
-                    defaultValue={initialValues?.descriptionEs ?? ""}
+                    id="descriptionFr"
+                    name="descriptionFr"
+                    defaultValue={initialValues?.descriptionFr ?? ""}
                   />
                 </Field>
               </div>

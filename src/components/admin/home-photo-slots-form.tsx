@@ -23,7 +23,7 @@ export type HomePhotoSlotValue = {
   storagePath: string | null;
   altPt: string;
   altEn: string | null;
-  altEs: string | null;
+  altFr: string | null;
   objectPosition: string;
 };
 
@@ -146,13 +146,13 @@ export function HomePhotoSlotsForm({
                   />
                 </Field>
                 <Field>
-                  <FieldLabel htmlFor={`altEs_${slot.key}`}>
-                    Texto alternativo (ES)
+                  <FieldLabel htmlFor={`altFr_${slot.key}`}>
+                    Texto alternativo (FR)
                   </FieldLabel>
                   <Input
-                    id={`altEs_${slot.key}`}
-                    name={`altEs_${slot.key}`}
-                    defaultValue={values.altEs ?? ""}
+                    id={`altFr_${slot.key}`}
+                    name={`altFr_${slot.key}`}
+                    defaultValue={values.altFr ?? ""}
                   />
                 </Field>
               </div>

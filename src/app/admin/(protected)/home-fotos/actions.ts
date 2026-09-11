@@ -64,7 +64,7 @@ export async function saveHomePhotoSlots(
     const alts = readLocalizedPair(formData, {
       pt: `altPt_${slotKey}`,
       en: `altEn_${slotKey}`,
-      es: `altEs_${slotKey}`,
+      fr: `altFr_${slotKey}`,
     });
     const objectPosition = normalizeImageFocus(
       String(formData.get(`focus_${slotKey}`) ?? ""),
@@ -128,7 +128,7 @@ export async function saveHomePhotoSlots(
         storage_path: storagePath,
         alt_pt: alts.pt,
         alt_en: alts.en,
-        alt_es: alts.es,
+        alt_fr: alts.fr,
         object_position: objectPosition,
         display_order: displayOrder,
         updated_at: updatedAt,

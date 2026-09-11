@@ -46,7 +46,7 @@ async function savePhoto(
   const alts = readLocalizedPair(formData, {
     pt: "altPt",
     en: "altEn",
-    es: "altEs",
+    fr: "altFr",
   });
 
   if (!alts.pt) {
@@ -88,7 +88,7 @@ async function savePhoto(
     storage_path: storagePath,
     alt_pt: alts.pt,
     alt_en: alts.en,
-    alt_es: alts.es,
+    alt_fr: alts.fr,
     credit: optionalText(formData, "credit"),
     collection: optionalText(formData, "collection"),
     display_order: integerField(formData, "displayOrder"),
@@ -155,12 +155,12 @@ async function saveVideo(
   const titles = readLocalizedPair(formData, {
     pt: "titlePt",
     en: "titleEn",
-    es: "titleEs",
+    fr: "titleFr",
   });
   const descriptions = readLocalizedPair(formData, {
     pt: "descriptionPt",
     en: "descriptionEn",
-    es: "descriptionEs",
+    fr: "descriptionFr",
   });
   const youtubeUrl = String(formData.get("youtubeUrl") ?? "").trim();
 
@@ -177,10 +177,10 @@ async function saveVideo(
     youtube_url: youtubeUrl,
     title_pt: titles.pt,
     title_en: titles.en,
-    title_es: titles.es,
+    title_fr: titles.fr,
     description_pt: descriptions.pt,
     description_en: descriptions.en,
-    description_es: descriptions.es,
+    description_fr: descriptions.fr,
     display_order: integerField(formData, "displayOrder"),
     updated_at: new Date().toISOString(),
   };

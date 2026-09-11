@@ -8,12 +8,12 @@ describe("toNullableLocalizedText", () => {
       toNullableLocalizedText({
         pt: "Concerto em São Paulo",
         en: "  ",
-        es: "Concierto",
+        fr: "Concert",
       }),
     ).toEqual({
       pt: "Concerto em São Paulo",
       en: null,
-      es: "Concierto",
+      fr: "Concert",
     });
   });
 });

@@ -59,7 +59,7 @@ export default async function EditBlogPostPage({
           publishAt: toDateTimeLocalValue(data.publish_at),
           titlePt: data.title_pt,
           titleEn: data.title_en,
-          titleEs: data.title_es,
+          titleFr: data.title_fr,
           blocks: parseBlogBlocks(data.blocks),
           coverImagePath: data.cover_image_path,
         }}

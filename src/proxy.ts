@@ -11,7 +11,7 @@ const handleI18nRouting = createIntlMiddleware(routing);
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const isLocaleRoute =
-    pathname === "/" || /^\/(pt|en|es)(\/|$)/.test(pathname);
+    pathname === "/" || /^\/(pt|en|fr)(\/|$)/.test(pathname);
 
   if (
     !process.env.NEXT_PUBLIC_SUPABASE_URL ||
@@ -64,5 +64,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/(pt|en|es)/:path*", "/admin/:path*"],
+  matcher: ["/", "/(pt|en|fr)/:path*", "/admin/:path*"],
 };

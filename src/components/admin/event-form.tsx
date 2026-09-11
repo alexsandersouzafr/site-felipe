@@ -29,7 +29,7 @@ const emptyValues: EventFormValues = {
   publishAt: null,
   titlePt: "",
   titleEn: null,
-  titleEs: null,
+  titleFr: null,
   venue: "",
   city: "",
   country: "Brasil",
@@ -80,11 +80,11 @@ export function EventForm({ action, initialValues, mode }: EventFormProps) {
                   />
                 </Field>
                 <Field>
-                  <FieldLabel htmlFor="titleEs">Título (ES)</FieldLabel>
+                  <FieldLabel htmlFor="titleFr">Título (FR)</FieldLabel>
                   <Input
-                    id="titleEs"
-                    name="titleEs"
-                    defaultValue={values.titleEs ?? ""}
+                    id="titleFr"
+                    name="titleFr"
+                    defaultValue={values.titleFr ?? ""}
                   />
                 </Field>
               </div>

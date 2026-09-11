@@ -21,7 +21,7 @@ type ContactSettings = {
   contact_phone: string | null;
   intro_pt: string;
   intro_en: string | null;
-  intro_es: string | null;
+  intro_fr: string | null;
   social_links: Array<{ label: string; url: string }> | null;
 };
 
@@ -83,11 +83,11 @@ export function ContactSettingsForm({
             />
           </Field>
           <Field>
-            <FieldLabel htmlFor="introEs">Introdução (ES)</FieldLabel>
+            <FieldLabel htmlFor="introFr">Introdução (FR)</FieldLabel>
             <Textarea
-              id="introEs"
-              name="introEs"
-              defaultValue={settings.intro_es ?? ""}
+              id="introFr"
+              name="introFr"
+              defaultValue={settings.intro_fr ?? ""}
             />
           </Field>
         </div>

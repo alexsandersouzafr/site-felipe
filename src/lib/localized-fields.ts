@@ -1,7 +1,7 @@
 export function toNullableLocalizedText(value: {
   pt: string;
   en?: string | null;
-  es?: string | null;
+  fr?: string | null;
 }) {
   const normalize = (input: string | null | undefined) => {
     const trimmed = input?.trim() ?? "";
@@ -11,6 +11,6 @@ export function toNullableLocalizedText(value: {
   return {
     pt: value.pt.trim(),
     en: normalize(value.en),
-    es: normalize(value.es),
+    fr: normalize(value.fr),
   };
 }

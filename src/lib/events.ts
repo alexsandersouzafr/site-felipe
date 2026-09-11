@@ -12,7 +12,7 @@ export type EventRecord = {
   publish_at: string | null;
   title_pt: string;
   title_en: string | null;
-  title_es: string | null;
+  title_fr: string | null;
   venue: string;
   city: string;
   country: string;
@@ -31,7 +31,7 @@ export function toEventInsert(values: EventFormValues) {
     publish_at: normalizePublishAt(values.status, values.publishAt),
     title_pt: values.titlePt,
     title_en: values.titleEn,
-    title_es: values.titleEs,
+    title_fr: values.titleFr,
     venue: values.venue,
     city: values.city,
     country: values.country,
@@ -54,7 +54,7 @@ export function toEventFormValues(event: EventRecord): EventFormValues {
       : null,
     titlePt: event.title_pt,
     titleEn: event.title_en,
-    titleEs: event.title_es,
+    titleFr: event.title_fr,
     venue: event.venue,
     city: event.city,
     country: event.country,

@@ -174,7 +174,7 @@ export function BlogBlocksEditor({
           Monte a postagem com parágrafos (texto rico por idioma), imagens e
           vídeos do YouTube. É obrigatório ter ao menos um parágrafo em
           português. Use as barras antes e depois de cada bloco para inserir
-          novos componentes. EN/ES são opcionais.
+          novos componentes. EN/FR são opcionais.
         </FieldDescription>
       </div>
 
@@ -288,7 +288,7 @@ export function BlogBlocksEditor({
                   values={{
                     pt: block.body.pt,
                     en: block.body.en,
-                    es: block.body.es,
+                    fr: block.body.fr,
                   }}
                   onChange={(locale, document) =>
                     updateBlock(block.id, (current) => {
@@ -373,12 +373,12 @@ export function BlogBlocksEditor({
                       />
                     </Field>
                     <Field>
-                      <FieldLabel htmlFor={`caption-es-${block.id}`}>
-                        Legenda (ES)
+                      <FieldLabel htmlFor={`caption-fr-${block.id}`}>
+                        Legenda (FR)
                       </FieldLabel>
                       <Input
-                        id={`caption-es-${block.id}`}
-                        value={block.caption.es ?? ""}
+                        id={`caption-fr-${block.id}`}
+                        value={block.caption.fr ?? ""}
                         onChange={(event) =>
                           updateBlock(block.id, (current) =>
                             current.type === "image"
@@ -386,7 +386,7 @@ export function BlogBlocksEditor({
                                   ...current,
                                   caption: {
                                     ...current.caption,
-                                    es: event.target.value || null,
+                                    fr: event.target.value || null,
                                   },
                                 }
                               : current,

@@ -141,7 +141,7 @@ async function parseBlogForm(formData: FormData) {
   const titles = readLocalizedPair(formData, {
     pt: "titlePt",
     en: "titleEn",
-    es: "titleEs",
+    fr: "titleFr",
   });
 
   if (!titles.pt) {
@@ -169,7 +169,7 @@ async function parseBlogForm(formData: FormData) {
       publish_at: publishAt,
       title_pt: titles.pt,
       title_en: titles.en,
-      title_es: titles.es,
+      title_fr: titles.fr,
       blocks: blocks.data,
       cover_image_path: cover.path,
       updated_at: new Date().toISOString(),

@@ -9,7 +9,7 @@ type EventRow = {
   id: string;
   title_pt: string;
   title_en: string | null;
-  title_es: string | null;
+  title_fr: string | null;
   venue: string;
   city: string;
   country: string;
@@ -41,7 +41,7 @@ function toPublicEvent(row: EventRow, locale: Locale): PublicEvent {
   return {
     id: row.id,
     title: getLocalizedValue(
-      { pt: row.title_pt, en: row.title_en, es: row.title_es },
+      { pt: row.title_pt, en: row.title_en, fr: row.title_fr },
       locale,
     ),
     venue: row.venue,
@@ -62,7 +62,7 @@ async function fetchVisibleEvents() {
   const { data, error } = await supabase
     .from("events")
     .select(
-      "id, title_pt, title_en, title_es, venue, city, country, time_zone, starts_at, ends_at, ticket_url, image_path",
+      "id, title_pt, title_en, title_fr, venue, city, country, time_zone, starts_at, ends_at, ticket_url, image_path",
     )
     .order("starts_at", { ascending: true });
 

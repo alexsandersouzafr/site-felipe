@@ -18,7 +18,7 @@ export const REQUIRED_PARAGRAPH_ERROR =
 const localizedOptionalSchema = z.object({
   pt: z.string().nullable(),
   en: z.string().nullable(),
-  es: z.string().nullable(),
+  fr: z.string().nullable(),
 });
 
 const localizedRichTextSchema = z.object({
@@ -44,7 +44,7 @@ const localizedRichTextSchema = z.object({
       const document = coerceRichTextDocument(value);
       return isRichTextEmpty(document) ? null : document;
     }),
-  es: z
+  fr: z
     .unknown()
     .nullable()
     .optional()
@@ -110,11 +110,11 @@ export const blogBlocksSchema = blogBlocksArraySchema.superRefine(
 export type BlogParagraphBlock = {
   id: string;
   type: "paragraph";
-  title: { pt: string | null; en: string | null; es: string | null };
+  title: { pt: string | null; en: string | null; fr: string | null };
   body: {
     pt: RichTextDocument;
     en: RichTextDocument | null;
-    es: RichTextDocument | null;
+    fr: RichTextDocument | null;
   };
 };
 export type BlogImageBlock = z.infer<typeof blogImageBlockSchema>;
@@ -123,7 +123,7 @@ export type BlogBlock = BlogParagraphBlock | BlogImageBlock | BlogVideoBlock;
 export type BlogBlocks = BlogBlock[];
 
 export function emptyLocalizedText(pt: string | null = null) {
-  return { pt, en: null as string | null, es: null as string | null };
+  return { pt, en: null as string | null, fr: null as string | null };
 }
 
 export function createParagraphBlock(): BlogParagraphBlock {
@@ -134,7 +134,7 @@ export function createParagraphBlock(): BlogParagraphBlock {
     body: {
       pt: emptyRichTextDocument,
       en: null,
-      es: null,
+      fr: null,
     },
   };
 }
@@ -219,7 +219,7 @@ export function getBlogPreviewExcerpt(
 }
 
 export function localizeBlogText(
-  value: { pt: string | null; en: string | null; es: string | null },
+  value: { pt: string | null; en: string | null; fr: string | null },
   locale: Locale,
 ) {
   if (locale === "pt") {

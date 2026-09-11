@@ -14,7 +14,7 @@ type BlogRow = {
   slug: string;
   title_pt: string;
   title_en: string | null;
-  title_es: string | null;
+  title_fr: string | null;
   cover_image_path: string | null;
   blocks: unknown;
   publish_at: string | null;
@@ -46,7 +46,7 @@ function toSummary(row: BlogRow, locale: Locale): PublicBlogPostSummary {
     id: row.id,
     slug: row.slug,
     title: getLocalizedValue(
-      { pt: row.title_pt, en: row.title_en, es: row.title_es },
+      { pt: row.title_pt, en: row.title_en, fr: row.title_fr },
       locale,
     ),
     excerpt: getBlogPreviewExcerpt(blocks, locale),
@@ -60,7 +60,7 @@ export async function listBlogPosts(locale: Locale, limit?: number) {
   let query = supabase
     .from("news_items")
     .select(
-      "id, slug, title_pt, title_en, title_es, cover_image_path, blocks, publish_at, created_at, updated_at",
+      "id, slug, title_pt, title_en, title_fr, cover_image_path, blocks, publish_at, created_at, updated_at",
     )
     .order("publish_at", { ascending: false, nullsFirst: false })
     .order("created_at", { ascending: false });
@@ -83,7 +83,7 @@ export async function getBlogPostBySlug(slug: string, locale: Locale) {
   const { data, error } = await supabase
     .from("news_items")
     .select(
-      "id, slug, title_pt, title_en, title_es, cover_image_path, blocks, publish_at, created_at, updated_at",
+      "id, slug, title_pt, title_en, title_fr, cover_image_path, blocks, publish_at, created_at, updated_at",
     )
     .eq("slug", slug)
     .maybeSingle();

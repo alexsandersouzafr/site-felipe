@@ -51,7 +51,7 @@ export default async function EditPhotoPage({
           storagePath: data.storage_path,
           altPt: data.alt_pt,
           altEn: data.alt_en,
-          altEs: data.alt_es,
+          altFr: data.alt_fr,
           credit: data.credit,
           collection: data.collection,
           displayOrder: data.display_order,

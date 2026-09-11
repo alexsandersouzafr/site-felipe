@@ -38,7 +38,7 @@ export default async function AdminContactPage() {
           contact_phone: data.contact_phone,
           intro_pt: data.intro_pt,
           intro_en: data.intro_en,
-          intro_es: data.intro_es,
+          intro_fr: data.intro_fr,
           social_links: data.social_links as Array<{
             label: string;
             url: string;

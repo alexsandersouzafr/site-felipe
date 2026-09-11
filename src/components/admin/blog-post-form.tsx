@@ -34,7 +34,7 @@ export function BlogPostForm({
     publishAt?: string;
     titlePt?: string;
     titleEn?: string | null;
-    titleEs?: string | null;
+    titleFr?: string | null;
     blocks?: BlogBlock[];
     coverImagePath?: string | null;
   };
@@ -79,11 +79,11 @@ export function BlogPostForm({
                   />
                 </Field>
                 <Field>
-                  <FieldLabel htmlFor="titleEs">Título (ES)</FieldLabel>
+                  <FieldLabel htmlFor="titleFr">Título (FR)</FieldLabel>
                   <Input
-                    id="titleEs"
-                    name="titleEs"
-                    defaultValue={initialValues?.titleEs ?? ""}
+                    id="titleFr"
+                    name="titleFr"
+                    defaultValue={initialValues?.titleFr ?? ""}
                   />
                 </Field>
               </div>

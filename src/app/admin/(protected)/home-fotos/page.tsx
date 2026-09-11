@@ -12,7 +12,7 @@ export default async function AdminHomePhotosPage() {
   const supabase = await createClient();
   const photosResult = await supabase
     .from("home_photos")
-    .select("slot, storage_path, alt_pt, alt_en, alt_es, object_position");
+    .select("slot, storage_path, alt_pt, alt_en, alt_fr, object_position");
 
   const slots = Object.fromEntries(
     HOME_PHOTO_SLOTS.map((slot) => [
@@ -21,7 +21,7 @@ export default async function AdminHomePhotosPage() {
         storagePath: null,
         altPt: "",
         altEn: null,
-        altEs: null,
+        altFr: null,
         objectPosition: DEFAULT_IMAGE_FOCUS,
       } satisfies HomePhotoSlotValue,
     ]),
@@ -34,7 +34,7 @@ export default async function AdminHomePhotosPage() {
         storagePath: row.storage_path,
         altPt: row.alt_pt,
         altEn: row.alt_en,
-        altEs: row.alt_es,
+        altFr: row.alt_fr,
         objectPosition: row.object_position || DEFAULT_IMAGE_FOCUS,
       };
     }

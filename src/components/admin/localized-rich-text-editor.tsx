@@ -7,29 +7,29 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { RichTextDocument } from "@/lib/rich-text";
 import { emptyRichTextDocument } from "@/lib/rich-text";
 
-type Locale = "pt" | "en" | "es";
+type Locale = "pt" | "en" | "fr";
 
 const locales: Array<{ id: Locale; label: string }> = [
   { id: "pt", label: "Português" },
   { id: "en", label: "English" },
-  { id: "es", label: "Español" },
+  { id: "fr", label: "Français" },
 ];
 
 type LocalizedRichTextValues = {
   pt: RichTextDocument | null;
   en: RichTextDocument | null;
-  es: RichTextDocument | null;
+  fr: RichTextDocument | null;
 };
 
 type LocalizedTitleValues = {
   pt: string | null;
   en: string | null;
-  es: string | null;
+  fr: string | null;
 };
 
 type LocalizedRichTextEditorProps = {
   label?: string;
-  names?: { pt: string; en: string; es: string };
+  names?: { pt: string; en: string; fr: string };
   values?: LocalizedRichTextValues;
   onChange?: (locale: Locale, document: RichTextDocument) => void;
   titles?: LocalizedTitleValues;

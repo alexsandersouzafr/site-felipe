@@ -9,10 +9,10 @@ type VideoRow = {
   youtube_url: string;
   title_pt: string;
   title_en: string | null;
-  title_es: string | null;
+  title_fr: string | null;
   description_pt: string | null;
   description_en: string | null;
-  description_es: string | null;
+  description_fr: string | null;
   display_order: number;
 };
 
@@ -21,7 +21,7 @@ type PhotoRow = {
   storage_path: string;
   alt_pt: string;
   alt_en: string | null;
-  alt_es: string | null;
+  alt_fr: string | null;
   credit: string | null;
   collection: string | null;
   display_order: number;
@@ -48,7 +48,7 @@ export async function listVideos(locale: Locale) {
   const { data, error } = await supabase
     .from("videos")
     .select(
-      "id, youtube_url, title_pt, title_en, title_es, description_pt, description_en, description_es, display_order",
+      "id, youtube_url, title_pt, title_en, title_fr, description_pt, description_en, description_fr, display_order",
     )
     .order("display_order", { ascending: true })
     .order("created_at", { ascending: false });
@@ -61,7 +61,7 @@ export async function listVideos(locale: Locale) {
     (row): PublicVideo => ({
       id: row.id,
       title: getLocalizedValue(
-        { pt: row.title_pt, en: row.title_en, es: row.title_es },
+        { pt: row.title_pt, en: row.title_en, fr: row.title_fr },
         locale,
       ),
       description: row.description_pt
@@ -69,7 +69,7 @@ export async function listVideos(locale: Locale) {
             {
               pt: row.description_pt,
               en: row.description_en,
-              es: row.description_es,
+              fr: row.description_fr,
             },
             locale,
           )
@@ -85,7 +85,7 @@ export async function listPhotos(locale: Locale) {
   const { data, error } = await supabase
     .from("photos")
     .select(
-      "id, storage_path, alt_pt, alt_en, alt_es, credit, collection, display_order",
+      "id, storage_path, alt_pt, alt_en, alt_fr, credit, collection, display_order",
     )
     .order("display_order", { ascending: true })
     .order("created_at", { ascending: false });
@@ -99,7 +99,7 @@ export async function listPhotos(locale: Locale) {
       id: row.id,
       src: mediaPublicUrl(row.storage_path),
       alt: getLocalizedValue(
-        { pt: row.alt_pt, en: row.alt_en, es: row.alt_es },
+        { pt: row.alt_pt, en: row.alt_en, fr: row.alt_fr },
         locale,
       ),
       credit: row.credit,

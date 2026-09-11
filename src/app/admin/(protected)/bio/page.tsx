@@ -9,7 +9,7 @@ export default async function AdminBioPage() {
   const { data, error } = await supabase
     .from("biographies")
     .select(
-      "id, image_path, summary_pt, summary_en, summary_es, content_pt, content_en, content_es",
+      "id, image_path, summary_pt, summary_en, summary_fr, content_pt, content_en, content_fr",
     )
     .order("created_at", { ascending: true })
     .limit(1)
@@ -34,13 +34,13 @@ export default async function AdminBioPage() {
                   imagePath: data.image_path,
                   summaryPt: data.summary_pt,
                   summaryEn: data.summary_en,
-                  summaryEs: data.summary_es,
+                  summaryFr: data.summary_fr,
                   contentPt: coerceRichTextDocument(data.content_pt),
                   contentEn: data.content_en
                     ? coerceRichTextDocument(data.content_en)
                     : null,
-                  contentEs: data.content_es
-                    ? coerceRichTextDocument(data.content_es)
+                  contentFr: data.content_fr
+                    ? coerceRichTextDocument(data.content_fr)
                     : null,
                 }
               : undefined
