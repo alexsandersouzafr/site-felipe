@@ -6,7 +6,7 @@ The conductor needs a reliable, low-maintenance source of truth for all website 
 
 ## Solution
 
-Use Supabase for Postgres, Auth, and Storage. Model public content with Portuguese as the required canonical language and English/Spanish as optional translations that fall back to Portuguese. Protect write operations with Row Level Security. Support scheduled publication through `publish_at` evaluated during public reads, avoiding a required cron service.
+Use Supabase for Postgres, Auth, and Storage. Model public content with Portuguese as the required canonical language and English/French as optional translations that fall back to Portuguese. Protect write operations with Row Level Security. Support scheduled publication through `publish_at` evaluated during public reads, avoiding a required cron service.
 
 ## User Stories
 
@@ -41,3 +41,11 @@ Administrative UI, authentication screens, contact-message delivery, scheduled j
 ## Further Notes
 
 The scheduled-read model keeps hosting costs low. A later cron process is optional only if the product needs side effects at the moment of publication, such as social posting or notification delivery.
+
+### Later additions (see `.scratch/panel/issues/07-*.md` and `08-*.md`)
+
+- The third locale is French (`fr`), not Spanish — all `_es` columns were renamed to `_fr` in a single migration; existing content was placeholder and was cleared rather than translated.
+- `events.is_featured` lets the conductor curate which events appear on the home page.
+- `press_photos` is a new table (HD upload limit, no `collection` field) separate from `photos`, backing the `/imprensa` page.
+- `site_settings.blog_fallback_cover_path` is the site-wide fallback cover for posts without one.
+- `contact_messages` gained `is_read` and `ip_hash`; a `security definer` trigger enforces a per-IP-hash rate limit on insert (5 per 10 minutes) without a public select policy.

@@ -6,7 +6,7 @@ Visitors need an elegant, multilingual public site that presents the conductorâ€
 
 ## Solution
 
-Ship locale-prefixed public pages under `/pt|/en|/es` with a shared editorial chrome. Pages render on the server using the anonymous Supabase client and existing visibility/localization helpers. Contact submissions insert into `contact_messages` without email delivery in this phase.
+Ship locale-prefixed public pages under `/pt|/en|/fr` with a shared editorial chrome. Pages render on the server using the anonymous Supabase client and existing visibility/localization helpers. Contact submissions insert into `contact_messages` without email delivery in this phase.
 
 ## User Stories
 
@@ -21,7 +21,7 @@ Ship locale-prefixed public pages under `/pt|/en|/es` with a shared editorial ch
 
 ## Implementation Decisions
 
-- Public routes live under `[locale]` with paths: `/`, `/blog`, `/blog/[slug]`, `/bio`, `/agenda`, `/videos`, `/fotos`, `/contato`.
+- Public routes live under `[locale]` with paths: `/`, `/blog`, `/blog/[slug]`, `/bio`, `/agenda`, `/videos`, `/fotos`, `/imprensa`, `/contato`.
 - SSR with `createClient` from `@/lib/supabase/server`; no TanStack Query on public pages.
 - RLS `is_publicly_visible` remains the public-read gate; Bio also applies `show_on_page` via `bio-page` helpers.
 - TipTap JSON renders to HTML with the same extensions used in the admin editor (StarterKit headings 2â€“3 + Underline).
@@ -36,8 +36,17 @@ Tests verify public seams, not UI internals:
 1. Agenda upcoming vs past partitioning by `starts_at`.
 2. Blog block locale resolution with Portuguese fallback.
 3. Contact payload schema rejects empty/invalid fields.
-4. View-model mapping uses Portuguese when `en`/`es` are null.
+4. View-model mapping uses Portuguese when `en`/`fr` are null.
 
 ## Out of Scope
 
 Resend delivery, Vercel production hardening, analytics, soft deletes, admin redesign, and advanced SEO beyond basic page titles.
+
+### Later additions (see `.scratch/public/issues/13-imprensa-e-parallax.md`)
+
+- Third locale is French (`fr`), not Spanish.
+- Page taglines (the subtitle under `PageHero` titles, the home hero's descriptive paragraph, and the footer tagline) were removed site-wide.
+- `PageHero` renders its image through `ParallaxBand` (hero variant) instead of a static `<Image>`, so every page cover has the same subtle scroll parallax as the home hero.
+- New `/imprensa` page: bio summary + HD photos with credit, linked from the main nav and from a CTA on `/fotos`.
+- Bio page highlights moved into a sticky right-hand column next to the text on desktop (above the text on mobile); the biography's top-image fallback was removed.
+- Light theme is now the default (`next-themes` `defaultTheme="light"`); the manual toggle is unchanged.
