@@ -1,5 +1,4 @@
-import Image from "next/image";
-
+import { ParallaxBand } from "@/components/public/parallax-band";
 import { cn } from "@/lib/utils";
 
 type PageHeroProps = {
@@ -8,6 +7,8 @@ type PageHeroProps = {
   objectPosition?: string;
   className?: string;
 };
+
+const HERO_HEIGHT = "h-[min(42vh,26rem)] min-h-[min(42vh,26rem)]";
 
 export function PageHero({
   title,
@@ -37,20 +38,15 @@ export function PageHero({
   }
 
   return (
-    <section className="relative min-h-[min(42vh,26rem)] overflow-hidden">
-      <Image
-        src={imageUrl}
-        alt=""
-        fill
-        priority
-        className="object-cover"
-        style={{ objectPosition }}
-        sizes="100vw"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-background/50 via-background/10 to-transparent" />
-      <div className="relative z-10 flex min-h-[min(42vh,26rem)]">
-        {content}
-      </div>
-    </section>
+    <ParallaxBand
+      src={imageUrl}
+      objectPosition={objectPosition}
+      priority
+      variant="hero"
+      className={HERO_HEIGHT}
+      overlayClassName="bg-gradient-to-t from-background/50 via-background/10 to-transparent"
+    >
+      {content}
+    </ParallaxBand>
   );
 }
