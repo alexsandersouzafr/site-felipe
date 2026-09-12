@@ -27,7 +27,6 @@
   },
   "Home": {
     "eyebrow": "Felipe Magalhães",
-    "title": "Music that brings worlds together.",
     "schedule": "View schedule",
     "bio": "Meet Felipe Magalhães",
     "bioSummaryTitle": "The conductor",
@@ -91,5 +90,11 @@
     "title": "Press",
     "empty": "No press photos published right now.",
     "credit": "Credit"
+  },
+  "Pagination": {
+    "label": "Pagination",
+    "previous": "Previous",
+    "next": "Next",
+    "pageOf": "Page {page} of {totalPages}"
   }
 }

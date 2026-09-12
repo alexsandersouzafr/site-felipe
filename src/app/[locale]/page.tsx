@@ -209,11 +209,8 @@ function IntroCopy({
 }) {
   return (
     <div className="max-w-3xl">
-      <p className="font-heading mb-4 text-4xl tracking-tight sm:text-6xl md:text-7xl">
+      <h1 className="font-heading mb-4 text-4xl tracking-tight sm:text-6xl md:text-7xl">
         {t("eyebrow")}
-      </p>
-      <h1 className="max-w-2xl text-xl text-muted-foreground sm:text-2xl">
-        {t("title")}
       </h1>
       {bioSummary ? (
         <p className="mt-8 text-lg leading-relaxed text-muted-foreground">

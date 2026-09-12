@@ -2,8 +2,12 @@ import type { Locale } from "@/i18n/routing";
 import { getEventLocalDateTime } from "@/lib/event-time";
 import { getLocalizedValue } from "@/lib/localized-value";
 import { mediaPublicUrl } from "@/lib/media-url";
+import { clampPage, pageCount, pageRange } from "@/lib/pagination";
 import { partitionEventsByTime } from "@/lib/public/schedule";
 import { createClient } from "@/lib/supabase/server";
+
+const EVENT_COLUMNS =
+  "id, title_pt, title_en, title_fr, venue, city, country, time_zone, starts_at, ends_at, ticket_url, image_path, is_featured";
 
 type EventRow = {
   id: string;
@@ -64,9 +68,7 @@ async function fetchVisibleEvents() {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("events")
-    .select(
-      "id, title_pt, title_en, title_fr, venue, city, country, time_zone, starts_at, ends_at, ticket_url, image_path, is_featured",
-    )
+    .select(EVENT_COLUMNS)
     .order("starts_at", { ascending: true });
 
   if (error) {
@@ -86,4 +88,74 @@ export async function listUpcomingEvents(locale: Locale, limit = 3) {
   const { upcoming } = await listPublicEvents(locale);
   const featured = upcoming.filter((event) => event.isFeatured);
   return (featured.length > 0 ? featured : upcoming).slice(0, limit);
+}
+
+/**
+ * Paginates upcoming and past events independently, at the database level,
+ * since they use opposite sort orders and are shown as two separate lists.
+ */
+export async function listPublicEventsPage(
+  locale: Locale,
+  upcomingPage: number,
+  pastPage: number,
+  pageSize: number,
+) {
+  const supabase = await createClient();
+  const nowIso = new Date().toISOString();
+
+  const [{ count: upcomingCount }, { count: pastCount }] = await Promise.all([
+    supabase
+      .from("events")
+      .select("id", { count: "exact", head: true })
+      .gte("starts_at", nowIso),
+    supabase
+      .from("events")
+      .select("id", { count: "exact", head: true })
+      .lt("starts_at", nowIso),
+  ]);
+
+  const upcomingTotalPagesForClamp = pageCount(upcomingCount ?? 0, pageSize);
+  const pastTotalPagesForClamp = pageCount(pastCount ?? 0, pageSize);
+  const upcomingRange = pageRange(
+    clampPage(upcomingPage, upcomingTotalPagesForClamp),
+    pageSize,
+  );
+  const pastRange = pageRange(
+    clampPage(pastPage, pastTotalPagesForClamp),
+    pageSize,
+  );
+
+  const [upcomingResult, pastResult] = await Promise.all([
+    supabase
+      .from("events")
+      .select(EVENT_COLUMNS, { count: "exact" })
+      .gte("starts_at", nowIso)
+      .order("starts_at", { ascending: true })
+      .range(upcomingRange.from, upcomingRange.to),
+    supabase
+      .from("events")
+      .select(EVENT_COLUMNS, { count: "exact" })
+      .lt("starts_at", nowIso)
+      .order("starts_at", { ascending: false })
+      .range(pastRange.from, pastRange.to),
+  ]);
+
+  if (upcomingResult.error) {
+    throw new Error(upcomingResult.error.message);
+  }
+
+  if (pastResult.error) {
+    throw new Error(pastResult.error.message);
+  }
+
+  return {
+    upcoming: ((upcomingResult.data ?? []) as EventRow[]).map((row) =>
+      toPublicEvent(row, locale),
+    ),
+    upcomingTotalPages: pageCount(upcomingResult.count ?? 0, pageSize),
+    past: ((pastResult.data ?? []) as EventRow[]).map((row) =>
+      toPublicEvent(row, locale),
+    ),
+    pastTotalPages: pageCount(pastResult.count ?? 0, pageSize),
+  };
 }

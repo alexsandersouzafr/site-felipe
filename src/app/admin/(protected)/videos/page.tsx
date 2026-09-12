@@ -5,16 +5,39 @@ import {
 } from "@/components/admin/admin-action-links";
 import { AdminDataTable, AdminPageHeader } from "@/components/admin/admin-list";
 import { ConfirmDeleteButton } from "@/components/admin/confirm-delete-button";
+import { AdminPaginationNav } from "@/components/admin/pagination-nav";
 import { ReorderButtons } from "@/components/admin/reorder-buttons";
+import {
+  ADMIN_PAGE_SIZE,
+  clampPage,
+  pageCount,
+  pageRange,
+  parsePage,
+} from "@/lib/pagination";
 import { createClient } from "@/lib/supabase/server";
 import { extractYouTubeId } from "@/lib/youtube";
 
-export default async function AdminVideosPage() {
+export default async function AdminVideosPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const page = parsePage((await searchParams).page);
   const supabase = await createClient();
+
+  const { count: totalCount } = await supabase
+    .from("videos")
+    .select("id", { count: "exact", head: true });
+  const totalPages = pageCount(totalCount ?? 0, ADMIN_PAGE_SIZE);
+  const safePage = clampPage(page, totalPages);
+  const { from, to } = pageRange(safePage, ADMIN_PAGE_SIZE);
+  const pageOffset = (safePage - 1) * ADMIN_PAGE_SIZE;
+
   const { data, error } = await supabase
     .from("videos")
     .select("id, title_pt, youtube_url, status, display_order")
-    .order("display_order", { ascending: true });
+    .order("display_order", { ascending: true })
+    .range(from, to);
 
   return (
     <div className="space-y-6">
@@ -49,8 +72,8 @@ export default async function AdminVideosPage() {
                   <ReorderButtons
                     action={moveVideo}
                     id={item.id}
-                    disabledUp={index === 0}
-                    disabledDown={index === (data?.length ?? 0) - 1}
+                    disabledUp={pageOffset + index === 0}
+                    disabledDown={pageOffset + index === (totalCount ?? 0) - 1}
                   />
                 </td>
                 <td className="px-4 py-3">
@@ -80,6 +103,8 @@ export default async function AdminVideosPage() {
           })}
         </AdminDataTable>
       )}
+
+      <AdminPaginationNav basePath="/admin/videos" page={safePage} totalPages={totalPages} />
     </div>
   );
 }

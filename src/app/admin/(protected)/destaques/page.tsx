@@ -8,24 +8,50 @@ import {
 } from "@/components/admin/admin-action-links";
 import { AdminDataTable, AdminPageHeader } from "@/components/admin/admin-list";
 import { ConfirmDeleteButton } from "@/components/admin/confirm-delete-button";
+import { AdminPaginationNav } from "@/components/admin/pagination-nav";
 import { ReorderButtons } from "@/components/admin/reorder-buttons";
 import { MAX_BIO_PAGE_HIGHLIGHTS } from "@/lib/bio-page";
+import {
+  ADMIN_PAGE_SIZE,
+  clampPage,
+  pageCount,
+  pageRange,
+  parsePage,
+} from "@/lib/pagination";
 import { createClient } from "@/lib/supabase/server";
 
-export default async function AdminHighlightsPage() {
+export default async function AdminHighlightsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const page = parsePage((await searchParams).page);
   const supabase = await createClient();
+
+  const { count: totalCount } = await supabase
+    .from("highlights")
+    .select("id", { count: "exact", head: true });
+  const totalPages = pageCount(totalCount ?? 0, ADMIN_PAGE_SIZE);
+  const safePage = clampPage(page, totalPages);
+  const { from, to } = pageRange(safePage, ADMIN_PAGE_SIZE);
+  const pageOffset = (safePage - 1) * ADMIN_PAGE_SIZE;
+
   const { data, error } = await supabase
     .from("highlights")
     .select("id, title_pt, status, display_order, show_on_page")
-    .order("display_order", { ascending: true });
+    .order("display_order", { ascending: true })
+    .range(from, to);
 
-  const onPageCount = data?.filter((item) => item.show_on_page).length ?? 0;
+  const { count: onPageCount } = await supabase
+    .from("highlights")
+    .select("id", { count: "exact", head: true })
+    .eq("show_on_page", true);
 
   return (
     <div className="space-y-6">
       <AdminPageHeader
         title="Destaques"
-        description={`Cadastre conquistas e highlights curtos para a página de biografia. Marque Exibir na página em até ${MAX_BIO_PAGE_HIGHLIGHTS} itens; use as setas para reordenar. Em uso: ${onPageCount}/${MAX_BIO_PAGE_HIGHLIGHTS}.`}
+        description={`Cadastre conquistas e highlights curtos para a página de biografia. Marque Exibir na página em até ${MAX_BIO_PAGE_HIGHLIGHTS} itens; use as setas para reordenar. Em uso: ${onPageCount ?? 0}/${MAX_BIO_PAGE_HIGHLIGHTS}.`}
         action={
           <AdminCreateLink href="/admin/destaques/nova">
             Novo destaque
@@ -53,8 +79,8 @@ export default async function AdminHighlightsPage() {
                 <ReorderButtons
                   action={moveHighlight}
                   id={item.id}
-                  disabledUp={index === 0}
-                  disabledDown={index === (data?.length ?? 0) - 1}
+                  disabledUp={pageOffset + index === 0}
+                  disabledDown={pageOffset + index === (totalCount ?? 0) - 1}
                 />
               </td>
               <td className="px-4 py-3 font-medium">{item.title_pt}</td>
@@ -72,6 +98,8 @@ export default async function AdminHighlightsPage() {
           ))}
         </AdminDataTable>
       )}
+
+      <AdminPaginationNav basePath="/admin/destaques" page={safePage} totalPages={totalPages} />
     </div>
   );
 }

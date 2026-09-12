@@ -3,14 +3,17 @@ import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { PageHero } from "@/components/public/page-hero";
+import { PublicPaginationNav } from "@/components/public/pagination-nav";
 import { SectionReveal } from "@/components/public/section-reveal";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
-import { listPhotos } from "@/lib/public/media";
+import { PUBLIC_PAGE_SIZE, parsePage } from "@/lib/pagination";
+import { listPhotosPage } from "@/lib/public/media";
 import { getPageCover } from "@/lib/public/site-images";
 
 type PhotosPageProps = {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ page?: string }>;
 };
 
 export async function generateMetadata({
@@ -21,12 +24,16 @@ export async function generateMetadata({
   return { title: t("title") };
 }
 
-export default async function PhotosPage({ params }: PhotosPageProps) {
+export default async function PhotosPage({
+  params,
+  searchParams,
+}: PhotosPageProps) {
   const { locale } = await params;
+  const page = parsePage((await searchParams).page);
   setRequestLocale(locale);
   const t = await getTranslations("Photos");
-  const [photos, pageCover] = await Promise.all([
-    listPhotos(locale as Locale),
+  const [{ photos, totalPages }, pageCover] = await Promise.all([
+    listPhotosPage(locale as Locale, page, PUBLIC_PAGE_SIZE),
     getPageCover("fotos"),
   ]);
 
@@ -76,6 +83,7 @@ export default async function PhotosPage({ params }: PhotosPageProps) {
             )}
           </ul>
         )}
+        <PublicPaginationNav basePath="/fotos" page={page} totalPages={totalPages} />
       </SectionReveal>
     </main>
   );

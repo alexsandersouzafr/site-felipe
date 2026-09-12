@@ -1,15 +1,37 @@
 import Link from "next/link";
 
 import { AdminDataTable, AdminPageHeader } from "@/components/admin/admin-list";
+import { AdminPaginationNav } from "@/components/admin/pagination-nav";
+import {
+  ADMIN_PAGE_SIZE,
+  clampPage,
+  pageCount,
+  pageRange,
+  parsePage,
+} from "@/lib/pagination";
 import { createClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/utils";
 
-export default async function AdminMessagesPage() {
+export default async function AdminMessagesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const page = parsePage((await searchParams).page);
   const supabase = await createClient();
+
+  const { count: totalCount } = await supabase
+    .from("contact_messages")
+    .select("id", { count: "exact", head: true });
+  const totalPages = pageCount(totalCount ?? 0, ADMIN_PAGE_SIZE);
+  const safePage = clampPage(page, totalPages);
+  const { from, to } = pageRange(safePage, ADMIN_PAGE_SIZE);
+
   const { data, error } = await supabase
     .from("contact_messages")
     .select("id, name, email, subject, created_at, is_read")
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .range(from, to);
 
   return (
     <div className="space-y-6">
@@ -74,6 +96,8 @@ export default async function AdminMessagesPage() {
           ))}
         </AdminDataTable>
       )}
+
+      <AdminPaginationNav basePath="/admin/mensagens" page={safePage} totalPages={totalPages} />
     </div>
   );
 }

@@ -7,6 +7,7 @@ import {
 } from "@/lib/blog-blocks";
 import { getLocalizedValue } from "@/lib/localized-value";
 import { mediaPublicUrl } from "@/lib/media-url";
+import { clampPage, pageCount, pageRange } from "@/lib/pagination";
 import { createClient } from "@/lib/supabase/server";
 
 type BlogRow = {
@@ -97,6 +98,45 @@ export async function listBlogPosts(locale: Locale, limit?: number) {
   return ((data ?? []) as BlogRow[]).map((row) =>
     toSummary(row, locale, fallbackCoverUrl),
   );
+}
+
+export async function listBlogPostsPage(
+  locale: Locale,
+  page: number,
+  pageSize: number,
+) {
+  const supabase = await createClient();
+
+  const { count: totalCount } = await supabase
+    .from("news_items")
+    .select("id", { count: "exact", head: true });
+
+  const totalPages = pageCount(totalCount ?? 0, pageSize);
+  const { from, to } = pageRange(clampPage(page, totalPages), pageSize);
+
+  const [{ data, error, count }, fallbackCoverUrl] = await Promise.all([
+    supabase
+      .from("news_items")
+      .select(
+        "id, slug, title_pt, title_en, title_fr, cover_image_path, blocks, publish_at, created_at, updated_at",
+        { count: "exact" },
+      )
+      .order("publish_at", { ascending: false, nullsFirst: false })
+      .order("created_at", { ascending: false })
+      .range(from, to),
+    getBlogFallbackCoverUrl(supabase),
+  ]);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return {
+    posts: ((data ?? []) as BlogRow[]).map((row) =>
+      toSummary(row, locale, fallbackCoverUrl),
+    ),
+    totalPages: pageCount(count ?? 0, pageSize),
+  };
 }
 
 export async function getBlogPostBySlug(slug: string, locale: Locale) {

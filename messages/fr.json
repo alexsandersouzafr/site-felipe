@@ -27,7 +27,6 @@
   },
   "Home": {
     "eyebrow": "Felipe Magalhães",
-    "title": "Une musique qui rapproche les mondes.",
     "schedule": "Voir l'agenda",
     "bio": "Découvrir Felipe Magalhães",
     "bioSummaryTitle": "Le maestro",
@@ -91,5 +90,11 @@
     "title": "Presse",
     "empty": "Aucune photo de presse publiée pour le moment.",
     "credit": "Crédit"
+  },
+  "Pagination": {
+    "label": "Pagination",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "pageOf": "Page {page} sur {totalPages}"
   }
 }

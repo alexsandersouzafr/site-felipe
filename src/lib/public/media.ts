@@ -1,6 +1,7 @@
 import type { Locale } from "@/i18n/routing";
 import { getLocalizedValue } from "@/lib/localized-value";
 import { mediaPublicUrl } from "@/lib/media-url";
+import { clampPage, pageCount, pageRange } from "@/lib/pagination";
 import { createClient } from "@/lib/supabase/server";
 import { extractYouTubeId } from "@/lib/youtube";
 
@@ -80,21 +81,35 @@ export async function listVideos(locale: Locale) {
   );
 }
 
-export async function listPhotos(locale: Locale) {
+export async function listPhotosPage(
+  locale: Locale,
+  page: number,
+  pageSize: number,
+) {
   const supabase = await createClient();
-  const { data, error } = await supabase
+
+  const { count: totalCount } = await supabase
+    .from("photos")
+    .select("id", { count: "exact", head: true });
+
+  const totalPages = pageCount(totalCount ?? 0, pageSize);
+  const { from, to } = pageRange(clampPage(page, totalPages), pageSize);
+
+  const { data, error, count } = await supabase
     .from("photos")
     .select(
       "id, storage_path, alt_pt, alt_en, alt_fr, credit, collection, display_order",
+      { count: "exact" },
     )
     .order("display_order", { ascending: true })
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .range(from, to);
 
   if (error) {
     throw new Error(error.message);
   }
 
-  return ((data ?? []) as PhotoRow[]).map(
+  const photos = ((data ?? []) as PhotoRow[]).map(
     (row): PublicPhoto => ({
       id: row.id,
       src: mediaPublicUrl(row.storage_path),
@@ -106,4 +121,6 @@ export async function listPhotos(locale: Locale) {
       collection: row.collection,
     }),
   );
+
+  return { photos, totalPages: pageCount(count ?? 0, pageSize) };
 }

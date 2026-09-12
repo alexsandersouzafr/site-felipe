@@ -7,10 +7,18 @@ import {
   AdminEditLink,
 } from "@/components/admin/admin-action-links";
 import { DeleteEventButton } from "@/components/admin/delete-event-button";
+import { AdminPaginationNav } from "@/components/admin/pagination-nav";
 import { Button } from "@/components/ui/button";
 import { getEventLocalDateTime } from "@/lib/event-time";
 import type { EventRecord } from "@/lib/events";
 import { mediaPublicUrl } from "@/lib/media-url";
+import {
+  ADMIN_PAGE_SIZE,
+  clampPage,
+  pageCount,
+  pageRange,
+  parsePage,
+} from "@/lib/pagination";
 import { createClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/utils";
 
@@ -23,21 +31,37 @@ const statusLabel = {
 export default async function AdminAgendaPage({
   searchParams,
 }: {
-  searchParams: Promise<{ filter?: string }>;
+  searchParams: Promise<{ filter?: string; page?: string }>;
 }) {
-  const { filter } = await searchParams;
+  const { filter, page: pageParam } = await searchParams;
   const onlyFeatured = filter === "favoritos";
+  const page = parsePage(pageParam);
 
   const supabase = await createClient();
-  const { data, error } = await supabase
+
+  let countQuery = supabase
     .from("events")
-    .select("*")
+    .select("id", { count: "exact", head: true });
+  if (onlyFeatured) {
+    countQuery = countQuery.eq("is_featured", true);
+  }
+  const { count: totalCount } = await countQuery;
+  const totalPages = pageCount(totalCount ?? 0, ADMIN_PAGE_SIZE);
+  const safePage = clampPage(page, totalPages);
+  const { from, to } = pageRange(safePage, ADMIN_PAGE_SIZE);
+
+  let query = supabase
+    .from("events")
+    .select("*", { count: "exact" })
     .order("starts_at", { ascending: false });
 
-  const allEvents = (data ?? []) as EventRecord[];
-  const events = onlyFeatured
-    ? allEvents.filter((event) => event.is_featured)
-    : allEvents;
+  if (onlyFeatured) {
+    query = query.eq("is_featured", true);
+  }
+
+  const { data, error } = await query.range(from, to);
+
+  const events = (data ?? []) as EventRecord[];
 
   return (
     <div className="space-y-6">
@@ -188,6 +212,13 @@ export default async function AdminAgendaPage({
           </table>
         </div>
       )}
+
+      <AdminPaginationNav
+        basePath="/admin/agenda"
+        page={safePage}
+        totalPages={totalPages}
+        extraParams={onlyFeatured ? { filter: "favoritos" } : {}}
+      />
     </div>
   );
 }

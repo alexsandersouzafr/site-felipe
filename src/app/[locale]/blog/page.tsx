@@ -3,14 +3,17 @@ import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { PageHero } from "@/components/public/page-hero";
+import { PublicPaginationNav } from "@/components/public/pagination-nav";
 import { SectionReveal } from "@/components/public/section-reveal";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
-import { listBlogPosts } from "@/lib/public/blog";
+import { PUBLIC_PAGE_SIZE, parsePage } from "@/lib/pagination";
+import { listBlogPostsPage } from "@/lib/public/blog";
 import { getPageCover } from "@/lib/public/site-images";
 
 type BlogPageProps = {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ page?: string }>;
 };
 
 export async function generateMetadata({
@@ -21,12 +24,16 @@ export async function generateMetadata({
   return { title: t("title") };
 }
 
-export default async function BlogPage({ params }: BlogPageProps) {
+export default async function BlogPage({
+  params,
+  searchParams,
+}: BlogPageProps) {
   const { locale } = await params;
+  const page = parsePage((await searchParams).page);
   setRequestLocale(locale);
   const t = await getTranslations("Blog");
-  const [posts, pageCover] = await Promise.all([
-    listBlogPosts(locale as Locale),
+  const [{ posts, totalPages }, pageCover] = await Promise.all([
+    listBlogPostsPage(locale as Locale, page, PUBLIC_PAGE_SIZE),
     getPageCover("blog"),
   ]);
 
@@ -73,6 +80,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
             ))}
           </ul>
         )}
+        <PublicPaginationNav basePath="/blog" page={page} totalPages={totalPages} />
       </SectionReveal>
     </main>
   );

@@ -3,13 +3,16 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { EventList } from "@/components/public/event-list";
 import { PageHero } from "@/components/public/page-hero";
+import { PublicPaginationNav } from "@/components/public/pagination-nav";
 import { SectionReveal } from "@/components/public/section-reveal";
 import type { Locale } from "@/i18n/routing";
-import { listPublicEvents } from "@/lib/public/events";
+import { PUBLIC_PAGE_SIZE, parsePage } from "@/lib/pagination";
+import { listPublicEventsPage } from "@/lib/public/events";
 import { getPageCover } from "@/lib/public/site-images";
 
 type AgendaPageProps = {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ upcomingPage?: string; pastPage?: string }>;
 };
 
 export async function generateMetadata({
@@ -20,14 +23,26 @@ export async function generateMetadata({
   return { title: t("title") };
 }
 
-export default async function AgendaPage({ params }: AgendaPageProps) {
+export default async function AgendaPage({
+  params,
+  searchParams,
+}: AgendaPageProps) {
   const { locale } = await params;
+  const resolvedSearchParams = await searchParams;
+  const upcomingPage = parsePage(resolvedSearchParams.upcomingPage);
+  const pastPage = parsePage(resolvedSearchParams.pastPage);
   setRequestLocale(locale);
   const t = await getTranslations("Schedule");
-  const [{ upcoming, past }, pageCover] = await Promise.all([
-    listPublicEvents(locale as Locale),
-    getPageCover("agenda"),
-  ]);
+  const [{ upcoming, upcomingTotalPages, past, pastTotalPages }, pageCover] =
+    await Promise.all([
+      listPublicEventsPage(
+        locale as Locale,
+        upcomingPage,
+        pastPage,
+        PUBLIC_PAGE_SIZE,
+      ),
+      getPageCover("agenda"),
+    ]);
 
   return (
     <main>
@@ -45,6 +60,13 @@ export default async function AgendaPage({ params }: AgendaPageProps) {
           <div className="mt-6">
             <EventList events={upcoming} emptyLabel={t("upcomingEmpty")} />
           </div>
+          <PublicPaginationNav
+            basePath="/agenda"
+            paramName="upcomingPage"
+            page={upcomingPage}
+            totalPages={upcomingTotalPages}
+            extraParams={{ pastPage: String(pastPage) }}
+          />
         </SectionReveal>
 
         <SectionReveal className="mt-16">
@@ -54,6 +76,13 @@ export default async function AgendaPage({ params }: AgendaPageProps) {
           <div className="mt-6">
             <EventList events={past} emptyLabel={t("pastEmpty")} />
           </div>
+          <PublicPaginationNav
+            basePath="/agenda"
+            paramName="pastPage"
+            page={pastPage}
+            totalPages={pastTotalPages}
+            extraParams={{ upcomingPage: String(upcomingPage) }}
+          />
         </SectionReveal>
       </div>
     </main>

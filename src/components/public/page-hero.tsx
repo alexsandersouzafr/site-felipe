@@ -8,7 +8,8 @@ type PageHeroProps = {
   className?: string;
 };
 
-const HERO_HEIGHT = "h-[min(42vh,26rem)] min-h-[min(42vh,26rem)]";
+const HERO_HEIGHT =
+  "h-[min(42vh,26rem)] min-h-[min(42vh,26rem)] sm:h-[min(42vh,26rem)] md:h-[min(42vh,26rem)] lg:h-[min(42vh,26rem)]";
 
 export function PageHero({
   title,

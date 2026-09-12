@@ -5,15 +5,37 @@ import {
 } from "@/components/admin/admin-action-links";
 import { AdminDataTable, AdminPageHeader } from "@/components/admin/admin-list";
 import { ConfirmDeleteButton } from "@/components/admin/confirm-delete-button";
+import { AdminPaginationNav } from "@/components/admin/pagination-nav";
 import { mediaPublicUrl } from "@/lib/media-url";
+import {
+  ADMIN_PAGE_SIZE,
+  clampPage,
+  pageCount,
+  pageRange,
+  parsePage,
+} from "@/lib/pagination";
 import { createClient } from "@/lib/supabase/server";
 
-export default async function AdminBlogPage() {
+export default async function AdminBlogPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const page = parsePage((await searchParams).page);
   const supabase = await createClient();
+
+  const { count: totalCount } = await supabase
+    .from("news_items")
+    .select("id", { count: "exact", head: true });
+  const totalPages = pageCount(totalCount ?? 0, ADMIN_PAGE_SIZE);
+  const safePage = clampPage(page, totalPages);
+  const { from, to } = pageRange(safePage, ADMIN_PAGE_SIZE);
+
   const { data, error } = await supabase
     .from("news_items")
     .select("id, title_pt, slug, status, created_at, cover_image_path")
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .range(from, to);
 
   return (
     <div className="space-y-6">
@@ -66,6 +88,8 @@ export default async function AdminBlogPage() {
           ))}
         </AdminDataTable>
       )}
+
+      <AdminPaginationNav basePath="/admin/blog" page={safePage} totalPages={totalPages} />
     </div>
   );
 }
