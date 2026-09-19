@@ -23,11 +23,16 @@ type EventRowsProps = {
 /**
  * Concert rows shared by the schedule pages and the home page: the name and
  * venue on one end and the date on the other. From tablet up the event image
- * sits right beside the date, never far from it; on phones it goes above the
- * name. The date is stacked: day and month large with the year small beside
- * them, and the time just below (with the ticket button next to it), all in the
- * visitor's language. On phones the date, year and time share one line with the
- * ticket button under it, all smaller than the concert name so the name leads.
+ * sits right beside the date, and the date column has a fixed width (wide
+ * enough for the longest date in any language, "20 de novembro 2026": about
+ * 385px on desktop, 298px on tablets) so the images line up from row to row.
+ * On phones the image goes above the name.
+ *
+ * The date is stacked: day and month large with the year small beside them,
+ * and the time just below (with the ticket button next to it), all in the
+ * visitor's language. On phones the date, year and time share one line with
+ * the ticket button under it, all smaller than the concert name so the name
+ * leads.
  */
 export function EventRows({
   events,
@@ -57,7 +62,7 @@ export function EventRows({
               // A crimson rule draws itself along the bottom of the row on hover.
               "after:absolute after:inset-x-0 after:-bottom-px after:h-px after:origin-left after:scale-x-0 after:bg-primary after:transition-transform after:duration-700 after:ease-[cubic-bezier(0.76,0,0.24,1)] hover:after:scale-x-100",
               event.imageUrl &&
-                "md:grid-cols-[minmax(0,1fr)_9rem_auto] md:gap-x-6 lg:grid-cols-[minmax(0,1fr)_13rem_auto]",
+                "md:grid-cols-[minmax(0,1fr)_9rem_19.5rem] md:gap-x-6 lg:grid-cols-[minmax(0,1fr)_13rem_25rem]",
             )}
           >
             <div className="min-w-0">
