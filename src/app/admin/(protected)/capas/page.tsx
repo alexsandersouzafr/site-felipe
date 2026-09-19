@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { AdminPageHeader } from "@/components/admin/admin-list";
@@ -41,12 +42,16 @@ export default async function AdminCoversIndexPage() {
                 >
                   <div className="overflow-hidden rounded-2xl bg-muted">
                     {preview ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={preview}
-                        alt=""
-                        className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-                      />
+                      // Covers are HD (up to 15 MB): show a resized copy.
+                      <div className="relative aspect-[16/10]">
+                        <Image
+                          src={preview}
+                          alt=""
+                          fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                          className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                        />
+                      </div>
                     ) : (
                       <div className="flex aspect-[16/10] items-center justify-center text-sm text-muted-foreground">
                         Sem capa

@@ -1,3 +1,4 @@
+import { CaretLeftIcon, CaretRightIcon } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
 
 import { cn } from "@/lib/utils";
@@ -23,6 +24,10 @@ function buildHref(
   return query ? `${basePath}?${query}` : basePath;
 }
 
+const arrowClassName =
+  "inline-flex size-8 items-center justify-center rounded-2xl border border-border hover:bg-muted";
+
+/** Compact previous/next control, meant for the header of an `AdminListPanel`. */
 export function AdminPaginationNav({
   basePath,
   page,
@@ -42,34 +47,33 @@ export function AdminPaginationNav({
   const hasNext = page < totalPages;
 
   return (
-    <nav
-      className="flex items-center justify-between gap-4 pt-2"
-      aria-label="Paginação"
-    >
+    <nav className="flex items-center gap-2" aria-label="Paginação">
       <Link
         href={buildHref(basePath, page - 1, extraParams)}
+        aria-label="Página anterior"
         aria-disabled={!hasPrev}
         tabIndex={hasPrev ? undefined : -1}
         className={cn(
-          "inline-flex h-8 items-center rounded-2xl border border-border px-3 text-sm hover:bg-muted",
+          arrowClassName,
           !hasPrev && "pointer-events-none opacity-40",
         )}
       >
-        Anterior
+        <CaretLeftIcon className="size-4" />
       </Link>
-      <p className="text-sm text-muted-foreground">
+      <p className="min-w-24 text-center text-sm text-muted-foreground tabular-nums">
         Página {page} de {totalPages}
       </p>
       <Link
         href={buildHref(basePath, page + 1, extraParams)}
+        aria-label="Próxima página"
         aria-disabled={!hasNext}
         tabIndex={hasNext ? undefined : -1}
         className={cn(
-          "inline-flex h-8 items-center rounded-2xl border border-border px-3 text-sm hover:bg-muted",
+          arrowClassName,
           !hasNext && "pointer-events-none opacity-40",
         )}
       >
-        Próxima
+        <CaretRightIcon className="size-4" />
       </Link>
     </nav>
   );

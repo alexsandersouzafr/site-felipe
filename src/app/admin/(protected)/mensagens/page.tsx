@@ -1,7 +1,10 @@
-import Link from "next/link";
-
-import { AdminDataTable, AdminPageHeader } from "@/components/admin/admin-list";
-import { AdminPaginationNav } from "@/components/admin/pagination-nav";
+import { AdminViewLink } from "@/components/admin/admin-action-links";
+import {
+  AdminDataTable,
+  AdminListPage,
+  AdminListPanel,
+  AdminPageHeader,
+} from "@/components/admin/admin-list";
 import {
   ADMIN_PAGE_SIZE,
   clampPage,
@@ -34,70 +37,80 @@ export default async function AdminMessagesPage({
     .range(from, to);
 
   return (
-    <div className="space-y-6">
+    <AdminListPage>
       <AdminPageHeader
         title="Mensagens"
         description="Caixa de entrada somente leitura das mensagens enviadas pelo formulário público de contato. Use esta lista para acompanhar pedidos e responder fora do site."
       />
-      {error && (
-        <p className="text-sm text-destructive">
-          Não foi possível carregar as mensagens. Aplique a migration de
-          contato.
-        </p>
-      )}
-      {!error && (data?.length ?? 0) === 0 && (
-        <p className="text-sm text-muted-foreground">
-          Nenhuma mensagem recebida ainda.
-        </p>
-      )}
-      {(data?.length ?? 0) > 0 && (
-        <AdminDataTable
-          headers={["", "Nome", "E-mail", "Assunto", "Data", "Ações"]}
-        >
-          {data?.map((item) => (
-            <tr
-              key={item.id}
-              className={cn(
-                "border-b border-border/60 last:border-0",
-                !item.is_read && "bg-primary/5",
-              )}
-            >
-              <td className="px-4 py-3">
-                {!item.is_read ? (
-                  <span
-                    role="status"
-                    className="inline-block size-2 rounded-full bg-primary"
-                    aria-label="Não lida"
-                  />
-                ) : null}
-              </td>
-              <td
+      <AdminListPanel
+        pagination={{
+          basePath: "/admin/mensagens",
+          page: safePage,
+          totalPages,
+        }}
+      >
+        {error && (
+          <p className="text-sm text-destructive">
+            Não foi possível carregar as mensagens. Aplique a migration de
+            contato.
+          </p>
+        )}
+        {!error && (data?.length ?? 0) === 0 && (
+          <p className="text-sm text-muted-foreground">
+            Nenhuma mensagem recebida ainda.
+          </p>
+        )}
+        {(data?.length ?? 0) > 0 && (
+          <AdminDataTable
+            headers={[
+              { label: "Status", hideLabel: true },
+              "Nome",
+              "E-mail",
+              "Assunto",
+              "Data",
+              "Ações",
+            ]}
+          >
+            {data?.map((item) => (
+              <tr
+                key={item.id}
                 className={cn(
-                  "px-4 py-3",
-                  !item.is_read ? "font-semibold" : "font-medium",
+                  "border-b border-border/60 last:border-0",
+                  !item.is_read && "bg-primary/5",
                 )}
               >
-                {item.name}
-              </td>
-              <td className="px-4 py-3">{item.email}</td>
-              <td className="px-4 py-3">{item.subject}</td>
-              <td className="px-4 py-3">
-                {new Date(item.created_at).toLocaleString("pt-BR")}
-              </td>
-              <td className="px-4 py-3 text-right">
-                <Link
-                  href={`/admin/mensagens/${item.id}`}
-                  className="inline-flex h-7 items-center rounded-2xl border border-border px-3 text-sm hover:bg-muted"
+                <td className="px-4 py-3">
+                  {!item.is_read ? (
+                    <span
+                      role="status"
+                      className="inline-block size-2 rounded-full bg-primary"
+                      aria-label="Não lida"
+                    />
+                  ) : null}
+                </td>
+                <td
+                  className={cn(
+                    "px-4 py-3",
+                    !item.is_read ? "font-semibold" : "font-medium",
+                  )}
                 >
-                  Ver
-                </Link>
-              </td>
-            </tr>
-          ))}
-        </AdminDataTable>
-      )}
-
-      <AdminPaginationNav basePath="/admin/mensagens" page={safePage} totalPages={totalPages} />
-    </div>
+                  {item.name}
+                </td>
+                <td className="px-4 py-3">{item.email}</td>
+                <td className="px-4 py-3">{item.subject}</td>
+                <td className="px-4 py-3">
+                  {new Date(item.created_at).toLocaleString("pt-BR")}
+                </td>
+                <td className="px-4 py-3">
+                  <div className="flex justify-end">
+                    <AdminViewLink href={`/admin/mensagens/${item.id}`} />
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </AdminDataTable>
+        )}
+      </AdminListPanel>
+    </AdminListPage>
   );
 }

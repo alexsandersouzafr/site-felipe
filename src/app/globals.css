@@ -88,6 +88,11 @@
   --sidebar-ring: oklch(0.723 0.014 214.4);
 }
 
+/* The public site is square (--radius: 0); the admin area gets barely-there corners. */
+:root:has(.admin-area) {
+  --radius: 0.15rem;
+}
+
 .dark {
   --background: oklch(0.148 0.004 228.8);
   --foreground: oklch(0.987 0.002 197.1);

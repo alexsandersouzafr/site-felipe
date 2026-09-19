@@ -268,9 +268,11 @@ where not exists (
 );
 
 -- ---------------------------------------------------------------------------
--- Press photos — placeholder files; upload real HD images to replace them.
+-- Press photos — placeholder files, half of them in each section; upload
+-- real HD images to replace them.
 -- ---------------------------------------------------------------------------
-insert into public.press_photos (status, publish_at, storage_path, alt_pt, credit, display_order)
+-- Odd numbers are photos of the conductor, even numbers are on-stage photos.
+insert into public.press_photos (status, publish_at, storage_path, alt_pt, credit, category, display_order)
 select 'published', null,
   'press/seed-' || lpad(s::text, 3, '0') || '.jpg',
   'Foto de imprensa de exemplo #' || s,
@@ -290,10 +292,19 @@ select
   'Remetente de exemplo ' || s,
   'contato-exemplo-' || s || '@example.com',
   'Assunto de exemplo #' || s,
+  (case when s % 2 = 0 then 'stage' else 'conductor' end)::public.press_photo_category,
   'Mensagem de exemplo gerada para testar a paginação da caixa de entrada.',
   (s % 3 = 0),
   now() - (s * interval '3 hours')
 from generate_series(1, 32) as s
 where not exists (
   select 1 from public.contact_messages where email = 'contato-exemplo-' || s || '@example.com'
+-- Rows seeded before categories existed all defaulted to "conductor": give
+-- the even ones to the stage section. Only sample rows still at the default.
+update public.press_photos
+set category = 'stage'
+where category = 'conductor'
+  and storage_path ~ '^press/seed-[0-9]+\.jpg$'
+  and substring(storage_path from '[0-9]+')::int % 2 = 0;
+
 );

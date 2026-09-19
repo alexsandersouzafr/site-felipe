@@ -36,16 +36,14 @@ export default async function EditPressPhotoPage({
       <div className="space-y-2">
         <p className="text-sm text-muted-foreground">
           <Link
-            href="/admin/imprensa"
+            href={`/admin/imprensa?categoria=${data.category}`}
             className="underline underline-offset-4"
           >
             Imprensa
           </Link>{" "}
           / Editar
         </p>
-        <h1 className="font-heading text-3xl tracking-tight">
-          {data.alt_pt}
-        </h1>
+        <h1 className="font-heading text-3xl tracking-tight">{data.alt_pt}</h1>
       </div>
       <PressPhotoForm
         action={action}
@@ -54,6 +52,7 @@ export default async function EditPressPhotoPage({
           status: data.status,
           publishAt: toDateTimeLocalValue(data.publish_at),
           storagePath: data.storage_path,
+          category: data.category,
           altPt: data.alt_pt,
           altEn: data.alt_en,
           altFr: data.alt_fr,

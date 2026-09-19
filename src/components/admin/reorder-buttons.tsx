@@ -1,46 +1,45 @@
-import { ArrowDownIcon, ArrowUpIcon } from "@phosphor-icons/react/dist/ssr";
+"use client";
 
+import { ArrowDownIcon, ArrowUpIcon } from "@phosphor-icons/react";
+
+import {
+  type ReorderAction,
+  useReorder,
+} from "@/components/admin/reorderable-rows";
 import { Button } from "@/components/ui/button";
 
+/** Up/down arrows for a row of an `AdminDataTable` that has `reorder` set. */
 export function ReorderButtons({
   action,
   id,
-  disabledUp,
-  disabledDown,
 }: {
-  action: (formData: FormData) => void | Promise<void>;
+  action: ReorderAction;
   id: string;
-  disabledUp?: boolean;
-  disabledDown?: boolean;
 }) {
+  const { move, canMove } = useReorder();
+
   return (
     <div className="flex items-center gap-1">
-      <form action={action}>
-        <input type="hidden" name="id" value={id} />
-        <input type="hidden" name="direction" value="up" />
-        <Button
-          type="submit"
-          variant="ghost"
-          size="icon-sm"
-          aria-label="Mover para cima"
-          isDisabled={disabledUp}
-        >
-          <ArrowUpIcon className="size-3.5" />
-        </Button>
-      </form>
-      <form action={action}>
-        <input type="hidden" name="id" value={id} />
-        <input type="hidden" name="direction" value="down" />
-        <Button
-          type="submit"
-          variant="ghost"
-          size="icon-sm"
-          aria-label="Mover para baixo"
-          isDisabled={disabledDown}
-        >
-          <ArrowDownIcon className="size-3.5" />
-        </Button>
-      </form>
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon-sm"
+        aria-label="Mover para cima"
+        isDisabled={!canMove(id, "up")}
+        onPress={() => move(id, "up", action)}
+      >
+        <ArrowUpIcon className="size-3.5" />
+      </Button>
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon-sm"
+        aria-label="Mover para baixo"
+        isDisabled={!canMove(id, "down")}
+        onPress={() => move(id, "down", action)}
+      >
+        <ArrowDownIcon className="size-3.5" />
+      </Button>
     </div>
   );
 }

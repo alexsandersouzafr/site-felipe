@@ -10,7 +10,7 @@ Each editorial entity has an `id`, `status` (`draft`, `scheduled`, or `published
 | Event | title, image, venue, city, country, start, end, link, and `is_featured` (curated for the home page) |
 | Video | title, YouTube URL/ID, description, cover, and date |
 | Photo (gallery) | file, alternative text, credit, collection, and order |
-| Press photo (`press_photos`) | HD file (15 MB limit), alternative text, credit, and order — separate from the gallery, surfaced on `/imprensa` |
+| Press photo (`press_photos`) | HD file (15 MB limit), section (`category`: `conductor` = photos of the conductor / publicity, `stage` = on-stage photos), alternative text, credit, and order within its section — separate from the gallery, surfaced on `/imprensa` in one section per category, each photo with a hi-res download |
 | Home photo | ordered HD parallax bands for the home page |
 | Page cover | one top image per public page key (`home`, `bio`, `blog`, `agenda`, `videos`, `fotos`, `contato`, `imprensa`) |
 | Contact / settings | email, phone, social links, introduction text, and the blog fallback cover image |

@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { adminNavItems } from "./admin-nav";
+import {
+  adminNavGroups,
+  adminNavItems,
+  isAdminNavItemActive,
+} from "./admin-nav";
 
 describe("adminNavItems", () => {
   it("exposes every content area for the panel shell", () => {
@@ -18,5 +22,27 @@ describe("adminNavItems", () => {
       "/admin/contato",
       "/admin/mensagens",
     ]);
+  });
+
+  it("puts every item but the home shortcut under a menu section, in order", () => {
+    expect(adminNavGroups.map((group) => group.label)).toEqual([
+      "Conteúdo",
+      "Mídia",
+      "Site",
+    ]);
+    expect(adminNavGroups.flatMap((group) => group.items)).toEqual(
+      adminNavItems.filter((item) => item.href !== "/admin"),
+    );
+  });
+
+  it("marks an item active for its own screens only", () => {
+    expect(isAdminNavItemActive("/admin", "/admin")).toBe(true);
+    expect(isAdminNavItemActive("/admin", "/admin/agenda")).toBe(false);
+    expect(isAdminNavItemActive("/admin/agenda", "/admin/agenda/nova")).toBe(
+      true,
+    );
+    expect(isAdminNavItemActive("/admin/fotos", "/admin/home-fotos")).toBe(
+      false,
+    );
   });
 });

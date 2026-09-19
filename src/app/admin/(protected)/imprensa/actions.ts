@@ -11,6 +11,7 @@ import {
   requireScheduledPublishAt,
 } from "@/lib/admin-form";
 import { MAX_HD_IMAGE_BYTES, validateImageFile } from "@/lib/media-limits";
+import { parsePressPhotoCategory } from "@/lib/press-categories";
 import {
   nextDisplayOrder,
   parseReorderDirection,
@@ -53,6 +54,20 @@ async function savePressPhoto(
 
   if (scheduleError) {
     return { error: scheduleError };
+  }
+
+  const category = parsePressPhotoCategory(formData.get("category"));
+
+  if (!category) {
+    return { error: "Escolha se a foto é do maestro ou no palco." };
+  }
+
+  const credit = optionalText(formData, "credit");
+
+  if (!credit) {
+    return {
+      error: "O crédito do fotógrafo é obrigatório nas fotos de imprensa.",
+    };
   }
 
   const alts = readLocalizedPair(formData, {
@@ -99,26 +114,49 @@ async function savePressPhoto(
     status,
     publish_at: publishAt,
     storage_path: storagePath,
+    category,
     alt_pt: alts.pt,
     alt_en: alts.en,
     alt_fr: alts.fr,
-    credit: optionalText(formData, "credit"),
+    credit,
     updated_at: new Date().toISOString(),
   };
 
-  const { error } = id
-    ? await supabase.from("press_photos").update(payload).eq("id", id)
-    : await supabase.from("press_photos").insert({
-        ...payload,
-        display_order: await nextDisplayOrder(supabase, "press_photos"),
-      });
+  let error: unknown;
+
+  if (id) {
+    // A photo moved to the other section goes to the end of that list.
+    const { data: existing } = await supabase
+      .from("press_photos")
+      .select("category")
+      .eq("id", id)
+      .maybeSingle();
+    const changedCategory = existing?.category !== category;
+
+    ({ error } = await supabase
+      .from("press_photos")
+      .update(
+        changedCategory
+          ? {
+              ...payload,
+              display_order: await nextDisplayOrder(supabase, "press_photos"),
+            }
+          : payload,
+      )
+      .eq("id", id));
+  } else {
+    ({ error } = await supabase.from("press_photos").insert({
+      ...payload,
+      display_order: await nextDisplayOrder(supabase, "press_photos"),
+    }));
+  }
 
   if (error) {
     return { error: "Não foi possível salvar a foto de imprensa." };
   }
 
   revalidatePressPhotos();
-  redirect("/admin/imprensa");
+  redirect(`/admin/imprensa?categoria=${category}`);
 }
 
 export async function deletePressPhoto(formData: FormData) {
@@ -126,7 +164,7 @@ export async function deletePressPhoto(formData: FormData) {
   const supabase = await createClient();
   const { data } = await supabase
     .from("press_photos")
-    .select("storage_path")
+    .select("storage_path, category")
     .eq("id", id)
     .maybeSingle();
 
@@ -137,7 +175,11 @@ export async function deletePressPhoto(formData: FormData) {
   }
 
   revalidatePressPhotos();
-  redirect("/admin/imprensa");
+  redirect(
+    data?.category
+      ? `/admin/imprensa?categoria=${data.category}`
+      : "/admin/imprensa",
+  );
 }
 
 export async function movePressPhoto(formData: FormData) {
@@ -149,9 +191,22 @@ export async function movePressPhoto(formData: FormData) {
   }
 
   const supabase = await createClient();
+  const { data: photo } = await supabase
+    .from("press_photos")
+    .select("category")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (!photo) {
+    return;
+  }
+
+  // Each section is ordered on its own, so a photo only trades places with
+  // its neighbour in the same section.
   const { data } = await supabase
     .from("press_photos")
     .select("id, display_order")
+    .eq("category", photo.category)
     .order("display_order", { ascending: true });
 
   await swapDisplayOrder(supabase, "press_photos", data ?? [], id, direction);
