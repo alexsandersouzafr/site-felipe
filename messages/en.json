@@ -51,7 +51,10 @@
   "Schedule": {
     "title": "Schedule",
     "upcoming": "Upcoming",
-    "past": "Past",
+    "viewPast": "View past concerts",
+    "pastTitle": "Past concerts",
+    "backToSchedule": "Back to schedule",
+    "featured": "Featured concert",
     "upcomingEmpty": "No upcoming concerts announced.",
     "pastEmpty": "No past concerts listed.",
     "tickets": "Tickets",
@@ -89,7 +92,13 @@
   "Press": {
     "title": "Press",
     "empty": "No press photos published right now.",
-    "credit": "Credit"
+    "conductorPhotos": "Publicity photos",
+    "stagePhotos": "On-stage photos",
+    "download": "Download hi-res",
+    "open": "Enlarge photo",
+    "close": "Close",
+    "previous": "Previous photo",
+    "next": "Next photo"
   },
   "Pagination": {
     "label": "Pagination",

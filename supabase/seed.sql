@@ -1,7 +1,8 @@
 -- Sample content for local/manual testing: biography, highlights, agenda
 -- events, blog posts, photos, videos, press photos, and contact messages.
 -- Safe to run more than once — every insert is guarded by a `where not
--- exists` check, so re-running never duplicates rows.
+-- exists` check, so re-running never duplicates rows. (The one `update`, for
+-- the sample concerts' ticket links, only fills in links that are missing.)
 --
 -- Each table gets a handful of realistic, hand-written rows plus enough
 -- generated filler rows to comfortably exceed 30, so pagination (15/page
@@ -98,7 +99,8 @@ where not exists (
 );
 
 -- ---------------------------------------------------------------------------
--- Agenda (events) — a mix of past, upcoming, and featured concerts
+-- Agenda (events) — a mix of past, upcoming, and featured concerts, most of
+-- the upcoming ones with a ticket link
 -- ---------------------------------------------------------------------------
 insert into public.events (status, publish_at, title_pt, title_en, title_fr, venue, city, country, time_zone, starts_at, ends_at, ticket_url, is_featured)
 select 'published', null,
@@ -149,16 +151,29 @@ select 'published', null,
 where not exists (select 1 from public.events where title_pt = 'Gala de Ano Novo Vienense');
 
 -- Filler rows spread from ~70 days in the past to ~75 days in the future,
--- so both the "upcoming" and "past" tabs have enough to paginate.
-insert into public.events (status, publish_at, title_pt, venue, city, country, time_zone, starts_at, ends_at, is_featured)
+-- so both the upcoming schedule and the past-concerts page have enough to
+-- paginate. Two out of three get a ticket link, so the ticket button shows
+-- up on most upcoming rows (the third stays without one, as some real
+-- concerts are).
+insert into public.events (status, publish_at, title_pt, venue, city, country, time_zone, starts_at, ends_at, ticket_url, is_featured)
 select 'published', null,
   'Concerto de exemplo #' || s,
   'Sala de Concertos ' || s, 'Cidade ' || s, 'Brasil', 'America/Sao_Paulo',
   (now() + ((s - 15) * interval '5 days'))::date + time '20:00',
   (now() + ((s - 15) * interval '5 days'))::date + time '22:00',
+  case when s % 3 <> 0 then 'https://example.com/ingressos/concerto-de-exemplo-' || s end,
   false
 from generate_series(1, 30) as s
 where not exists (select 1 from public.events where title_pt = 'Concerto de exemplo #' || s);
+
+-- Rows seeded before ticket links existed: fill in the missing ones. Only
+-- touches the sample concerts above and never overwrites an existing link.
+update public.events as e
+set ticket_url = 'https://example.com/ingressos/concerto-de-exemplo-' || n.s
+from generate_series(1, 30) as n(s)
+where e.title_pt = 'Concerto de exemplo #' || n.s
+  and e.ticket_url is null
+  and n.s % 3 <> 0;
 
 -- ---------------------------------------------------------------------------
 -- Blog posts
@@ -277,11 +292,20 @@ select 'published', null,
   'press/seed-' || lpad(s::text, 3, '0') || '.jpg',
   'Foto de imprensa de exemplo #' || s,
   'Crédito de exemplo',
+  (case when s % 2 = 0 then 'stage' else 'conductor' end)::public.press_photo_category,
   100 + s
 from generate_series(1, 32) as s
 where not exists (
   select 1 from public.press_photos where storage_path = 'press/seed-' || lpad(s::text, 3, '0') || '.jpg'
 );
+
+-- Rows seeded before categories existed all defaulted to "conductor": give
+-- the even ones to the stage section. Only sample rows still at the default.
+update public.press_photos
+set category = 'stage'
+where category = 'conductor'
+  and storage_path ~ '^press/seed-[0-9]+\.jpg$'
+  and substring(storage_path from '[0-9]+')::int % 2 = 0;
 
 -- ---------------------------------------------------------------------------
 -- Contact messages — a third come in pre-marked as read, to test the
@@ -292,19 +316,10 @@ select
   'Remetente de exemplo ' || s,
   'contato-exemplo-' || s || '@example.com',
   'Assunto de exemplo #' || s,
-  (case when s % 2 = 0 then 'stage' else 'conductor' end)::public.press_photo_category,
   'Mensagem de exemplo gerada para testar a paginação da caixa de entrada.',
   (s % 3 = 0),
   now() - (s * interval '3 hours')
 from generate_series(1, 32) as s
 where not exists (
   select 1 from public.contact_messages where email = 'contato-exemplo-' || s || '@example.com'
--- Rows seeded before categories existed all defaulted to "conductor": give
--- the even ones to the stage section. Only sample rows still at the default.
-update public.press_photos
-set category = 'stage'
-where category = 'conductor'
-  and storage_path ~ '^press/seed-[0-9]+\.jpg$'
-  and substring(storage_path from '[0-9]+')::int % 2 = 0;
-
 );

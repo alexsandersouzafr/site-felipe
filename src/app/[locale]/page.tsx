@@ -2,6 +2,7 @@ import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Fragment, type ReactNode } from "react";
 
+import { EventRows } from "@/components/public/event-rows";
 import { ParallaxBand } from "@/components/public/parallax-band";
 import { SectionReveal } from "@/components/public/section-reveal";
 import { Link } from "@/i18n/navigation";
@@ -22,6 +23,7 @@ export default async function HomePage({ params }: HomePageProps) {
   const typedLocale = locale as Locale;
 
   const t = await getTranslations("Home");
+  const tSchedule = await getTranslations("Schedule");
   const [upcoming, posts, bioSummary, homePhotos, homeCover] =
     await Promise.all([
       listUpcomingEvents(typedLocale, 3),
@@ -80,26 +82,11 @@ export default async function HomePage({ params }: HomePageProps) {
         {upcoming.length === 0 ? (
           <p className="text-muted-foreground">{t("upcomingEmpty")}</p>
         ) : (
-          <ul className="divide-y divide-border/70">
-            {upcoming.map((event) => (
-              <li
-                key={event.id}
-                className="flex flex-col gap-1 py-5 sm:flex-row sm:items-baseline sm:justify-between"
-              >
-                <div>
-                  <p className="font-heading text-xl tracking-tight">
-                    {event.title}
-                  </p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {event.venue} · {event.city}
-                  </p>
-                </div>
-                <p className="text-sm tabular-nums text-muted-foreground">
-                  {event.localDate} · {event.localTime}
-                </p>
-              </li>
-            ))}
-          </ul>
+          <EventRows
+            events={upcoming}
+            locale={locale}
+            ticketsLabel={tSchedule("tickets")}
+          />
         )}
       </SectionReveal>
     ),

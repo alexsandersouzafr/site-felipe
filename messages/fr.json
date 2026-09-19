@@ -51,7 +51,10 @@
   "Schedule": {
     "title": "Agenda",
     "upcoming": "À venir",
-    "past": "Passés",
+    "viewPast": "Voir les concerts passés",
+    "pastTitle": "Concerts passés",
+    "backToSchedule": "Retour à l'agenda",
+    "featured": "Concert à l'affiche",
     "upcomingEmpty": "Aucun concert à venir annoncé.",
     "pastEmpty": "Aucun concert passé répertorié.",
     "tickets": "Billets",
@@ -89,7 +92,13 @@
   "Press": {
     "title": "Presse",
     "empty": "Aucune photo de presse publiée pour le moment.",
-    "credit": "Crédit"
+    "conductorPhotos": "Photos publicitaires",
+    "stagePhotos": "Photos sur scène",
+    "download": "Télécharger en haute résolution",
+    "open": "Agrandir la photo",
+    "close": "Fermer",
+    "previous": "Photo précédente",
+    "next": "Photo suivante"
   },
   "Pagination": {
     "label": "Pagination",

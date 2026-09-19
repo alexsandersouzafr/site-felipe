@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { PageHero } from "@/components/public/page-hero";
+import { PressGallery } from "@/components/public/press-gallery";
 import { SectionReveal } from "@/components/public/section-reveal";
 import type { Locale } from "@/i18n/routing";
 import { getBioSummary } from "@/lib/public/bio";
@@ -24,13 +24,27 @@ export async function generateMetadata({
 export default async function PressPage({ params }: PressPageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const typedLocale = locale as Locale;
   const t = await getTranslations("Press");
   const [photos, pageCover, bioSummary] = await Promise.all([
-    listPressPhotos(typedLocale),
+    listPressPhotos(locale as Locale),
     getPageCover("imprensa"),
-    getBioSummary(typedLocale),
+    getBioSummary(locale as Locale),
   ]);
+
+  const labels = {
+    open: t("open"),
+    close: t("close"),
+    previous: t("previous"),
+    next: t("next"),
+    download: t("download"),
+  };
+  const sections = [
+    { id: "conductor", title: t("conductorPhotos"), shape: "portrait" },
+    { id: "stage", title: t("stagePhotos"), shape: "landscape" },
+  ] as const;
+  const visibleSections = sections.filter(
+    (section) => photos[section.id].length > 0,
+  );
 
   return (
     <main>
@@ -42,45 +56,34 @@ export default async function PressPage({ params }: PressPageProps) {
 
       <div className="mx-auto max-w-6xl px-6 py-14 sm:py-20">
         {bioSummary ? (
-          <SectionReveal className="max-w-3xl">
+          <SectionReveal className="mx-auto max-w-3xl text-center">
             <p className="text-lg leading-relaxed text-muted-foreground">
               {bioSummary.summary}
             </p>
           </SectionReveal>
         ) : null}
 
-        <SectionReveal className={bioSummary ? "mt-14" : undefined}>
-          {photos.length === 0 ? (
-            <p className="text-muted-foreground">{t("empty")}</p>
-          ) : (
-            <ul className="columns-1 gap-6 sm:columns-2 lg:columns-3">
-              {photos.map((photo) =>
-                photo.src ? (
-                  <li key={photo.id} className="mb-6 break-inside-avoid">
-                    <figure>
-                      <div className="relative aspect-[4/5] overflow-hidden bg-muted">
-                        <Image
-                          src={photo.src}
-                          alt={photo.alt}
-                          fill
-                          className="object-cover"
-                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        />
-                      </div>
-                      {(photo.credit || photo.alt) && (
-                        <figcaption className="mt-2 text-xs text-muted-foreground">
-                          {photo.credit
-                            ? `${t("credit")}: ${photo.credit}`
-                            : photo.alt}
-                        </figcaption>
-                      )}
-                    </figure>
-                  </li>
-                ) : null,
-              )}
-            </ul>
-          )}
-        </SectionReveal>
+        {visibleSections.length === 0 ? (
+          <p className="mt-14 text-center text-muted-foreground">
+            {t("empty")}
+          </p>
+        ) : (
+          visibleSections.map((section, index) => (
+            <SectionReveal
+              key={section.id}
+              className={bioSummary || index > 0 ? "mt-16 sm:mt-24" : undefined}
+            >
+              <h2 className="mb-10 text-center font-heading text-3xl tracking-tight sm:text-4xl">
+                {section.title}
+              </h2>
+              <PressGallery
+                photos={photos[section.id]}
+                shape={section.shape}
+                labels={labels}
+              />
+            </SectionReveal>
+          ))
+        )}
       </div>
     </main>
   );

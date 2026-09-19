@@ -90,72 +90,62 @@ export async function listUpcomingEvents(locale: Locale, limit = 3) {
   return (featured.length > 0 ? featured : upcoming).slice(0, limit);
 }
 
-/**
- * Paginates upcoming and past events independently, at the database level,
- * since they use opposite sort orders and are shown as two separate lists.
- */
-export async function listPublicEventsPage(
+type EventsPageKind = "upcoming" | "past";
+
+async function fetchEventsPage(
   locale: Locale,
-  upcomingPage: number,
-  pastPage: number,
+  kind: EventsPageKind,
+  page: number,
   pageSize: number,
 ) {
   const supabase = await createClient();
   const nowIso = new Date().toISOString();
 
-  const [{ count: upcomingCount }, { count: pastCount }] = await Promise.all([
-    supabase
-      .from("events")
-      .select("id", { count: "exact", head: true })
-      .gte("starts_at", nowIso),
-    supabase
-      .from("events")
-      .select("id", { count: "exact", head: true })
-      .lt("starts_at", nowIso),
-  ]);
+  const countQuery = supabase
+    .from("events")
+    .select("id", { count: "exact", head: true });
+  const { count } = await (kind === "upcoming"
+    ? countQuery.gte("starts_at", nowIso)
+    : countQuery.lt("starts_at", nowIso));
 
-  const upcomingTotalPagesForClamp = pageCount(upcomingCount ?? 0, pageSize);
-  const pastTotalPagesForClamp = pageCount(pastCount ?? 0, pageSize);
-  const upcomingRange = pageRange(
-    clampPage(upcomingPage, upcomingTotalPagesForClamp),
-    pageSize,
-  );
-  const pastRange = pageRange(
-    clampPage(pastPage, pastTotalPagesForClamp),
-    pageSize,
-  );
+  const totalPages = pageCount(count ?? 0, pageSize);
+  // Clamped here so the caller shows the page that was actually loaded.
+  const safePage = clampPage(page, totalPages);
+  const { from, to } = pageRange(safePage, pageSize);
 
-  const [upcomingResult, pastResult] = await Promise.all([
-    supabase
-      .from("events")
-      .select(EVENT_COLUMNS, { count: "exact" })
-      .gte("starts_at", nowIso)
-      .order("starts_at", { ascending: true })
-      .range(upcomingRange.from, upcomingRange.to),
-    supabase
-      .from("events")
-      .select(EVENT_COLUMNS, { count: "exact" })
-      .lt("starts_at", nowIso)
-      .order("starts_at", { ascending: false })
-      .range(pastRange.from, pastRange.to),
-  ]);
+  const listQuery = supabase.from("events").select(EVENT_COLUMNS);
+  const { data, error } = await (kind === "upcoming"
+    ? listQuery.gte("starts_at", nowIso).order("starts_at", { ascending: true })
+    : listQuery.lt("starts_at", nowIso).order("starts_at", { ascending: false })
+  ).range(from, to);
 
-  if (upcomingResult.error) {
-    throw new Error(upcomingResult.error.message);
-  }
-
-  if (pastResult.error) {
-    throw new Error(pastResult.error.message);
+  if (error) {
+    throw new Error(error.message);
   }
 
   return {
-    upcoming: ((upcomingResult.data ?? []) as EventRow[]).map((row) =>
+    events: ((data ?? []) as EventRow[]).map((row) =>
       toPublicEvent(row, locale),
     ),
-    upcomingTotalPages: pageCount(upcomingResult.count ?? 0, pageSize),
-    past: ((pastResult.data ?? []) as EventRow[]).map((row) =>
-      toPublicEvent(row, locale),
-    ),
-    pastTotalPages: pageCount(pastResult.count ?? 0, pageSize),
+    page: safePage,
+    totalPages,
   };
+}
+
+/** Upcoming events, soonest first. */
+export function listUpcomingEventsPage(
+  locale: Locale,
+  page: number,
+  pageSize: number,
+) {
+  return fetchEventsPage(locale, "upcoming", page, pageSize);
+}
+
+/** Past events, most recent first. */
+export function listPastEventsPage(
+  locale: Locale,
+  page: number,
+  pageSize: number,
+) {
+  return fetchEventsPage(locale, "past", page, pageSize);
 }
