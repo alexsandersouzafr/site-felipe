@@ -84,7 +84,11 @@
     "success": "Message sent. Thank you for reaching out.",
     "error": "Could not send. Please try again.",
     "validationError": "Please fill in all fields correctly.",
-    "rateLimitedError": "Too many attempts in a short time. Please wait a few minutes and try again."
+    "rateLimitedError": "Too many attempts in a short time. Please wait a few minutes and try again.",
+    "tooFastError": "You sent that too quickly. Wait a few seconds and try again.",
+    "expiredError": "This page has been open for too long. Reload it and send again.",
+    "tooManyLinksError": "The message has too many links. Remove some and try again.",
+    "captchaError": "We could not confirm you are not a robot. Please try again."
   },
   "Common": {
     "empty": "Content unavailable."

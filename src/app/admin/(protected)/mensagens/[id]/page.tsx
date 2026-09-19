@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { isSafeEmailAddress } from "@/lib/public/contact";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function MessageDetailPage({
@@ -49,12 +50,16 @@ export default async function MessageDetailPage({
         <div>
           <dt className="text-sm text-muted-foreground">E-mail</dt>
           <dd>
-            <a
-              href={`mailto:${data.email}`}
-              className="underline underline-offset-4"
-            >
-              {data.email}
-            </a>
+            {isSafeEmailAddress(data.email) ? (
+              <a
+                href={`mailto:${data.email}`}
+                className="underline underline-offset-4"
+              >
+                {data.email}
+              </a>
+            ) : (
+              data.email
+            )}
           </dd>
         </div>
         <div>

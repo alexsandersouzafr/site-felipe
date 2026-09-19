@@ -84,7 +84,11 @@
     "success": "Message envoyé. Merci de nous avoir contactés.",
     "error": "Impossible d'envoyer. Veuillez réessayer.",
     "validationError": "Veuillez remplir correctement tous les champs.",
-    "rateLimitedError": "Trop de tentatives en peu de temps. Veuillez patienter quelques minutes et réessayer."
+    "rateLimitedError": "Trop de tentatives en peu de temps. Veuillez patienter quelques minutes et réessayer.",
+    "tooFastError": "Vous avez envoyé trop vite. Attendez quelques secondes et réessayez.",
+    "expiredError": "Cette page est restée ouverte trop longtemps. Rechargez-la et renvoyez.",
+    "tooManyLinksError": "Le message contient trop de liens. Supprimez-en quelques-uns et réessayez.",
+    "captchaError": "Nous n'avons pas pu confirmer que vous n'êtes pas un robot. Veuillez réessayer."
   },
   "Common": {
     "empty": "Contenu indisponible."

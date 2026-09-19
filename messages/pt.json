@@ -84,7 +84,11 @@
     "success": "Mensagem enviada. Obrigado pelo contato.",
     "error": "Não foi possível enviar. Tente novamente.",
     "validationError": "Preencha todos os campos corretamente.",
-    "rateLimitedError": "Muitas tentativas em pouco tempo. Aguarde alguns minutos e tente novamente."
+    "rateLimitedError": "Muitas tentativas em pouco tempo. Aguarde alguns minutos e tente novamente.",
+    "tooFastError": "Você enviou rápido demais. Aguarde alguns segundos e tente novamente.",
+    "expiredError": "Esta página ficou aberta por muito tempo. Recarregue a página e envie novamente.",
+    "tooManyLinksError": "A mensagem tem links demais. Remova alguns e tente novamente.",
+    "captchaError": "Não foi possível confirmar que você não é um robô. Tente novamente."
   },
   "Common": {
     "empty": "Conteúdo indisponível."

@@ -8,3 +8,25 @@
 6. Confirm `site_settings` has a default row and `contact_messages` exists for the admin inbox.
 
 Do not expose `SUPABASE_SERVICE_ROLE_KEY` to the browser or commit credentials to the repository.
+
+## Contact form protection
+
+The contact form is protected in layers; each one covers what the others cannot.
+
+**Database (`20260919130000_contact_hardening.sql`)** — enforced no matter how a row arrives, because the publishable key is public and anyone can call the REST API directly:
+
+- Visitors can only insert `name`, `email`, `subject`, `message` and `ip_hash` (column-level grant); they cannot set `is_read`, `created_at` or `id`.
+- Size and shape checks (name ≤ 120, subject ≤ 200, message ≤ 5000 characters, a plain `local@domain` e-mail, no control characters).
+- Rate limits in the `enforce_contact_rate_limit` trigger: 5 per 10 minutes per visitor (`ip_hash`, computed by the server), 3 per hour per sender address, and 60 per hour overall. The overall ceiling means the inbox cannot be flooded; if it is ever reached the form simply refuses new messages for a while.
+
+**Server action (`src/app/[locale]/contato/actions.ts`)** — a hidden honeypot field; a signed form token that proves the page was loaded at least 3 seconds and at most 2 hours ago; validation and cleaning of every field (control and invisible characters removed, no `?cc=`-style tricks in the address); at most 3 links per message; and, when configured, a Cloudflare Turnstile CAPTCHA.
+
+Optional environment variables:
+
+| Variable | Purpose |
+| --- | --- |
+| `CONTACT_FORM_SECRET` | Signs the form token. Set a long random value in production; without it a built-in default is used. |
+| `CONTACT_IP_HASH_SALT` | Salt for the visitor hash used by the per-visitor limit. |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` and `TURNSTILE_SECRET_KEY` | Turn on the Cloudflare Turnstile CAPTCHA. Both are needed; with either missing the form works without a CAPTCHA. |
+
+The visitor's IP is read from `x-real-ip`, or the last `x-forwarded-for` entry. Make sure the hosting proxy sets one of them, otherwise the per-visitor limit has nothing to work with (the per-address and overall limits still apply).

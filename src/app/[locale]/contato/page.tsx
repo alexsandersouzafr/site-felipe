@@ -5,6 +5,10 @@ import { ContactForm } from "@/components/public/contact-form";
 import { PageHero } from "@/components/public/page-hero";
 import { SectionReveal } from "@/components/public/section-reveal";
 import type { Locale } from "@/i18n/routing";
+import {
+  createFormToken,
+  turnstileKeys,
+} from "@/lib/public/contact-protection";
 import { getSiteSettings } from "@/lib/public/settings";
 import { getPageCover } from "@/lib/public/site-images";
 
@@ -88,7 +92,10 @@ export default async function ContactPage({ params }: ContactPageProps) {
         </SectionReveal>
 
         <SectionReveal>
-          <ContactForm />
+          <ContactForm
+            formToken={createFormToken()}
+            turnstileSiteKey={turnstileKeys()?.siteKey}
+          />
         </SectionReveal>
       </div>
     </main>
