@@ -63,10 +63,7 @@ export function SiteHeader() {
 
         <div className="flex items-center gap-2 sm:gap-3">
           <LocaleSwitcher className="hidden sm:flex" />
-          <ThemeToggle
-            lightLabel={theme("light")}
-            darkLabel={theme("dark")}
-          />
+          <ThemeToggle lightLabel={theme("light")} darkLabel={theme("dark")} />
           <button
             type="button"
             className="inline-flex size-9 cursor-pointer items-center justify-center text-foreground lg:hidden"
@@ -75,7 +72,11 @@ export function SiteHeader() {
             aria-label={open ? t("closeMenu") : t("menu")}
             onClick={() => setOpen((value) => !value)}
           >
-            {open ? <XIcon className="size-5" /> : <ListIcon className="size-5" />}
+            {open ? (
+              <XIcon className="size-5" />
+            ) : (
+              <ListIcon className="size-5" />
+            )}
           </button>
         </div>
       </div>
@@ -87,7 +88,10 @@ export function SiteHeader() {
           open ? "block" : "hidden",
         )}
       >
-        <nav className="mx-auto flex max-w-6xl flex-col gap-1 px-6 py-4" aria-label="Mobile">
+        <nav
+          className="mx-auto flex max-w-6xl flex-col gap-1 px-6 py-4"
+          aria-label="Mobile"
+        >
           {navItems.map((item) => (
             <Link
               key={item.href}

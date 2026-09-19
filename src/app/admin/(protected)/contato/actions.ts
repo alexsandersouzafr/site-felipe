@@ -69,10 +69,7 @@ export async function updateContactSettings(
 
   let blogFallbackCoverPath = optionalText(formData, "blogFallbackCoverPath");
   const blogFallbackCoverFile = formData.get("blogFallbackCoverFile");
-  if (
-    blogFallbackCoverFile instanceof File &&
-    blogFallbackCoverFile.size > 0
-  ) {
+  if (blogFallbackCoverFile instanceof File && blogFallbackCoverFile.size > 0) {
     const uploaded = await uploadBlogFallbackCover(
       supabase,
       blogFallbackCoverFile,

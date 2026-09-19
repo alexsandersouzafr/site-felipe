@@ -88,7 +88,7 @@ export function ImageUploadField({
       </FieldDescription>
       {previewSrc ? (
         <div className="mt-3 overflow-hidden rounded-2xl border border-border/80 bg-muted/30">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
+          {/* biome-ignore lint/performance/noImgElement: the preview may be a blob: URL of a file that is not uploaded yet, which next/image cannot load */}
           <img
             src={previewSrc}
             alt="Pré-visualização"
@@ -113,7 +113,7 @@ export function ImagePreview({
 
   return (
     <div className="overflow-hidden rounded-2xl border border-border/80 bg-muted/30">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
+      {/* biome-ignore lint/performance/noImgElement: the preview may be a blob: URL of a file that is not uploaded yet, which next/image cannot load */}
       <img src={src} alt={alt} className="max-h-56 w-full object-cover" />
     </div>
   );

@@ -29,11 +29,11 @@ export default async function PhotosPage({
   searchParams,
 }: PhotosPageProps) {
   const { locale } = await params;
-  const page = parsePage((await searchParams).page);
+  const requestedPage = parsePage((await searchParams).page);
   setRequestLocale(locale);
   const t = await getTranslations("Photos");
-  const [{ photos, totalPages }, pageCover] = await Promise.all([
-    listPhotosPage(locale as Locale, page, PUBLIC_PAGE_SIZE),
+  const [{ photos, page, totalPages }, pageCover] = await Promise.all([
+    listPhotosPage(locale as Locale, requestedPage, PUBLIC_PAGE_SIZE),
     getPageCover("fotos"),
   ]);
 
@@ -83,7 +83,11 @@ export default async function PhotosPage({
             )}
           </ul>
         )}
-        <PublicPaginationNav basePath="/fotos" page={page} totalPages={totalPages} />
+        <PublicPaginationNav
+          basePath="/fotos"
+          page={page}
+          totalPages={totalPages}
+        />
       </SectionReveal>
     </main>
   );

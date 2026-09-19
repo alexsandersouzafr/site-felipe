@@ -1,6 +1,7 @@
 "use client";
 
 import { CheckIcon, ImagesIcon, UploadSimpleIcon } from "@phosphor-icons/react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 import { ImagePreview } from "@/components/admin/image-upload-field";
@@ -211,13 +212,14 @@ export function CoverImageField({
                       : "border-border/80 hover:border-primary/50",
                   )}
                 >
-                  <div className="aspect-square overflow-hidden bg-muted">
+                  <div className="relative aspect-square overflow-hidden bg-muted">
                     {src ? (
-                      // eslint-disable-next-line @next/next/no-img-element -- admin gallery thumbnails from storage
-                      <img
+                      <Image
                         src={src}
                         alt={item.label}
-                        className="size-full object-cover transition-transform group-hover:scale-[1.02]"
+                        fill
+                        sizes="(max-width: 640px) 33vw, 160px"
+                        className="object-cover transition-transform group-hover:scale-[1.02]"
                       />
                     ) : (
                       <div className="flex size-full items-center justify-center text-xs text-muted-foreground">

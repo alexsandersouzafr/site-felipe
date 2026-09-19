@@ -38,11 +38,7 @@ export function PageCoverForm({
   const isRequired = pageKey === "bio";
 
   return (
-    <form
-      action={formAction}
-      className="space-y-8"
-      encType="multipart/form-data"
-    >
+    <form action={formAction} className="max-w-3xl space-y-8">
       <FieldDescription>
         Capa em alta definição (até {MAX_HD_IMAGE_MB} MB) para o topo da página{" "}
         {PAGE_COVER_LABELS[pageKey]}. Ajuste o enquadramento para preservar

@@ -119,7 +119,10 @@ export const blogBlocksSchema = blogBlocksArraySchema.superRefine(
     }
 
     blocks.forEach((block, index) => {
-      if (block.type === "audio" && !isAudioEmbedUrl(block.provider, block.url)) {
+      if (
+        block.type === "audio" &&
+        !isAudioEmbedUrl(block.provider, block.url)
+      ) {
         ctx.addIssue({
           code: "custom",
           path: [index, "url"],

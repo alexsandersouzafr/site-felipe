@@ -66,7 +66,10 @@ export function BlogBlocksView({ blocks }: BlogBlocksViewProps) {
             }
 
             return (
-              <div key={block.id} className="w-full overflow-hidden rounded-2xl">
+              <div
+                key={block.id}
+                className="w-full overflow-hidden rounded-2xl"
+              >
                 <iframe
                   title={`Spotify - ${block.url}`}
                   src={embedUrl}
@@ -80,7 +83,10 @@ export function BlogBlocksView({ blocks }: BlogBlocksViewProps) {
 
           if (block.provider === "soundcloud") {
             return (
-              <div key={block.id} className="w-full overflow-hidden rounded-2xl">
+              <div
+                key={block.id}
+                className="w-full overflow-hidden rounded-2xl"
+              >
                 <iframe
                   title={`SoundCloud - ${block.url}`}
                   src={soundcloudEmbedUrl(block.url)}
@@ -114,7 +120,10 @@ export function BlogBlocksView({ blocks }: BlogBlocksViewProps) {
         }
 
         return (
-          <div key={block.id} className="aspect-video w-full overflow-hidden bg-muted">
+          <div
+            key={block.id}
+            className="aspect-video w-full overflow-hidden bg-muted"
+          >
             <iframe
               title={block.youtubeUrl}
               src={`https://www.youtube-nocookie.com/embed/${youtubeId}`}

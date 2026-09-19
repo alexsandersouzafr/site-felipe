@@ -33,9 +33,7 @@ export async function listHomePhotos(locale: Locale) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("home_photos")
-    .select(
-      "id, slot, storage_path, alt_pt, alt_en, alt_fr, object_position",
-    )
+    .select("id, slot, storage_path, alt_pt, alt_en, alt_fr, object_position")
     .order("slot", { ascending: true });
 
   if (error) {

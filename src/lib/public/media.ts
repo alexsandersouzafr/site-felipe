@@ -93,13 +93,14 @@ export async function listPhotosPage(
     .select("id", { count: "exact", head: true });
 
   const totalPages = pageCount(totalCount ?? 0, pageSize);
-  const { from, to } = pageRange(clampPage(page, totalPages), pageSize);
+  // Clamped here so the caller shows the page that was actually loaded.
+  const safePage = clampPage(page, totalPages);
+  const { from, to } = pageRange(safePage, pageSize);
 
-  const { data, error, count } = await supabase
+  const { data, error } = await supabase
     .from("photos")
     .select(
       "id, storage_path, alt_pt, alt_en, alt_fr, credit, collection, display_order",
-      { count: "exact" },
     )
     .order("display_order", { ascending: true })
     .order("created_at", { ascending: false })
@@ -122,5 +123,5 @@ export async function listPhotosPage(
     }),
   );
 
-  return { photos, totalPages: pageCount(count ?? 0, pageSize) };
+  return { photos, page: safePage, totalPages };
 }

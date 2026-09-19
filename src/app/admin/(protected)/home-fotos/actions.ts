@@ -72,7 +72,9 @@ export async function saveHomePhotoSlots(
 
     if (clear) {
       if (slotKey === "hero") {
-        return { error: "A capa/hero da home é obrigatória e não pode ser removida." };
+        return {
+          error: "A capa/hero da home é obrigatória e não pode ser removida.",
+        };
       }
 
       const { error } = await supabase

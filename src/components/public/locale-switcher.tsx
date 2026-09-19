@@ -13,11 +13,13 @@ export function LocaleSwitcher({ className }: { className?: string }) {
   const router = useRouter();
 
   return (
-    <div
-      className={cn("flex items-center gap-1 text-xs tracking-wide", className)}
-      role="group"
-      aria-label={t("label")}
+    <fieldset
+      className={cn(
+        "m-0 flex min-w-0 items-center gap-1 border-0 p-0 text-xs tracking-wide",
+        className,
+      )}
     >
+      <legend className="sr-only">{t("label")}</legend>
       {routing.locales.map((value) => (
         <button
           key={value}
@@ -34,6 +36,6 @@ export function LocaleSwitcher({ className }: { className?: string }) {
           {t(value)}
         </button>
       ))}
-    </div>
+    </fieldset>
   );
 }

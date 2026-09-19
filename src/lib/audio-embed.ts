@@ -1,4 +1,8 @@
-export const AUDIO_PROVIDERS = ["spotify", "youtube-music", "soundcloud"] as const;
+export const AUDIO_PROVIDERS = [
+  "spotify",
+  "youtube-music",
+  "soundcloud",
+] as const;
 export type AudioProvider = (typeof AUDIO_PROVIDERS)[number];
 
 export const AUDIO_PROVIDER_LABELS: Record<AudioProvider, string> = {
@@ -8,7 +12,8 @@ export const AUDIO_PROVIDER_LABELS: Record<AudioProvider, string> = {
 };
 
 const audioUrlPatterns: Record<AudioProvider, RegExp> = {
-  spotify: /^https?:\/\/open\.spotify\.com\/(intl-[a-z-]+\/)?(track|album|playlist|episode|show)\/\w+/i,
+  spotify:
+    /^https?:\/\/open\.spotify\.com\/(intl-[a-z-]+\/)?(track|album|playlist|episode|show)\/\w+/i,
   "youtube-music": /^https?:\/\/music\.youtube\.com\/watch\?v=[\w-]+/i,
   soundcloud: /^https?:\/\/(www\.)?soundcloud\.com\/[\w-]+\/[\w-]+/i,
 };

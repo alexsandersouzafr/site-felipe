@@ -22,7 +22,6 @@
     "@tanstack/react-table": "^9.1.2",
     "@tiptap/core": "^3.29.2",
     "@tiptap/extension-placeholder": "^3.29.2",
-    "@tiptap/extension-underline": "^3.29.2",
     "@tiptap/html": "^3.29.2",
     "@tiptap/pm": "^3.29.2",
     "@tiptap/react": "^3.29.2",

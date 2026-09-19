@@ -112,14 +112,15 @@ export async function listBlogPostsPage(
     .select("id", { count: "exact", head: true });
 
   const totalPages = pageCount(totalCount ?? 0, pageSize);
-  const { from, to } = pageRange(clampPage(page, totalPages), pageSize);
+  // Clamped here so the caller shows the page that was actually loaded.
+  const safePage = clampPage(page, totalPages);
+  const { from, to } = pageRange(safePage, pageSize);
 
-  const [{ data, error, count }, fallbackCoverUrl] = await Promise.all([
+  const [{ data, error }, fallbackCoverUrl] = await Promise.all([
     supabase
       .from("news_items")
       .select(
         "id, slug, title_pt, title_en, title_fr, cover_image_path, blocks, publish_at, created_at, updated_at",
-        { count: "exact" },
       )
       .order("publish_at", { ascending: false, nullsFirst: false })
       .order("created_at", { ascending: false })
@@ -135,7 +136,8 @@ export async function listBlogPostsPage(
     posts: ((data ?? []) as BlogRow[]).map((row) =>
       toSummary(row, locale, fallbackCoverUrl),
     ),
-    totalPages: pageCount(count ?? 0, pageSize),
+    page: safePage,
+    totalPages,
   };
 }
 

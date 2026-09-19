@@ -29,11 +29,11 @@ export default async function BlogPage({
   searchParams,
 }: BlogPageProps) {
   const { locale } = await params;
-  const page = parsePage((await searchParams).page);
+  const requestedPage = parsePage((await searchParams).page);
   setRequestLocale(locale);
   const t = await getTranslations("Blog");
-  const [{ posts, totalPages }, pageCover] = await Promise.all([
-    listBlogPostsPage(locale as Locale, page, PUBLIC_PAGE_SIZE),
+  const [{ posts, page, totalPages }, pageCover] = await Promise.all([
+    listBlogPostsPage(locale as Locale, requestedPage, PUBLIC_PAGE_SIZE),
     getPageCover("blog"),
   ]);
 
@@ -80,7 +80,11 @@ export default async function BlogPage({
             ))}
           </ul>
         )}
-        <PublicPaginationNav basePath="/blog" page={page} totalPages={totalPages} />
+        <PublicPaginationNav
+          basePath="/blog"
+          page={page}
+          totalPages={totalPages}
+        />
       </SectionReveal>
     </main>
   );
