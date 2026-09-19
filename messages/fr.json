@@ -23,7 +23,11 @@
     "dark": "Activer le thème sombre"
   },
   "Footer": {
-    "contact": "Entrer en contact"
+    "contact": "Entrer en contact",
+    "navigation": "Navigation",
+    "contactTitle": "Contact",
+    "social": "Réseaux",
+    "backToTop": "Retour en haut"
   },
   "Home": {
     "eyebrow": "Felipe Magalhães",
@@ -35,7 +39,11 @@
     "recentPostsTitle": "Sur le blog",
     "recentPostsEmpty": "Aucune publication disponible pour le moment.",
     "viewAllSchedule": "Agenda complet",
-    "viewAllBlog": "Voir toutes les publications"
+    "viewAllBlog": "Voir toutes les publications",
+    "role": "Chef d'orchestre",
+    "nextConcert": "Prochain concert",
+    "scroll": "Défiler",
+    "contactTitle": "Parlons-en"
   },
   "Blog": {
     "title": "Blog",
@@ -62,7 +70,8 @@
   },
   "Videos": {
     "title": "Vidéos",
-    "empty": "Aucune vidéo publiée pour le moment."
+    "empty": "Aucune vidéo publiée pour le moment.",
+    "play": "Lire"
   },
   "Photos": {
     "title": "Photos",

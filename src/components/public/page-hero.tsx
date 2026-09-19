@@ -1,4 +1,5 @@
 import { ParallaxBand } from "@/components/public/parallax-band";
+import { Reveal } from "@/components/public/reveal";
 import { cn } from "@/lib/utils";
 
 type PageHeroProps = {
@@ -9,7 +10,7 @@ type PageHeroProps = {
 };
 
 const HERO_HEIGHT =
-  "h-[min(42vh,26rem)] min-h-[min(42vh,26rem)] sm:h-[min(42vh,26rem)] md:h-[min(42vh,26rem)] lg:h-[min(42vh,26rem)]";
+  "h-[min(56vh,32rem)] min-h-[22rem] sm:h-[min(56vh,32rem)] md:h-[min(56vh,32rem)] lg:h-[min(56vh,32rem)]";
 
 export function PageHero({
   title,
@@ -20,13 +21,19 @@ export function PageHero({
   const content = (
     <div
       className={cn(
-        "relative mx-auto flex min-h-[min(42vh,26rem)] w-full max-w-6xl flex-col justify-end px-6 pb-12 pt-24",
+        "relative mx-auto flex h-full min-h-[min(42vh,26rem)] w-full max-w-6xl flex-col justify-end px-6 pb-12 pt-28",
         className,
       )}
     >
-      <h1 className="font-heading animate-in fade-in slide-in-from-bottom-2 text-4xl tracking-tight duration-700 sm:text-5xl md:text-6xl">
+      <Reveal
+        as="h1"
+        variant="lines"
+        immediate
+        delay={0.55}
+        className="font-heading text-5xl leading-[1.05] tracking-tight sm:text-6xl md:text-7xl"
+      >
         {title}
-      </h1>
+      </Reveal>
     </div>
   );
 
@@ -44,8 +51,10 @@ export function PageHero({
       objectPosition={objectPosition}
       priority
       variant="hero"
+      headerOverlay
+      intro
       className={HERO_HEIGHT}
-      overlayClassName="bg-gradient-to-t from-background/50 via-background/10 to-transparent"
+      overlayClassName="bg-[linear-gradient(to_bottom,rgb(0_0_0/0.5),transparent_40%),linear-gradient(to_top,var(--background),color-mix(in_oklch,var(--background)_45%,transparent)_30%,transparent_65%)]"
     >
       {content}
     </ParallaxBand>

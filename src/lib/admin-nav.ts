@@ -10,7 +10,8 @@ export type AdminNavIconName =
   | "videos"
   | "press"
   | "contact"
-  | "messages";
+  | "messages"
+  | "appearance";
 
 export type AdminNavGroupLabel = "Conteúdo" | "Mídia" | "Site";
 
@@ -116,6 +117,13 @@ export const adminNavItems: AdminNavItem[] = [
     description:
       "Leia as mensagens enviadas pelo formulário público de contato",
     icon: "messages",
+  },
+  {
+    href: "/admin/aparencia",
+    group: "Site",
+    label: "Aparência",
+    description: "Tema em que o site abre: claro, escuro ou o do sistema",
+    icon: "appearance",
   },
 ];
 

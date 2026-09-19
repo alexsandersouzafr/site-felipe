@@ -7,6 +7,7 @@ import {
   ImagesIcon,
   MegaphoneIcon,
   NewspaperIcon,
+  PaletteIcon,
   StarIcon,
   TrayIcon,
   UserCircleIcon,
@@ -29,6 +30,7 @@ const icons = {
   press: MegaphoneIcon,
   contact: EnvelopeSimpleIcon,
   messages: TrayIcon,
+  appearance: PaletteIcon,
 } satisfies Record<
   AdminNavIconName,
   React.ComponentType<{ className?: string; weight?: "regular" | "duotone" }>

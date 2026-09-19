@@ -1,26 +1,27 @@
 import type { ReactNode } from "react";
 
-import { cn } from "@/lib/utils";
+import { Reveal, type RevealVariant } from "@/components/public/reveal";
 
 type SectionRevealProps = {
   children: ReactNode;
   className?: string;
   as?: "section" | "div";
+  /**
+   * How the section itself comes in; `null` when its children carry their own
+   * `data-reveal` animations and the section should just host them.
+   */
+  variant?: RevealVariant | null;
 };
 
 export function SectionReveal({
   children,
   className,
-  as: Tag = "section",
+  as = "section",
+  variant = "fade",
 }: SectionRevealProps) {
   return (
-    <Tag
-      className={cn(
-        "animate-in fade-in slide-in-from-bottom-2 duration-700 fill-mode-both",
-        className,
-      )}
-    >
+    <Reveal as={as} variant={variant ?? undefined} className={className}>
       {children}
-    </Tag>
+    </Reveal>
   );
 }

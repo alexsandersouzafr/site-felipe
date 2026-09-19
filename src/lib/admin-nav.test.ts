@@ -21,6 +21,7 @@ describe("adminNavItems", () => {
       "/admin/imprensa",
       "/admin/contato",
       "/admin/mensagens",
+      "/admin/aparencia",
     ]);
   });
 

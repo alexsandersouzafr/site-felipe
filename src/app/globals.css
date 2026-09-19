@@ -158,3 +158,107 @@
     }
   }
 }
+
+/* ---------------------------------------------------------------------------
+ * Public site motion and chrome. Unlayered on purpose: these states must win
+ * over the utility classes on the same elements.
+ * ------------------------------------------------------------------------ */
+
+:root {
+  --header-height: 4.5rem;
+}
+
+/* Elements about to animate in stay hidden until GSAP takes them over. Only
+ * with JavaScript running and motion allowed; the bootstrap script in the
+ * root layout adds `no-motion` if the animations never start. */
+@media (prefers-reduced-motion: no-preference) {
+  html.js:not(.no-motion) [data-reveal] {
+    opacity: 0;
+  }
+}
+
+/* SplitText masks clip their text; leave room for accents (ã, É) and
+ * descenders (ç, g) so they are never cut off. */
+.rv-line-mask,
+.rv-char-mask {
+  overflow-clip-margin: 0.22em;
+}
+
+/* Header: solid by default; transparent and light over a hero photo until
+ * the page scrolls; slides away while scrolling down. */
+.site-header {
+  --header-ink: var(--foreground);
+  --header-surface: color-mix(in oklch, var(--background) 86%, transparent);
+  --header-rule: color-mix(in oklch, var(--border) 70%, transparent);
+  color: var(--header-ink);
+  background-color: var(--header-surface);
+  border-bottom: 1px solid var(--header-rule);
+  backdrop-filter: blur(14px);
+  transition:
+    background-color 0.5s ease,
+    border-color 0.5s ease,
+    color 0.5s ease,
+    transform 0.7s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+body:has([data-header-overlay])
+  .site-header:not([data-scrolled="true"]):not([data-menu-open="true"]) {
+  --header-ink: #fff;
+  --header-surface: transparent;
+  --header-rule: transparent;
+  backdrop-filter: none;
+}
+
+.site-header[data-hidden="true"]:not([data-menu-open="true"]) {
+  transform: translateY(-100%);
+}
+
+.header-spacer {
+  height: var(--header-height);
+}
+
+body:has([data-header-overlay]) .header-spacer {
+  display: none;
+}
+
+/* A hairline that draws itself under a link on hover, and stays for the
+ * current page. */
+.link-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 100% 100%;
+  background-size: 0% 1px;
+  padding-bottom: 0.15em;
+  transition: background-size 0.6s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.link-underline:hover,
+.link-underline:focus-visible,
+.link-underline[aria-current="page"] {
+  background-position: 0% 100%;
+  background-size: 100% 1px;
+}
+
+/* The line in the hero's scroll cue: draws down, then leaves downwards. */
+@keyframes scroll-cue {
+  0% {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  45% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  55% {
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+}
+
+.scroll-cue-line {
+  animation: scroll-cue 2.6s cubic-bezier(0.76, 0, 0.24, 1) infinite;
+}

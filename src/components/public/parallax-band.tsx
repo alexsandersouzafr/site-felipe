@@ -20,6 +20,10 @@ type ParallaxBandProps = {
   overlayClassName?: string;
   /** band = fundo quase fixo entre seções; hero = foto de abertura */
   variant?: "band" | "hero";
+  /** The header goes transparent over this photo (see `.site-header`). */
+  headerOverlay?: boolean;
+  /** Settles the photo from a slight zoom when the page loads. */
+  intro?: boolean;
 };
 
 /**
@@ -36,6 +40,8 @@ export function ParallaxBand({
   children,
   overlayClassName,
   variant = children ? "hero" : "band",
+  headerOverlay = false,
+  intro = false,
 }: ParallaxBandProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
@@ -97,6 +103,17 @@ export function ParallaxBand({
       }
     }, root);
 
+    if (intro) {
+      const img = image.querySelector("img");
+      if (img) {
+        gsap.fromTo(
+          img,
+          { scale: 1.16 },
+          { scale: 1, duration: 2.6, ease: "expo.out", delay: 0.15 },
+        );
+      }
+    }
+
     const refreshId = window.requestAnimationFrame(() => {
       ScrollTrigger.refresh();
     });
@@ -105,13 +122,14 @@ export function ParallaxBand({
       window.cancelAnimationFrame(refreshId);
       ctx.revert();
     };
-  }, [variant]);
+  }, [variant, intro]);
 
   return (
     <div
       ref={rootRef}
       className={cn("relative w-full overflow-hidden", sizeClass, className)}
       aria-hidden={alt || children ? undefined : true}
+      data-header-overlay={headerOverlay ? "" : undefined}
     >
       <div className="absolute inset-0 overflow-hidden">
         <div
