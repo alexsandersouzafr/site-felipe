@@ -6,6 +6,7 @@ import { useActionState } from "react";
 import type { ContactActionState } from "@/app/admin/(protected)/contato/actions";
 import { updateContactSettings } from "@/app/admin/(protected)/contato/actions";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
+import { LocalizedField } from "@/components/admin/localized-field";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -43,11 +44,7 @@ export function ContactSettingsForm({
     .join("\n");
 
   return (
-    <form
-      action={formAction}
-      className="space-y-8"
-      encType="multipart/form-data"
-    >
+    <form action={formAction} className="max-w-3xl space-y-8">
       <input type="hidden" name="id" value={settings.id} />
       <FieldGroup>
         <div className="grid gap-4 md:grid-cols-2">
@@ -69,35 +66,17 @@ export function ContactSettingsForm({
             />
           </Field>
         </div>
-        <Field>
-          <FieldLabel htmlFor="introPt" required>
-            Introdução (PT)
-          </FieldLabel>
-          <Textarea
-            id="introPt"
-            name="introPt"
-            required
-            defaultValue={settings.intro_pt}
-          />
-        </Field>
-        <div className="grid gap-4 md:grid-cols-2">
-          <Field>
-            <FieldLabel htmlFor="introEn">Introdução (EN)</FieldLabel>
-            <Textarea
-              id="introEn"
-              name="introEn"
-              defaultValue={settings.intro_en ?? ""}
-            />
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="introFr">Introdução (FR)</FieldLabel>
-            <Textarea
-              id="introFr"
-              name="introFr"
-              defaultValue={settings.intro_fr ?? ""}
-            />
-          </Field>
-        </div>
+        <LocalizedField
+          label="Introdução"
+          required
+          multiline
+          names={{ pt: "introPt", en: "introEn", fr: "introFr" }}
+          defaultValues={{
+            pt: settings.intro_pt,
+            en: settings.intro_en,
+            fr: settings.intro_fr,
+          }}
+        />
         <Field>
           <FieldLabel htmlFor="socialLinks">
             Redes sociais (uma por linha: rótulo|url)

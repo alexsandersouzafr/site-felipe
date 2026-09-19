@@ -11,10 +11,9 @@ import {
   TextUnderlineIcon,
 } from "@phosphor-icons/react";
 import Placeholder from "@tiptap/extension-placeholder";
-import Underline from "@tiptap/extension-underline";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import type { RichTextDocument } from "@/lib/rich-text";
 import { emptyRichTextDocument } from "@/lib/rich-text";
@@ -35,12 +34,18 @@ export function RichTextEditor({
   onChange,
   placeholder = "Escreva o conteúdo...",
 }: RichTextEditorProps) {
+  // The submitted value lives in state: Tiptap does not re-render React on
+  // each keystroke, so reading it from the editor at render time left the
+  // hidden input holding the content as first loaded.
+  const [json, setJson] = useState<RichTextDocument>(
+    initialContent ?? emptyRichTextDocument,
+  );
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
         heading: { levels: [2, 3] },
       }),
-      Underline,
       Placeholder.configure({
         placeholder,
       }),
@@ -48,7 +53,9 @@ export function RichTextEditor({
     content: initialContent ?? emptyRichTextDocument,
     immediatelyRender: false,
     onUpdate: ({ editor: current }) => {
-      onChange?.(current.getJSON() as RichTextDocument);
+      const document = current.getJSON() as RichTextDocument;
+      setJson(document);
+      onChange?.(document);
     },
     editorProps: {
       attributes: {
@@ -65,8 +72,6 @@ export function RichTextEditor({
 
     editor.commands.setContent(initialContent);
   }, [editor, initialContent, onChange]);
-
-  const json = (editor?.getJSON() as RichTextDocument) ?? emptyRichTextDocument;
 
   return (
     <div className="space-y-2">

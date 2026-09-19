@@ -5,6 +5,7 @@ import { useActionState } from "react";
 import type { EventActionState } from "@/app/admin/(protected)/agenda/actions";
 import { DateTimePickerField } from "@/components/admin/date-time-picker-field";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
+import { LocalizedField } from "@/components/admin/localized-field";
 import { PublishingControls } from "@/components/admin/publishing-fields";
 import {
   Field,
@@ -45,11 +46,7 @@ export function EventForm({ action, initialValues, mode }: EventFormProps) {
   const [state, formAction, pending] = useActionState(action, {});
 
   return (
-    <form
-      action={formAction}
-      className="space-y-8"
-      encType="multipart/form-data"
-    >
+    <form action={formAction} className="max-w-3xl space-y-8">
       <PublishingControls
         mode={mode}
         initialStatus={values.status}
@@ -59,35 +56,16 @@ export function EventForm({ action, initialValues, mode }: EventFormProps) {
         {({ schedule, actions }) => (
           <>
             <FieldGroup>
-              <Field>
-                <FieldLabel htmlFor="titlePt" required>
-                  Título (PT)
-                </FieldLabel>
-                <Input
-                  id="titlePt"
-                  name="titlePt"
-                  required
-                  defaultValue={values.titlePt}
-                />
-              </Field>
-              <div className="grid gap-4 md:grid-cols-2">
-                <Field>
-                  <FieldLabel htmlFor="titleEn">Título (EN)</FieldLabel>
-                  <Input
-                    id="titleEn"
-                    name="titleEn"
-                    defaultValue={values.titleEn ?? ""}
-                  />
-                </Field>
-                <Field>
-                  <FieldLabel htmlFor="titleFr">Título (FR)</FieldLabel>
-                  <Input
-                    id="titleFr"
-                    name="titleFr"
-                    defaultValue={values.titleFr ?? ""}
-                  />
-                </Field>
-              </div>
+              <LocalizedField
+                label="Título"
+                required
+                names={{ pt: "titlePt", en: "titleEn", fr: "titleFr" }}
+                defaultValues={{
+                  pt: values.titlePt,
+                  en: values.titleEn,
+                  fr: values.titleFr,
+                }}
+              />
 
               {schedule}
 

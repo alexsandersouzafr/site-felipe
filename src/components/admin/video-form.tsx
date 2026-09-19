@@ -1,8 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import { useActionState, useState } from "react";
 
 import type { MediaActionState } from "@/app/admin/(protected)/fotos/actions";
+import { LocalizedField } from "@/components/admin/localized-field";
 import { PublishingControls } from "@/components/admin/publishing-fields";
 import {
   Field,
@@ -12,7 +14,6 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import type { ContentStatus } from "@/lib/content-visibility";
 import { extractYouTubeId } from "@/lib/youtube";
 
@@ -43,7 +44,7 @@ export function VideoForm({
   const youtubeId = extractYouTubeId(youtubeUrl.trim());
 
   return (
-    <form action={formAction} className="space-y-8">
+    <form action={formAction} className="max-w-3xl space-y-8">
       <PublishingControls
         mode={mode}
         initialStatus={initialValues?.status}
@@ -68,12 +69,13 @@ export function VideoForm({
                 />
                 {youtubeUrl.trim() ? (
                   youtubeId ? (
-                    <div className="mt-3 overflow-hidden rounded-2xl border border-border/80 bg-muted/30">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={`https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`}
+                    <div className="relative mt-3 aspect-video w-full max-w-sm overflow-hidden rounded-2xl border border-border/80 bg-muted/30">
+                      <Image
+                        src={`https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`}
                         alt="Pré-visualização do vídeo"
-                        className="aspect-video w-full max-w-sm object-cover"
+                        fill
+                        sizes="384px"
+                        className="object-cover"
                       />
                     </div>
                   ) : (
@@ -84,68 +86,33 @@ export function VideoForm({
                   )
                 ) : null}
               </Field>
-              <Field>
-                <FieldLabel htmlFor="titlePt" required>
-                  Título (PT)
-                </FieldLabel>
-                <Input
-                  id="titlePt"
-                  name="titlePt"
-                  required
-                  defaultValue={initialValues?.titlePt ?? ""}
-                />
-              </Field>
-              <div className="grid gap-4 md:grid-cols-2">
-                <Field>
-                  <FieldLabel htmlFor="titleEn">Título (EN)</FieldLabel>
-                  <Input
-                    id="titleEn"
-                    name="titleEn"
-                    defaultValue={initialValues?.titleEn ?? ""}
-                  />
-                </Field>
-                <Field>
-                  <FieldLabel htmlFor="titleFr">Título (FR)</FieldLabel>
-                  <Input
-                    id="titleFr"
-                    name="titleFr"
-                    defaultValue={initialValues?.titleFr ?? ""}
-                  />
-                </Field>
-              </div>
+              <LocalizedField
+                label="Título"
+                required
+                names={{ pt: "titlePt", en: "titleEn", fr: "titleFr" }}
+                defaultValues={{
+                  pt: initialValues?.titlePt,
+                  en: initialValues?.titleEn,
+                  fr: initialValues?.titleFr,
+                }}
+              />
 
               {schedule}
 
-              <Field>
-                <FieldLabel htmlFor="descriptionPt">Descrição (PT)</FieldLabel>
-                <Textarea
-                  id="descriptionPt"
-                  name="descriptionPt"
-                  defaultValue={initialValues?.descriptionPt ?? ""}
-                />
-              </Field>
-              <div className="grid gap-4 md:grid-cols-2">
-                <Field>
-                  <FieldLabel htmlFor="descriptionEn">
-                    Descrição (EN)
-                  </FieldLabel>
-                  <Textarea
-                    id="descriptionEn"
-                    name="descriptionEn"
-                    defaultValue={initialValues?.descriptionEn ?? ""}
-                  />
-                </Field>
-                <Field>
-                  <FieldLabel htmlFor="descriptionFr">
-                    Descrição (FR)
-                  </FieldLabel>
-                  <Textarea
-                    id="descriptionFr"
-                    name="descriptionFr"
-                    defaultValue={initialValues?.descriptionFr ?? ""}
-                  />
-                </Field>
-              </div>
+              <LocalizedField
+                label="Descrição"
+                multiline
+                names={{
+                  pt: "descriptionPt",
+                  en: "descriptionEn",
+                  fr: "descriptionFr",
+                }}
+                defaultValues={{
+                  pt: initialValues?.descriptionPt,
+                  en: initialValues?.descriptionEn,
+                  fr: initialValues?.descriptionFr,
+                }}
+              />
             </FieldGroup>
             {state.error && <FieldError>{state.error}</FieldError>}
             {actions}

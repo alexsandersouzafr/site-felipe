@@ -4,16 +4,10 @@ import { FloppyDiskIcon } from "@phosphor-icons/react";
 import { useActionState } from "react";
 
 import type { EditorialActionState } from "@/app/admin/(protected)/editorial/actions";
+import { LocalizedField } from "@/components/admin/localized-field";
 import { LocalizedRichTextEditor } from "@/components/admin/localized-rich-text-editor";
 import { Button } from "@/components/ui/button";
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
-import { Textarea } from "@/components/ui/textarea";
+import { FieldError, FieldGroup } from "@/components/ui/field";
 import type { RichTextDocument } from "@/lib/rich-text";
 
 export function BiographyForm({
@@ -36,44 +30,21 @@ export function BiographyForm({
   const [state, formAction, pending] = useActionState(action, {});
 
   return (
-    <form action={formAction} className="space-y-8">
+    <form action={formAction} className="max-w-3xl space-y-8">
       <FieldGroup>
-        <Field>
-          <FieldLabel htmlFor="summaryPt" required>
-            Resumo para a home (PT)
-          </FieldLabel>
-          <Textarea
-            id="summaryPt"
-            name="summaryPt"
-            required
-            rows={4}
-            defaultValue={initialValues?.summaryPt ?? ""}
-          />
-          <FieldDescription>
-            Texto curto exibido na página inicial. EN/FR são opcionais.
-          </FieldDescription>
-        </Field>
-
-        <div className="grid gap-4 md:grid-cols-2">
-          <Field>
-            <FieldLabel htmlFor="summaryEn">Resumo (EN)</FieldLabel>
-            <Textarea
-              id="summaryEn"
-              name="summaryEn"
-              rows={4}
-              defaultValue={initialValues?.summaryEn ?? ""}
-            />
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="summaryFr">Resumo (FR)</FieldLabel>
-            <Textarea
-              id="summaryFr"
-              name="summaryFr"
-              rows={4}
-              defaultValue={initialValues?.summaryFr ?? ""}
-            />
-          </Field>
-        </div>
+        <LocalizedField
+          label="Resumo para a home"
+          required
+          multiline
+          rows={4}
+          names={{ pt: "summaryPt", en: "summaryEn", fr: "summaryFr" }}
+          defaultValues={{
+            pt: initialValues?.summaryPt,
+            en: initialValues?.summaryEn,
+            fr: initialValues?.summaryFr,
+          }}
+          description="Texto curto exibido na página inicial. EN/FR são opcionais."
+        />
 
         <LocalizedRichTextEditor
           label="Biografia"

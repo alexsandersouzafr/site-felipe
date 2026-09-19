@@ -13,6 +13,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 
 import { ImageUploadField } from "@/components/admin/image-upload-field";
+import { LocalizedField } from "@/components/admin/localized-field";
 import { LocalizedRichTextEditor } from "@/components/admin/localized-rich-text-editor";
 import { Button } from "@/components/ui/button";
 import {
@@ -191,9 +192,9 @@ export function BlogBlocksEditor({
         <FieldDescription>
           Monte a postagem com parágrafos (texto rico por idioma), imagens,
           vídeos do YouTube e faixas de áudio (Spotify, YouTube Music ou
-          SoundCloud). É obrigatório ter ao menos um parágrafo em português.
-          Use as barras antes e depois de cada bloco para inserir novos
-          componentes. EN/FR são opcionais.
+          SoundCloud). É obrigatório ter ao menos um parágrafo em português. Use
+          as barras antes e depois de cada bloco para inserir novos componentes.
+          EN/FR são opcionais.
         </FieldDescription>
       </div>
 
@@ -348,74 +349,23 @@ export function BlogBlocksEditor({
                         : undefined
                     }
                   />
-                  <Field>
-                    <FieldLabel htmlFor={`caption-pt-${block.id}`}>
-                      Legenda (PT)
-                    </FieldLabel>
-                    <Input
-                      id={`caption-pt-${block.id}`}
-                      value={block.caption.pt ?? ""}
-                      onChange={(event) =>
-                        updateBlock(block.id, (current) =>
-                          current.type === "image"
-                            ? {
-                                ...current,
-                                caption: {
-                                  ...current.caption,
-                                  pt: event.target.value || null,
-                                },
-                              }
-                            : current,
-                        )
-                      }
-                    />
-                  </Field>
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <Field>
-                      <FieldLabel htmlFor={`caption-en-${block.id}`}>
-                        Legenda (EN)
-                      </FieldLabel>
-                      <Input
-                        id={`caption-en-${block.id}`}
-                        value={block.caption.en ?? ""}
-                        onChange={(event) =>
-                          updateBlock(block.id, (current) =>
-                            current.type === "image"
-                              ? {
-                                  ...current,
-                                  caption: {
-                                    ...current.caption,
-                                    en: event.target.value || null,
-                                  },
-                                }
-                              : current,
-                          )
-                        }
-                      />
-                    </Field>
-                    <Field>
-                      <FieldLabel htmlFor={`caption-fr-${block.id}`}>
-                        Legenda (FR)
-                      </FieldLabel>
-                      <Input
-                        id={`caption-fr-${block.id}`}
-                        value={block.caption.fr ?? ""}
-                        onChange={(event) =>
-                          updateBlock(block.id, (current) =>
-                            current.type === "image"
-                              ? {
-                                  ...current,
-                                  caption: {
-                                    ...current.caption,
-                                    fr: event.target.value || null,
-                                  },
-                                }
-                              : current,
-                          )
-                        }
-                      />
-                    </Field>
-                  </div>
+                  <LocalizedField
+                    label="Legenda"
+                    values={block.caption}
+                    onValueChange={(locale, value) =>
+                      updateBlock(block.id, (current) =>
+                        current.type === "image"
+                          ? {
+                              ...current,
+                              caption: {
+                                ...current.caption,
+                                [locale]: value || null,
+                              },
+                            }
+                          : current,
+                      )
+                    }
+                  />
                 </FieldGroup>
               ) : null}
 
@@ -455,8 +405,7 @@ export function BlogBlocksEditor({
                           current.type === "audio"
                             ? {
                                 ...current,
-                                provider: event.target
-                                  .value as AudioProvider,
+                                provider: event.target.value as AudioProvider,
                               }
                             : current,
                         )
@@ -505,8 +454,8 @@ export function BlogBlocksEditor({
                   {block.provider === "youtube-music" &&
                   isAudioEmbedUrl(block.provider, block.url) ? (
                     <FieldDescription>
-                      O YouTube Music não tem player de incorporação oficial:
-                      no site, essa faixa aparece como um cartão com link.
+                      O YouTube Music não tem player de incorporação oficial: no
+                      site, essa faixa aparece como um cartão com link.
                     </FieldDescription>
                   ) : null}
                 </FieldGroup>

@@ -8,14 +8,9 @@ import {
   CoverImageField,
   type CoverLibraryItem,
 } from "@/components/admin/cover-image-field";
+import { LocalizedField } from "@/components/admin/localized-field";
 import { PublishingControls } from "@/components/admin/publishing-fields";
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { FieldError, FieldGroup } from "@/components/ui/field";
 import type { BlogBlock } from "@/lib/blog-blocks";
 import type { ContentStatus } from "@/lib/content-visibility";
 
@@ -44,11 +39,7 @@ export function BlogPostForm({
   const [state, formAction, pending] = useActionState(action, {});
 
   return (
-    <form
-      action={formAction}
-      className="space-y-8"
-      encType="multipart/form-data"
-    >
+    <form action={formAction} className="max-w-4xl space-y-8">
       <PublishingControls
         mode={mode}
         initialStatus={initialValues?.status}
@@ -58,35 +49,16 @@ export function BlogPostForm({
         {({ schedule, actions }) => (
           <>
             <FieldGroup>
-              <div className="grid gap-4 md:grid-cols-3">
-                <Field>
-                  <FieldLabel htmlFor="titlePt" required>
-                    Título (PT)
-                  </FieldLabel>
-                  <Input
-                    id="titlePt"
-                    name="titlePt"
-                    required
-                    defaultValue={initialValues?.titlePt ?? ""}
-                  />
-                </Field>
-                <Field>
-                  <FieldLabel htmlFor="titleEn">Título (EN)</FieldLabel>
-                  <Input
-                    id="titleEn"
-                    name="titleEn"
-                    defaultValue={initialValues?.titleEn ?? ""}
-                  />
-                </Field>
-                <Field>
-                  <FieldLabel htmlFor="titleFr">Título (FR)</FieldLabel>
-                  <Input
-                    id="titleFr"
-                    name="titleFr"
-                    defaultValue={initialValues?.titleFr ?? ""}
-                  />
-                </Field>
-              </div>
+              <LocalizedField
+                label="Título"
+                required
+                names={{ pt: "titlePt", en: "titleEn", fr: "titleFr" }}
+                defaultValues={{
+                  pt: initialValues?.titlePt,
+                  en: initialValues?.titleEn,
+                  fr: initialValues?.titleFr,
+                }}
+              />
 
               {schedule}
 

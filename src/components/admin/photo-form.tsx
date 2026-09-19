@@ -4,6 +4,7 @@ import { useActionState } from "react";
 
 import type { MediaActionState } from "@/app/admin/(protected)/fotos/actions";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
+import { LocalizedField } from "@/components/admin/localized-field";
 import { PublishingControls } from "@/components/admin/publishing-fields";
 import {
   Field,
@@ -38,11 +39,7 @@ export function PhotoForm({
   const [state, formAction, pending] = useActionState(action, {});
 
   return (
-    <form
-      action={formAction}
-      className="space-y-8"
-      encType="multipart/form-data"
-    >
+    <form action={formAction} className="max-w-3xl space-y-8">
       <PublishingControls
         mode={mode}
         initialStatus={initialValues?.status}
@@ -60,45 +57,22 @@ export function PhotoForm({
                 existingPathFieldName="storagePath"
                 required={mode === "create"}
               />
-              <Field>
-                <FieldLabel htmlFor="altPt" required>
-                  Texto alternativo (PT)
-                </FieldLabel>
-                <Input
-                  id="altPt"
-                  name="altPt"
-                  required
-                  defaultValue={initialValues?.altPt ?? ""}
-                />
-              </Field>
-              <div className="grid gap-4 md:grid-cols-2">
-                <Field>
-                  <FieldLabel htmlFor="altEn">
-                    Texto alternativo (EN)
-                  </FieldLabel>
-                  <Input
-                    id="altEn"
-                    name="altEn"
-                    defaultValue={initialValues?.altEn ?? ""}
-                  />
-                </Field>
-                <Field>
-                  <FieldLabel htmlFor="altFr">
-                    Texto alternativo (FR)
-                  </FieldLabel>
-                  <Input
-                    id="altFr"
-                    name="altFr"
-                    defaultValue={initialValues?.altFr ?? ""}
-                  />
-                </Field>
-              </div>
+              <LocalizedField
+                label="Texto alternativo"
+                required
+                names={{ pt: "altPt", en: "altEn", fr: "altFr" }}
+                defaultValues={{
+                  pt: initialValues?.altPt,
+                  en: initialValues?.altEn,
+                  fr: initialValues?.altFr,
+                }}
+              />
 
               {schedule}
 
               <div className="grid gap-4 md:grid-cols-2">
                 <Field>
-                  <FieldLabel htmlFor="credit">Crédito</FieldLabel>
+                  <FieldLabel htmlFor="credit">Crédito (opcional)</FieldLabel>
                   <Input
                     id="credit"
                     name="credit"

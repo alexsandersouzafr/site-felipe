@@ -6,15 +6,14 @@ import { useActionState, useState } from "react";
 import type { HomeMediaActionState } from "@/app/admin/(protected)/home-fotos/actions";
 import { ImageFocusField } from "@/components/admin/image-focus-field";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
+import { LocalizedField } from "@/components/admin/localized-field";
 import { Button } from "@/components/ui/button";
 import {
-  Field,
   FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
 import { HOME_PHOTO_SLOTS, type HomePhotoSlot } from "@/lib/home-photo-slots";
 import { DEFAULT_IMAGE_FOCUS } from "@/lib/image-focus";
 import { MAX_HD_IMAGE_MB } from "@/lib/media-limits";
@@ -60,11 +59,7 @@ export function HomePhotoSlotsForm({
   );
 
   return (
-    <form
-      action={formAction}
-      className="space-y-8"
-      encType="multipart/form-data"
-    >
+    <form action={formAction} className="max-w-4xl space-y-8">
       <FieldDescription>
         Defina a capa/hero da home e as faixas de imagem entre as seções (fundo
         quase fixo com GSAP, sem sobreposição). Uploads em alta definição, até{" "}
@@ -125,44 +120,24 @@ export function HomePhotoSlotsForm({
                 defaultValue={values.objectPosition || DEFAULT_IMAGE_FOCUS}
               />
 
-              <Field>
-                <FieldLabel htmlFor={`altPt_${slot.key}`} required>
-                  Texto alternativo (PT)
-                </FieldLabel>
-                <Input
-                  id={`altPt_${slot.key}`}
-                  name={`altPt_${slot.key}`}
-                  defaultValue={values.altPt}
-                  required={
-                    !isCleared &&
-                    (Boolean(values.storagePath) || pendingFiles[slot.key])
-                  }
-                  placeholder="Obrigatório ao publicar a faixa"
-                />
-              </Field>
-
-              <div className="grid gap-4 md:grid-cols-2">
-                <Field>
-                  <FieldLabel htmlFor={`altEn_${slot.key}`}>
-                    Texto alternativo (EN)
-                  </FieldLabel>
-                  <Input
-                    id={`altEn_${slot.key}`}
-                    name={`altEn_${slot.key}`}
-                    defaultValue={values.altEn ?? ""}
-                  />
-                </Field>
-                <Field>
-                  <FieldLabel htmlFor={`altFr_${slot.key}`}>
-                    Texto alternativo (FR)
-                  </FieldLabel>
-                  <Input
-                    id={`altFr_${slot.key}`}
-                    name={`altFr_${slot.key}`}
-                    defaultValue={values.altFr ?? ""}
-                  />
-                </Field>
-              </div>
+              <LocalizedField
+                label="Texto alternativo"
+                required={
+                  !isCleared &&
+                  (Boolean(values.storagePath) || pendingFiles[slot.key])
+                }
+                names={{
+                  pt: `altPt_${slot.key}`,
+                  en: `altEn_${slot.key}`,
+                  fr: `altFr_${slot.key}`,
+                }}
+                defaultValues={{
+                  pt: values.altPt,
+                  en: values.altEn,
+                  fr: values.altFr,
+                }}
+                placeholder="Obrigatório ao publicar a faixa"
+              />
 
               <input
                 type="hidden"

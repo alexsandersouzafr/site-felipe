@@ -1,19 +1,14 @@
 "use client";
 
+import { useId, useState } from "react";
+
+import { FORM_LOCALES, LocaleTabs } from "@/components/admin/locale-tabs";
 import { RichTextEditor } from "@/components/admin/rich-text-editor";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import type { Locale } from "@/i18n/routing";
 import type { RichTextDocument } from "@/lib/rich-text";
-import { emptyRichTextDocument } from "@/lib/rich-text";
-
-type Locale = "pt" | "en" | "fr";
-
-const locales: Array<{ id: Locale; label: string }> = [
-  { id: "pt", label: "Português" },
-  { id: "en", label: "English" },
-  { id: "fr", label: "Français" },
-];
+import { emptyRichTextDocument, isRichTextEmpty } from "@/lib/rich-text";
 
 type LocalizedRichTextValues = {
   pt: RichTextDocument | null;
@@ -39,6 +34,10 @@ type LocalizedRichTextEditorProps = {
   required?: boolean;
 };
 
+function hasText(document: RichTextDocument | null | undefined) {
+  return document ? !isRichTextEmpty(document) : false;
+}
+
 export function LocalizedRichTextEditor({
   label,
   names,
@@ -50,46 +49,42 @@ export function LocalizedRichTextEditor({
   requiredLocale = "pt",
   required = false,
 }: LocalizedRichTextEditorProps) {
+  const baseId = useId();
+  const [filled, setFilled] = useState<Record<Locale, boolean>>(() => ({
+    pt: hasText(values?.pt),
+    en: hasText(values?.en),
+    fr: hasText(values?.fr),
+  }));
+
+  function handleChange(locale: Locale, document: RichTextDocument) {
+    setFilled((current) => ({ ...current, [locale]: hasText(document) }));
+    onChange?.(locale, document);
+  }
+
   return (
-    <div className="space-y-3">
-      {label ? (
-        <p className="flex items-center gap-1 text-sm font-medium">
-          {label}
-          {required ? (
-            <span className="text-destructive" aria-hidden="true">
-              *
-            </span>
-          ) : null}
-        </p>
-      ) : null}
-      <Tabs defaultSelectedKey="pt">
-        <TabsList aria-label="Idioma do conteúdo">
-          {locales.map((locale) => (
-            <TabsTrigger key={locale.id} id={locale.id}>
-              <span className="inline-flex items-center gap-1">
-                {locale.label}
-                {locale.id === requiredLocale ? (
-                  <span className="text-destructive" aria-hidden="true">
-                    *
-                  </span>
-                ) : null}
-              </span>
-            </TabsTrigger>
-          ))}
-        </TabsList>
-        {locales.map((locale) => (
-          <TabsContent key={locale.id} id={locale.id} className="space-y-4">
+    <LocaleTabs
+      label={label}
+      required={required}
+      requiredLocale={requiredLocale}
+      filled={filled}
+    >
+      {(locale) => {
+        const localeLabel =
+          FORM_LOCALES.find((item) => item.id === locale)?.label ?? locale;
+
+        return (
+          <div className="space-y-4">
             {showTitles ? (
               <Field>
-                <FieldLabel htmlFor={`title-${locale.id}`}>
-                  Título opcional ({locale.label})
+                <FieldLabel htmlFor={`${baseId}-title-${locale}`}>
+                  Título opcional
                 </FieldLabel>
                 <Input
-                  id={`title-${locale.id}`}
-                  value={titles?.[locale.id] ?? ""}
+                  id={`${baseId}-title-${locale}`}
+                  value={titles?.[locale] ?? ""}
                   onChange={(event) =>
                     onTitleChange?.(
-                      locale.id,
+                      locale,
                       event.target.value.trim() ? event.target.value : null,
                     )
                   }
@@ -97,22 +92,18 @@ export function LocalizedRichTextEditor({
               </Field>
             ) : null}
             <RichTextEditor
-              name={names?.[locale.id]}
-              initialContent={values?.[locale.id] ?? emptyRichTextDocument}
-              onChange={
-                onChange
-                  ? (document) => onChange(locale.id, document)
-                  : undefined
-              }
+              name={names?.[locale]}
+              initialContent={values?.[locale] ?? emptyRichTextDocument}
+              onChange={(document) => handleChange(locale, document)}
               placeholder={
-                locale.id === "pt"
+                locale === "pt"
                   ? "Escreva o conteúdo em português..."
-                  : `Escreva o conteúdo em ${locale.label} (opcional)...`
+                  : `Escreva o conteúdo em ${localeLabel} (opcional)...`
               }
             />
-          </TabsContent>
-        ))}
-      </Tabs>
-    </div>
+          </div>
+        );
+      }}
+    </LocaleTabs>
   );
 }
