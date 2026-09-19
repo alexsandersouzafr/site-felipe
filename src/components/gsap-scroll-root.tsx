@@ -10,13 +10,21 @@ gsap.registerPlugin(ScrollTrigger);
 
 /**
  * Smooth scroll (Lenis) synced with GSAP ScrollTrigger — required for reliable pin/parallax.
+ *
+ * Public site only: Lenis takes over the mouse wheel to scroll the window, so
+ * in the admin, whose tables and sidebar scroll on their own, the wheel would
+ * stop working inside them.
  */
 export function GsapScrollRoot() {
   const pathname = usePathname();
   const lenisRef = useRef<Lenis | null>(null);
+  const smooth = !pathname?.startsWith("/admin");
 
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (
+      !smooth ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
       return;
     }
 
@@ -41,7 +49,7 @@ export function GsapScrollRoot() {
       lenis.destroy();
       lenisRef.current = null;
     };
-  }, []);
+  }, [smooth]);
 
   useEffect(() => {
     // Remounted routes change layout; refresh pin positions.
