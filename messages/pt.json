@@ -24,8 +24,6 @@
   },
   "Footer": {
     "contact": "Entre em contato",
-    "ctaLabel": "Contato",
-    "ctaTitle": "Vamos conversar",
     "navigation": "Navegação",
     "contactTitle": "Contato",
     "social": "Redes",
@@ -44,7 +42,8 @@
     "viewAllBlog": "Ver todas as publicações",
     "role": "Maestro",
     "nextConcert": "Próximo concerto",
-    "scroll": "Role"
+    "scroll": "Role",
+    "contactTitle": "Vamos conversar"
   },
   "Blog": {
     "title": "Blog",

@@ -1,3 +1,4 @@
+import { ArrowUpRightIcon } from "@phosphor-icons/react/dist/ssr";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Fragment, type ReactNode } from "react";
 
@@ -187,6 +188,36 @@ export default async function HomePage({ params }: HomePageProps) {
           <ArrowLink href="/blog" className="mt-12 sm:hidden">
             {t("viewAllBlog")}
           </ArrowLink>
+        </SectionReveal>
+      ),
+    },
+    {
+      id: "contact",
+      tone: "default",
+      node: (
+        <SectionReveal
+          variant={null}
+          className="mx-auto max-w-6xl px-6 py-24 sm:py-36"
+        >
+          <SectionLabel index={4}>{tNav("contact")}</SectionLabel>
+          <Link
+            href="/contato"
+            className="group mt-8 flex items-end justify-between gap-6"
+          >
+            <span
+              data-reveal="lines"
+              className="font-heading text-[clamp(3rem,9.5vw,8.5rem)] leading-[1.02] tracking-[-0.02em] transition-colors duration-500 group-hover:text-primary"
+            >
+              {t("contactTitle")}
+            </span>
+            <span
+              data-reveal="fade"
+              aria-hidden="true"
+              className="mb-3 hidden size-20 shrink-0 items-center justify-center rounded-full border border-foreground/20 transition-[background-color,border-color,color,rotate] duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:rotate-45 group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground sm:flex lg:size-28"
+            >
+              <ArrowUpRightIcon className="size-7 lg:size-9" />
+            </span>
+          </Link>
         </SectionReveal>
       ),
     },

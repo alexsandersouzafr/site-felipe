@@ -27,8 +27,8 @@ function FooterColumn({
 }
 
 /**
- * The closing frame of every page: a large invitation to get in touch, then
- * the menu, contact details and social links.
+ * The foot of every page: the menu, contact details and social links. (The
+ * large "let's talk" invitation closes the home page only.)
  */
 export async function SiteFooter() {
   const locale = (await getLocale()) as Locale;
@@ -39,36 +39,8 @@ export async function SiteFooter() {
 
   return (
     <footer className="border-t border-border/70 bg-background">
-      <Reveal className="mx-auto max-w-6xl px-6 pt-24 pb-10 sm:pt-32">
-        <p
-          data-reveal="fade"
-          className="text-xs tracking-[0.28em] text-muted-foreground uppercase"
-        >
-          {t("ctaLabel")}
-        </p>
-        <Link
-          href="/contato"
-          className="group mt-6 flex items-end justify-between gap-6"
-        >
-          <span
-            data-reveal="lines"
-            className="font-heading text-[clamp(3rem,9.5vw,8.5rem)] leading-[1.02] tracking-[-0.02em] transition-colors duration-500 group-hover:text-primary"
-          >
-            {t("ctaTitle")}
-          </span>
-          <span
-            data-reveal="fade"
-            aria-hidden="true"
-            className="mb-3 hidden size-20 shrink-0 items-center justify-center rounded-full border border-foreground/20 transition-[background-color,border-color,color,rotate] duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:rotate-45 group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground sm:flex lg:size-28"
-          >
-            <ArrowUpRightIcon className="size-7 lg:size-9" />
-          </span>
-        </Link>
-
-        <div
-          data-reveal="fade"
-          className="mt-20 grid gap-10 border-t border-border/70 pt-10 sm:grid-cols-3"
-        >
+      <Reveal className="mx-auto max-w-6xl px-6 pt-16 pb-10 sm:pt-20">
+        <div data-reveal="fade" className="grid gap-10 sm:grid-cols-3">
           <FooterColumn title={t("navigation")}>
             {PUBLIC_NAV_ITEMS.map((item) => (
               <li key={item.href}>

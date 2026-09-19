@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { DM_Sans, Playfair_Display } from "next/font/google";
 
 import { Providers } from "@/components/providers";
+import { getDefaultSiteTheme } from "@/lib/site-theme";
 
 import "./globals.css";
 import { cn } from "@/lib/utils";
@@ -25,7 +26,9 @@ export const metadata: Metadata = {
  */
 const MOTION_BOOTSTRAP = `(function(){var d=document.documentElement;d.classList.add("js");setTimeout(function(){if(!d.classList.contains("motion-ready"))d.classList.add("no-motion")},4000)})();`;
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const defaultTheme = await getDefaultSiteTheme();
+
   return (
     <html
       lang="pt-BR"
@@ -39,7 +42,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         />
       </head>
       <body className={`${dmSans.variable} ${heading.variable} min-h-screen`}>
-        <Providers>{children}</Providers>
+        <Providers defaultTheme={defaultTheme}>{children}</Providers>
       </body>
     </html>
   );

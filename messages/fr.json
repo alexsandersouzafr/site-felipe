@@ -24,8 +24,6 @@
   },
   "Footer": {
     "contact": "Entrer en contact",
-    "ctaLabel": "Contact",
-    "ctaTitle": "Parlons-en",
     "navigation": "Navigation",
     "contactTitle": "Contact",
     "social": "Réseaux",
@@ -44,7 +42,8 @@
     "viewAllBlog": "Voir toutes les publications",
     "role": "Chef d'orchestre",
     "nextConcert": "Prochain concert",
-    "scroll": "Défiler"
+    "scroll": "Défiler",
+    "contactTitle": "Parlons-en"
   },
   "Blog": {
     "title": "Blog",

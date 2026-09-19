@@ -24,8 +24,6 @@
   },
   "Footer": {
     "contact": "Get in touch",
-    "ctaLabel": "Contact",
-    "ctaTitle": "Let's talk",
     "navigation": "Navigation",
     "contactTitle": "Contact",
     "social": "Social",
@@ -44,7 +42,8 @@
     "viewAllBlog": "View all posts",
     "role": "Conductor",
     "nextConcert": "Next concert",
-    "scroll": "Scroll"
+    "scroll": "Scroll",
+    "contactTitle": "Let's talk"
   },
   "Blog": {
     "title": "Blog",

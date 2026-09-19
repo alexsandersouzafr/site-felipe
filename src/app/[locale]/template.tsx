@@ -1,13 +1,8 @@
 import type { ReactNode } from "react";
 
-import { PageCurtain } from "@/components/public/page-curtain";
+import { PageTransition } from "@/components/public/page-transition";
 
-/** Remounts on every navigation, so each page arrives behind the curtain. */
+/** Remounts on every navigation, so each new page fades in. */
 export default function LocaleTemplate({ children }: { children: ReactNode }) {
-  return (
-    <>
-      {children}
-      <PageCurtain />
-    </>
-  );
+  return <PageTransition>{children}</PageTransition>;
 }
