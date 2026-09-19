@@ -16,6 +16,8 @@ type EventRowsProps = {
    */
   featuredLabel?: string;
   showCountry?: boolean;
+  /** Rows come in one after another as the list scrolls into view. */
+  reveal?: boolean;
 };
 
 /**
@@ -33,9 +35,13 @@ export function EventRows({
   ticketsLabel,
   featuredLabel,
   showCountry = false,
+  reveal = false,
 }: EventRowsProps) {
   return (
-    <ul className="divide-y divide-border/70">
+    <ul
+      className="divide-y divide-border/70 border-y border-border/70"
+      data-reveal={reveal ? "stagger" : undefined}
+    >
       {events.map((event) => {
         const { dayMonth, year, time } = formatEventDisplay(
           event.localDate,
@@ -47,13 +53,15 @@ export function EventRows({
           <li
             key={event.id}
             className={cn(
-              "grid gap-4 py-6 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-x-8 sm:py-8",
+              "group relative grid gap-4 py-6 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-x-8 sm:py-8",
+              // A crimson rule draws itself along the bottom of the row on hover.
+              "after:absolute after:inset-x-0 after:-bottom-px after:h-px after:origin-left after:scale-x-0 after:bg-primary after:transition-transform after:duration-700 after:ease-[cubic-bezier(0.76,0,0.24,1)] hover:after:scale-x-100",
               event.imageUrl &&
                 "md:grid-cols-[minmax(0,1fr)_9rem_auto] md:gap-x-6 lg:grid-cols-[minmax(0,1fr)_13rem_auto]",
             )}
           >
             <div className="min-w-0">
-              <h3 className="font-heading text-2xl tracking-tight sm:text-3xl">
+              <h3 className="font-heading text-2xl tracking-tight transition-colors duration-500 group-hover:text-primary sm:text-3xl">
                 {event.title}
                 {featuredLabel && event.isFeatured ? (
                   <StarIcon
@@ -71,12 +79,15 @@ export function EventRows({
             </div>
 
             {event.imageUrl ? (
-              <div className="relative order-first aspect-[16/10] overflow-hidden bg-muted sm:col-span-2 md:order-none md:col-span-1 md:aspect-[4/3]">
+              <div
+                data-reveal={reveal ? "image" : undefined}
+                className="relative order-first aspect-[16/10] overflow-hidden bg-muted sm:col-span-2 md:order-none md:col-span-1 md:aspect-[4/3]"
+              >
                 <Image
                   src={event.imageUrl}
                   alt=""
                   fill
-                  className="object-cover"
+                  className="object-cover transition-[scale] duration-1000 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-[1.05]"
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 144px, 208px"
                 />
               </div>

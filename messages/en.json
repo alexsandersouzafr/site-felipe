@@ -23,7 +23,13 @@
     "dark": "Switch to dark theme"
   },
   "Footer": {
-    "contact": "Get in touch"
+    "contact": "Get in touch",
+    "ctaLabel": "Contact",
+    "ctaTitle": "Let's talk",
+    "navigation": "Navigation",
+    "contactTitle": "Contact",
+    "social": "Social",
+    "backToTop": "Back to top"
   },
   "Home": {
     "eyebrow": "Felipe Magalhães",
@@ -35,7 +41,10 @@
     "recentPostsTitle": "From the blog",
     "recentPostsEmpty": "No posts available yet.",
     "viewAllSchedule": "Full schedule",
-    "viewAllBlog": "View all posts"
+    "viewAllBlog": "View all posts",
+    "role": "Conductor",
+    "nextConcert": "Next concert",
+    "scroll": "Scroll"
   },
   "Blog": {
     "title": "Blog",
@@ -62,7 +71,8 @@
   },
   "Videos": {
     "title": "Videos",
-    "empty": "No videos published right now."
+    "empty": "No videos published right now.",
+    "play": "Play"
   },
   "Photos": {
     "title": "Photos",

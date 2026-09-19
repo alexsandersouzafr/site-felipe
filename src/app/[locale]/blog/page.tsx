@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { BlogCard } from "@/components/public/blog-card";
 import { PageHero } from "@/components/public/page-hero";
 import { PublicPaginationNav } from "@/components/public/pagination-nav";
 import { SectionReveal } from "@/components/public/section-reveal";
-import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { PUBLIC_PAGE_SIZE, parsePage } from "@/lib/pagination";
 import { listBlogPostsPage } from "@/lib/public/blog";
@@ -37,6 +36,9 @@ export default async function BlogPage({
     getPageCover("blog"),
   ]);
 
+  const featured = page === 1 ? (posts[0] ?? null) : null;
+  const rest = featured ? posts.slice(1) : posts;
+
   return (
     <main>
       <PageHero
@@ -45,40 +47,44 @@ export default async function BlogPage({
         objectPosition={pageCover?.objectPosition}
       />
 
-      <SectionReveal className="mx-auto max-w-6xl px-6 py-14 sm:py-20">
+      <SectionReveal
+        variant={null}
+        className="mx-auto max-w-6xl px-6 py-20 sm:py-28"
+      >
         {posts.length === 0 ? (
           <p className="text-muted-foreground">{t("empty")}</p>
         ) : (
-          <ul className="grid gap-12 md:grid-cols-2">
-            {posts.map((post) => (
-              <li key={post.id}>
-                <Link href={`/blog/${post.slug}`} className="group block">
-                  {post.coverUrl ? (
-                    <div className="relative mb-5 aspect-[16/10] overflow-hidden bg-muted">
-                      <Image
-                        src={post.coverUrl}
-                        alt=""
-                        fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-                        sizes="(max-width: 768px) 100vw, 50vw"
-                      />
-                    </div>
-                  ) : null}
-                  <h2 className="font-heading text-2xl tracking-tight transition-colors group-hover:text-primary sm:text-3xl">
-                    {post.title}
-                  </h2>
-                  {post.excerpt ? (
-                    <p className="mt-3 line-clamp-4 text-sm leading-relaxed text-muted-foreground">
-                      {post.excerpt}
-                    </p>
-                  ) : null}
-                  <p className="mt-3 text-sm text-foreground/80">
-                    {t("readMore")}
-                  </p>
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <>
+            {/* The newest post opens the blog, large; the rest follow in a grid. */}
+            {featured ? (
+              <div data-reveal="fade" className="mb-20 sm:mb-28">
+                <BlogCard
+                  post={featured}
+                  locale={locale}
+                  readMoreLabel={t("readMore")}
+                  variant="feature"
+                  headingLevel="h2"
+                />
+              </div>
+            ) : null}
+            {rest.length > 0 ? (
+              <ul
+                data-reveal="stagger"
+                className="grid gap-x-8 gap-y-16 md:grid-cols-2 lg:grid-cols-3"
+              >
+                {rest.map((post) => (
+                  <li key={post.id}>
+                    <BlogCard
+                      post={post}
+                      locale={locale}
+                      readMoreLabel={t("readMore")}
+                      headingLevel="h2"
+                    />
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </>
         )}
         <PublicPaginationNav
           basePath="/blog"

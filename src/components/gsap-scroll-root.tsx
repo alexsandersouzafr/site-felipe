@@ -8,6 +8,13 @@ import { useEffect, useRef } from "react";
 
 gsap.registerPlugin(ScrollTrigger);
 
+let activeLenis: Lenis | null = null;
+
+/** The running smooth scroller, for code that needs to scroll or pause it. */
+export function getLenis() {
+  return activeLenis;
+}
+
 /**
  * Smooth scroll (Lenis) synced with GSAP ScrollTrigger — required for reliable pin/parallax.
  */
@@ -27,6 +34,7 @@ export function GsapScrollRoot() {
       syncTouch: false,
     });
     lenisRef.current = lenis;
+    activeLenis = lenis;
 
     lenis.on("scroll", ScrollTrigger.update);
 
@@ -40,6 +48,7 @@ export function GsapScrollRoot() {
       gsap.ticker.remove(onTick);
       lenis.destroy();
       lenisRef.current = null;
+      activeLenis = null;
     };
   }, []);
 

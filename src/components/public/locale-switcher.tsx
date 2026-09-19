@@ -25,10 +25,8 @@ export function LocaleSwitcher({ className }: { className?: string }) {
           key={value}
           type="button"
           className={cn(
-            "cursor-pointer px-1.5 py-1 uppercase transition-colors",
-            value === locale
-              ? "text-foreground"
-              : "text-muted-foreground hover:text-foreground",
+            "cursor-pointer px-1.5 py-1 uppercase transition-opacity",
+            value === locale ? "opacity-100" : "opacity-55 hover:opacity-100",
           )}
           onClick={() => router.replace(pathname, { locale: value })}
           aria-current={value === locale ? "true" : undefined}

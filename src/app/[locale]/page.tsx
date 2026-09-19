@@ -1,21 +1,29 @@
-import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Fragment, type ReactNode } from "react";
 
+import { BlogCard } from "@/components/public/blog-card";
+import { ArrowLink, SectionLabel } from "@/components/public/editorial";
 import { EventRows } from "@/components/public/event-rows";
+import { HeroDrift } from "@/components/public/hero-drift";
 import { ParallaxBand } from "@/components/public/parallax-band";
+import { Reveal } from "@/components/public/reveal";
 import { SectionReveal } from "@/components/public/section-reveal";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
+import { formatEventDisplay } from "@/lib/event-time";
 import { DEFAULT_IMAGE_FOCUS } from "@/lib/image-focus";
 import { getBioSummary } from "@/lib/public/bio";
 import { listBlogPosts } from "@/lib/public/blog";
+import type { PublicEvent } from "@/lib/public/events";
 import { listUpcomingEvents } from "@/lib/public/events";
 import { getPageCover, listHomePhotos } from "@/lib/public/site-images";
+import { cn } from "@/lib/utils";
 
 type HomePageProps = {
   params: Promise<{ locale: string }>;
 };
+
+type Translate = (key: string) => string;
 
 export default async function HomePage({ params }: HomePageProps) {
   const { locale } = await params;
@@ -24,6 +32,8 @@ export default async function HomePage({ params }: HomePageProps) {
 
   const t = await getTranslations("Home");
   const tSchedule = await getTranslations("Schedule");
+  const tBlog = await getTranslations("Blog");
+  const tNav = await getTranslations("Navigation");
   const [upcoming, posts, bioSummary, homePhotos, homeCover] =
     await Promise.all([
       listUpcomingEvents(typedLocale, 3),
@@ -47,6 +57,15 @@ export default async function HomePage({ params }: HomePageProps) {
     homeCover?.objectPosition ??
     DEFAULT_IMAGE_FOCUS;
 
+  const heroContent = (
+    <HeroContent
+      t={t}
+      locale={locale}
+      nextEvent={upcoming[0] ?? null}
+      onPhoto={Boolean(heroImage)}
+    />
+  );
+
   const contentSections: Array<{
     id: string;
     tone: "default" | "muted";
@@ -56,94 +75,122 @@ export default async function HomePage({ params }: HomePageProps) {
       id: "intro",
       tone: "default",
       node: (
-        <SectionReveal className="mx-auto max-w-6xl px-6 py-20 sm:py-28">
-          <IntroCopy t={t} bioSummary={bioSummary?.summary} />
+        <SectionReveal
+          variant={null}
+          className="mx-auto grid max-w-6xl gap-10 px-6 py-24 sm:py-32 lg:grid-cols-[minmax(0,1fr)_minmax(0,2.3fr)] lg:gap-16"
+        >
+          <SectionLabel index={1} className="lg:pt-3">
+            {t("bioSummaryTitle")}
+          </SectionLabel>
+          <div>
+            {bioSummary?.summary ? (
+              <p
+                data-reveal="lines"
+                className="text-xl leading-relaxed text-foreground/85 sm:text-2xl sm:leading-relaxed"
+              >
+                {bioSummary.summary}
+              </p>
+            ) : null}
+            <div data-reveal="fade" className="mt-12 flex flex-wrap gap-4">
+              <ArrowLink href="/agenda" variant="solid">
+                {t("schedule")}
+              </ArrowLink>
+              <ArrowLink href="/bio" variant="outline">
+                {t("bio")}
+              </ArrowLink>
+            </div>
+          </div>
         </SectionReveal>
       ),
     },
-  ];
-
-  contentSections.push({
-    id: "schedule",
-    tone: "default",
-    node: (
-      <SectionReveal className="mx-auto max-w-6xl px-6 py-20">
-        <div className="mb-8 flex items-end justify-between gap-4">
-          <h2 className="font-heading text-3xl tracking-tight sm:text-4xl">
-            {t("upcomingTitle")}
-          </h2>
-          <Link
-            href="/agenda"
-            className="text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
-          >
+    {
+      id: "schedule",
+      tone: "default",
+      node: (
+        <SectionReveal
+          variant={null}
+          className="mx-auto max-w-6xl px-6 py-24 sm:py-32"
+        >
+          <SectionLabel index={2}>{tNav("schedule")}</SectionLabel>
+          <div className="mt-8 flex items-end justify-between gap-6">
+            <h2
+              data-reveal="lines"
+              className="font-heading text-4xl tracking-tight sm:text-6xl"
+            >
+              {t("upcomingTitle")}
+            </h2>
+            <ArrowLink
+              href="/agenda"
+              className="hidden shrink-0 sm:inline-flex"
+            >
+              {t("viewAllSchedule")}
+            </ArrowLink>
+          </div>
+          <div className="mt-12">
+            {upcoming.length === 0 ? (
+              <p className="text-muted-foreground">{t("upcomingEmpty")}</p>
+            ) : (
+              <EventRows
+                events={upcoming}
+                locale={locale}
+                ticketsLabel={tSchedule("tickets")}
+                reveal
+              />
+            )}
+          </div>
+          <ArrowLink href="/agenda" className="mt-10 sm:hidden">
             {t("viewAllSchedule")}
-          </Link>
-        </div>
-        {upcoming.length === 0 ? (
-          <p className="text-muted-foreground">{t("upcomingEmpty")}</p>
-        ) : (
-          <EventRows
-            events={upcoming}
-            locale={locale}
-            ticketsLabel={tSchedule("tickets")}
-          />
-        )}
-      </SectionReveal>
-    ),
-  });
-
-  contentSections.push({
-    id: "blog",
-    tone: "muted",
-    node: (
-      <SectionReveal>
-        <div className="mx-auto max-w-6xl px-6 py-20">
-          <div className="mb-8 flex items-end justify-between gap-4">
-            <h2 className="font-heading text-3xl tracking-tight sm:text-4xl">
+          </ArrowLink>
+        </SectionReveal>
+      ),
+    },
+    {
+      id: "blog",
+      tone: "muted",
+      node: (
+        <SectionReveal
+          variant={null}
+          className="mx-auto max-w-6xl px-6 py-24 sm:py-32"
+        >
+          <SectionLabel index={3}>{tNav("news")}</SectionLabel>
+          <div className="mt-8 flex items-end justify-between gap-6">
+            <h2
+              data-reveal="lines"
+              className="font-heading text-4xl tracking-tight sm:text-6xl"
+            >
               {t("recentPostsTitle")}
             </h2>
-            <Link
-              href="/blog"
-              className="text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
-            >
+            <ArrowLink href="/blog" className="hidden shrink-0 sm:inline-flex">
               {t("viewAllBlog")}
-            </Link>
+            </ArrowLink>
           </div>
           {posts.length === 0 ? (
-            <p className="text-muted-foreground">{t("recentPostsEmpty")}</p>
+            <p className="mt-12 text-muted-foreground">
+              {t("recentPostsEmpty")}
+            </p>
           ) : (
-            <ul className="grid gap-10 md:grid-cols-3">
+            <ul
+              data-reveal="stagger"
+              className="mt-12 grid gap-14 md:grid-cols-3 md:gap-8"
+            >
               {posts.map((post) => (
                 <li key={post.id}>
-                  <Link href={`/blog/${post.slug}`} className="group block">
-                    {post.coverUrl ? (
-                      <div className="relative mb-4 aspect-[4/3] overflow-hidden bg-muted">
-                        <Image
-                          src={post.coverUrl}
-                          alt=""
-                          fill
-                          className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                          sizes="(max-width: 768px) 100vw, 33vw"
-                        />
-                      </div>
-                    ) : null}
-                    <h3 className="font-heading text-xl tracking-tight transition-colors group-hover:text-primary">
-                      {post.title}
-                    </h3>
-                    {post.excerpt ? (
-                      <p className="mt-2 line-clamp-4 text-sm leading-relaxed text-muted-foreground">
-                        {post.excerpt}
-                      </p>
-                    ) : null}
-                  </Link>
+                  <BlogCard
+                    post={post}
+                    locale={locale}
+                    readMoreLabel={tBlog("readMore")}
+                  />
                 </li>
               ))}
             </ul>
           )}
-        </div>
-      </SectionReveal>
-    ),
-  });
+          <ArrowLink href="/blog" className="mt-12 sm:hidden">
+            {t("viewAllBlog")}
+          </ArrowLink>
+        </SectionReveal>
+      ),
+    },
+  ];
 
   return (
     <main>
@@ -154,13 +201,16 @@ export default async function HomePage({ params }: HomePageProps) {
           objectPosition={heroObjectPosition}
           priority
           variant="hero"
-        />
-      ) : (
-        <section
-          className="relative h-[58svh] min-h-[22rem] overflow-hidden sm:h-[68svh] md:h-[74svh] lg:h-[min(80vh,48rem)]"
-          aria-hidden
+          headerOverlay
+          intro
+          className="h-svh min-h-[34rem] sm:h-svh md:h-svh lg:h-svh"
+          overlayClassName="bg-[linear-gradient(to_bottom,rgb(0_0_0/0.45),transparent_28%,transparent_45%,rgb(0_0_0/0.62))]"
         >
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_12%,_oklch(0.93_0.04_20),_transparent_42%),linear-gradient(165deg,_oklch(0.985_0.01_240),_oklch(0.96_0.02_20))] dark:bg-[radial-gradient(circle_at_18%_12%,_oklch(0.3_0.04_20),_transparent_42%),linear-gradient(165deg,_oklch(0.2_0.01_240),_oklch(0.16_0.02_20))]" />
+          {heroContent}
+        </ParallaxBand>
+      ) : (
+        <section className="relative h-[86svh] min-h-[32rem] overflow-hidden bg-[radial-gradient(circle_at_18%_12%,_oklch(0.93_0.04_20),_transparent_42%),linear-gradient(165deg,_oklch(0.985_0.01_240),_oklch(0.96_0.02_20))] dark:bg-[radial-gradient(circle_at_18%_12%,_oklch(0.3_0.04_20),_transparent_42%),linear-gradient(165deg,_oklch(0.2_0.01_240),_oklch(0.16_0.02_20))]">
+          {heroContent}
         </section>
       )}
 
@@ -187,37 +237,82 @@ export default async function HomePage({ params }: HomePageProps) {
   );
 }
 
-function IntroCopy({
+/**
+ * The opening frame: the conductor's name set large over the photo, with the
+ * next concert and a scroll cue along the bottom edge.
+ */
+function HeroContent({
   t,
-  bioSummary,
+  locale,
+  nextEvent,
+  onPhoto,
 }: {
-  t: (key: string) => string;
-  bioSummary?: string;
+  t: Translate;
+  locale: string;
+  nextEvent: PublicEvent | null;
+  onPhoto: boolean;
 }) {
+  const next = nextEvent
+    ? formatEventDisplay(nextEvent.localDate, nextEvent.localTime, locale)
+    : null;
+
   return (
-    <div className="max-w-3xl">
-      <h1 className="font-heading mb-4 text-4xl tracking-tight sm:text-6xl md:text-7xl">
+    <HeroDrift
+      className={cn(
+        "relative mx-auto flex h-full w-full max-w-6xl flex-col justify-end px-6 pb-12 sm:pb-16",
+        onPhoto ? "text-white" : "text-foreground",
+      )}
+    >
+      <Reveal
+        as="p"
+        variant="fade"
+        immediate
+        delay={1.3}
+        className="mb-4 text-xs tracking-[0.32em] uppercase opacity-85"
+      >
+        {t("role")}
+      </Reveal>
+      <Reveal
+        as="h1"
+        variant="chars"
+        immediate
+        delay={0.75}
+        className="font-heading text-[clamp(3.25rem,11vw,10rem)] leading-none tracking-[-0.025em]"
+      >
         {t("eyebrow")}
-      </h1>
-      {bioSummary ? (
-        <p className="mt-8 text-lg leading-relaxed text-muted-foreground">
-          {bioSummary}
-        </p>
-      ) : null}
-      <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-        <Link
-          href="/agenda"
-          className="inline-flex h-11 items-center justify-center bg-primary px-5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/85"
+      </Reveal>
+
+      <Reveal
+        variant="fade"
+        immediate
+        delay={1.55}
+        className="mt-10 flex items-end justify-between gap-8 border-t border-current/25 pt-6"
+      >
+        {nextEvent && next ? (
+          <Link href="/agenda" className="group block max-w-md">
+            <span className="block text-xs tracking-[0.25em] uppercase opacity-75">
+              {t("nextConcert")}
+            </span>
+            <span className="mt-2 block font-heading text-xl tracking-tight sm:text-2xl">
+              <span className="link-underline">{nextEvent.title}</span>
+            </span>
+            <span className="mt-1 block text-sm opacity-80">
+              {next.dayMonth} {next.year} · {next.time} · {nextEvent.venue}
+            </span>
+          </Link>
+        ) : (
+          <span />
+        )}
+        <span
+          className="hidden shrink-0 items-center gap-3 text-xs tracking-[0.25em] uppercase opacity-75 sm:flex"
+          aria-hidden="true"
         >
-          {t("schedule")}
-        </Link>
-        <Link
-          href="/bio"
-          className="inline-flex h-11 items-center justify-center border border-border bg-background px-5 text-sm font-medium transition-colors hover:bg-muted"
-        >
-          {t("bio")}
-        </Link>
-      </div>
-    </div>
+          {t("scroll")}
+          <span className="relative block h-12 w-px overflow-hidden bg-current/25">
+            <span className="scroll-cue-line absolute inset-0 bg-current" />
+          </span>
+        </span>
+      </Reveal>
+    </HeroDrift>
   );
 }
