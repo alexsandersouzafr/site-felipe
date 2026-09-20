@@ -1,9 +1,10 @@
+import { ArrowLeftIcon } from "@phosphor-icons/react/dist/ssr";
 import type { Metadata } from "next";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { BlogBlocksView } from "@/components/public/blog-blocks-view";
+import { PageHero } from "@/components/public/page-hero";
 import { SectionReveal } from "@/components/public/section-reveal";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
@@ -36,39 +37,24 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   return (
     <main>
-      <section className="relative min-h-[42vh] overflow-hidden">
-        {post.coverUrl ? (
-          <Image
-            src={post.coverUrl}
-            alt=""
-            fill
-            priority
-            className="object-cover"
-            sizes="100vw"
-          />
-        ) : null}
-        <div
-          className={
-            post.coverUrl
-              ? "absolute inset-0 bg-gradient-to-t from-background/50 via-background/10 to-transparent"
-              : "absolute inset-0 bg-[linear-gradient(165deg,_oklch(0.985_0.01_240),_oklch(0.96_0.02_20))]"
-          }
-        />
-        <div className="relative mx-auto flex min-h-[42vh] max-w-3xl flex-col justify-end px-6 pb-12 pt-24">
-          <Link
-            href="/blog"
-            className="mb-6 text-sm text-muted-foreground underline-offset-4 hover:underline"
-          >
-            {t("backToList")}
-          </Link>
-          <h1 className="font-heading animate-in fade-in slide-in-from-bottom-2 text-4xl tracking-tight duration-700 sm:text-5xl">
-            {post.title}
-          </h1>
-        </div>
-      </section>
+      {/* The same hero as the other pages, with the stronger veil: a post
+          title runs long, so the cover has to dissolve higher up to keep it
+          readable over any photo. */}
+      <PageHero title={post.title} imageUrl={post.coverUrl} veil="strong" />
 
-      <SectionReveal className="mx-auto max-w-3xl px-6 py-14">
-        <BlogBlocksView blocks={post.blocks} />
+      <SectionReveal variant={null} className="mx-auto max-w-3xl px-6 py-14">
+        <Link
+          href="/blog"
+          data-reveal="fade"
+          className="group inline-flex items-center gap-3 text-xs tracking-[0.2em] uppercase"
+        >
+          <ArrowLeftIcon className="size-4 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:-translate-x-1" />
+          <span className="link-underline">{t("backToList")}</span>
+        </Link>
+
+        <div data-reveal="fade" className="mt-10">
+          <BlogBlocksView blocks={post.blocks} />
+        </div>
       </SectionReveal>
     </main>
   );
