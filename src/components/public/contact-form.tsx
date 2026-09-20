@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useActionState, useId, useState } from "react";
+import { useActionState, useEffect, useId, useState } from "react";
 
 import {
   type ContactFormState,
@@ -40,6 +40,30 @@ export function ContactForm({
     initialState,
   );
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  // Controlled on purpose: React empties an uncontrolled form after every
+  // action, which would throw away what the visitor wrote whenever the server
+  // refuses the message (too many links, too fast, captcha, rate limit).
+  const [values, setValues] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+
+  useEffect(() => {
+    if (state.status === "success") {
+      setValues({ name: "", email: "", subject: "", message: "" });
+    }
+  }, [state]);
+
+  const field = (name: keyof typeof values) => ({
+    id: `${id}-${name}`,
+    name,
+    value: values[name],
+    onChange: (
+      event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    ) => setValues((current) => ({ ...current, [name]: event.target.value })),
+  });
   const waitingForCaptcha = Boolean(turnstileSiteKey) && !captchaToken;
 
   return (
@@ -65,8 +89,7 @@ export function ContactForm({
             {t("formName")} <span className="text-destructive">*</span>
           </label>
           <Input
-            id={`${id}-name`}
-            name="name"
+            {...field("name")}
             required
             autoComplete="name"
             maxLength={120}
@@ -77,8 +100,7 @@ export function ContactForm({
             {t("formEmail")} <span className="text-destructive">*</span>
           </label>
           <Input
-            id={`${id}-email`}
-            name="email"
+            {...field("email")}
             type="email"
             required
             autoComplete="email"
@@ -91,20 +113,14 @@ export function ContactForm({
         <label htmlFor={`${id}-subject`} className="block">
           {t("formSubject")} <span className="text-destructive">*</span>
         </label>
-        <Input id={`${id}-subject`} name="subject" required maxLength={200} />
+        <Input {...field("subject")} required maxLength={200} />
       </div>
 
       <div className="space-y-2 text-sm">
         <label htmlFor={`${id}-message`} className="block">
           {t("formMessage")} <span className="text-destructive">*</span>
         </label>
-        <Textarea
-          id={`${id}-message`}
-          name="message"
-          required
-          rows={6}
-          maxLength={5000}
-        />
+        <Textarea {...field("message")} required rows={6} maxLength={5000} />
       </div>
 
       {turnstileSiteKey ? (

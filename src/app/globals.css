@@ -209,7 +209,11 @@ body:has([data-header-overlay])
   backdrop-filter: none;
 }
 
-.site-header[data-hidden="true"]:not([data-menu-open="true"]) {
+/* `:focus-within` keeps the header in place while a keyboard user is inside
+ * it, so focus never lands on something scrolled out of sight. */
+.site-header[data-hidden="true"]:not([data-menu-open="true"]):not(
+  :focus-within
+) {
   transform: translateY(-100%);
 }
 

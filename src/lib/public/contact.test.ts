@@ -12,6 +12,8 @@ import {
 const NUL = String.fromCodePoint(0x00);
 const BELL = String.fromCodePoint(0x07);
 const UNIT_SEPARATOR = String.fromCodePoint(0x1f);
+/** C1 range: invisible here, but Postgres counts it as a control character. */
+const NEXT_LINE = String.fromCodePoint(0x85);
 const ZERO_WIDTH_SPACE = String.fromCodePoint(0x200b);
 /** Right-to-left override: flips the text after it, hiding a fake extension. */
 const RTL_OVERRIDE = String.fromCodePoint(0x202e);
@@ -101,6 +103,10 @@ describe("sanitizeSingleLine", () => {
     expect(sanitizeSingleLine(`a${UNIT_SEPARATOR}b`)).toBe("a b");
   });
 
+  it("removes the C1 control characters the database also refuses", () => {
+    expect(sanitizeSingleLine(`Ana${NEXT_LINE}Souza`)).toBe("Ana Souza");
+  });
+
   it("removes invisible and direction-changing characters", () => {
     expect(sanitizeSingleLine(`Ana${RTL_OVERRIDE}exe.txt`)).toBe("Anaexe.txt");
     expect(sanitizeSingleLine(`a${ZERO_WIDTH_SPACE}b`)).toBe("ab");
@@ -116,6 +122,10 @@ describe("sanitizeMessage", () => {
 
   it("removes invisible characters too", () => {
     expect(sanitizeMessage(`oi${ZERO_WIDTH_SPACE}${RTL_OVERRIDE}`)).toBe("oi");
+  });
+
+  it("removes the C1 control characters the database also refuses", () => {
+    expect(sanitizeMessage(`oi${NEXT_LINE}tudo bem`)).toBe("oitudo bem");
   });
 });
 

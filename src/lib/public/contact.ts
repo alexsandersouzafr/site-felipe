@@ -23,12 +23,14 @@ const INVISIBLE_CHARACTERS = characters(
   [0x2066, 0x2069],
   [0xfeff, 0xfeff],
 );
-const CONTROL_CHARACTERS = characters([0x00, 0x1f], [0x7f, 0x7f]);
+/** Includes the C1 range (U+0080–U+009F), which Postgres counts as control
+ * characters too, so the database never rejects what got through here. */
+const CONTROL_CHARACTERS = characters([0x00, 0x1f], [0x7f, 0x9f]);
 /** Everything but tab (0x09) and line feed (0x0a); carriage returns go first. */
 const CONTROL_EXCEPT_LINE_BREAKS = characters(
   [0x00, 0x08],
   [0x0b, 0x1f],
-  [0x7f, 0x7f],
+  [0x7f, 0x9f],
 );
 
 /** For name and subject: a single line, no control or invisible characters. */

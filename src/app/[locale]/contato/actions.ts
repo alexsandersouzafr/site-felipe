@@ -14,7 +14,7 @@ import {
   turnstileKeys,
   verifyTurnstileToken,
 } from "@/lib/public/contact-protection";
-import { createClient } from "@/lib/supabase/server";
+import { createSecretClient } from "@/lib/supabase/secret";
 
 export type ContactFormState =
   | { status: "idle" }
@@ -52,8 +52,8 @@ function hashIp(ip: string | null) {
  *  3. Turnstile CAPTCHA, when its keys are configured
  *  4. validation and cleaning of every field
  *  5. links: spam is mostly links
- *  6. insert, where the database applies the per-visitor, per-address and
- *     overall rate limits
+ *  6. insert with the server's secret key, where the database applies the
+ *     per-visitor, per-address and overall rate limits
  */
 export async function submitContactMessage(
   _prev: ContactFormState,
@@ -108,7 +108,17 @@ export async function submitContactMessage(
     return { status: "error", message: "tooManyLinks" };
   }
 
-  const supabase = await createClient();
+  // Written with the secret key: visitors cannot insert directly, so every
+  // message has been through the checks above.
+  const supabase = createSecretClient();
+
+  if (!supabase) {
+    console.error(
+      "SUPABASE_SECRET_KEY is missing: the contact form cannot store messages.",
+    );
+    return { status: "error", message: "server" };
+  }
+
   const { error } = await supabase.from("contact_messages").insert({
     name,
     email,

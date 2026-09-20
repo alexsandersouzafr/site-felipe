@@ -16,7 +16,7 @@ import { DEFAULT_IMAGE_FOCUS } from "@/lib/image-focus";
 import { getBioSummary } from "@/lib/public/bio";
 import { listBlogPosts } from "@/lib/public/blog";
 import type { PublicEvent } from "@/lib/public/events";
-import { listUpcomingEvents } from "@/lib/public/events";
+import { listHomeEvents } from "@/lib/public/events";
 import { getPageCover, listHomePhotos } from "@/lib/public/site-images";
 import { cn } from "@/lib/utils";
 
@@ -35,14 +35,19 @@ export default async function HomePage({ params }: HomePageProps) {
   const tSchedule = await getTranslations("Schedule");
   const tBlog = await getTranslations("Blog");
   const tNav = await getTranslations("Navigation");
-  const [upcoming, posts, bioSummary, homePhotos, homeCover] =
-    await Promise.all([
-      listUpcomingEvents(typedLocale, 3),
-      listBlogPosts(typedLocale, 3),
-      getBioSummary(typedLocale),
-      listHomePhotos(typedLocale),
-      getPageCover("home"),
-    ]);
+  const [
+    { events: upcoming, next: nextEvent },
+    posts,
+    bioSummary,
+    homePhotos,
+    homeCover,
+  ] = await Promise.all([
+    listHomeEvents(typedLocale, 3),
+    listBlogPosts(typedLocale, 3),
+    getBioSummary(typedLocale),
+    listHomePhotos(typedLocale),
+    getPageCover("home"),
+  ]);
 
   const bySlot = new Map(homePhotos.map((photo) => [photo.slot, photo]));
   const heroPhoto = bySlot.get("hero") ?? null;
@@ -62,7 +67,7 @@ export default async function HomePage({ params }: HomePageProps) {
     <HeroContent
       t={t}
       locale={locale}
-      nextEvent={upcoming[0] ?? null}
+      nextEvent={nextEvent}
       onPhoto={Boolean(heroImage)}
     />
   );

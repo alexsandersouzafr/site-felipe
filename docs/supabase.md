@@ -15,7 +15,7 @@ The contact form is protected in layers; each one covers what the others cannot.
 
 **Database (`20260919130000_contact_hardening.sql`)** — enforced no matter how a row arrives, because the publishable key is public and anyone can call the REST API directly:
 
-- Visitors can only insert `name`, `email`, `subject`, `message` and `ip_hash` (column-level grant); they cannot set `is_read`, `created_at` or `id`.
+- Visitors cannot insert at all (`20260919150000_contact_messages_server_only.sql`): the publishable key sits in every page, so direct PostgREST inserts would skip the honeypot, the form token, the link cap and the captcha. The server writes the row with the project's secret key after its own checks, and only sets `name`, `email`, `subject`, `message` and `ip_hash`.
 - Size and shape checks (name ≤ 120, subject ≤ 200, message ≤ 5000 characters, a plain `local@domain` e-mail, no control characters).
 - Rate limits in the `enforce_contact_rate_limit` trigger: 5 per 10 minutes per visitor (`ip_hash`, computed by the server), 3 per hour per sender address, and 60 per hour overall. The overall ceiling means the inbox cannot be flooded; if it is ever reached the form simply refuses new messages for a while.
 
@@ -25,6 +25,7 @@ Optional environment variables:
 
 | Variable | Purpose |
 | --- | --- |
+| `SUPABASE_SECRET_KEY` | **Required.** The project's secret (service role) key, used only on the server to store contact messages. Without it the form answers "não foi possível enviar" and logs the reason. Never expose it to the browser. |
 | `CONTACT_FORM_SECRET` | Signs the form token. Set a long random value in production; without it a built-in default is used. |
 | `CONTACT_IP_HASH_SALT` | Salt for the visitor hash used by the per-visitor limit. |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` and `TURNSTILE_SECRET_KEY` | Turn on the Cloudflare Turnstile CAPTCHA. Both are needed; with either missing the form works without a CAPTCHA. |

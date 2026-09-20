@@ -84,10 +84,19 @@ export async function listPublicEvents(locale: Locale) {
   return partitionEventsByTime(events);
 }
 
-export async function listUpcomingEvents(locale: Locale, limit = 3) {
+/**
+ * What the home page needs: the concerts to show (the conductor's favourites
+ * when there are any) and, separately, the very next concert in time — which
+ * is not always a favourite.
+ */
+export async function listHomeEvents(locale: Locale, limit = 3) {
   const { upcoming } = await listPublicEvents(locale);
   const featured = upcoming.filter((event) => event.isFeatured);
-  return (featured.length > 0 ? featured : upcoming).slice(0, limit);
+
+  return {
+    events: (featured.length > 0 ? featured : upcoming).slice(0, limit),
+    next: upcoming[0] ?? null,
+  };
 }
 
 type EventsPageKind = "upcoming" | "past";

@@ -95,6 +95,8 @@ export function CoverImageField({
         <Button
           type="button"
           size="sm"
+          // The label is long: let it wrap instead of running off a 320px screen.
+          className="h-auto max-w-full py-1.5 text-left whitespace-normal"
           variant={mode === "library" ? "default" : "outline"}
           onPress={() => {
             setMode("library");
