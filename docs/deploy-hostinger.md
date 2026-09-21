@@ -75,6 +75,28 @@ Do not bulk-import `.env.local`: it carries local-only entries (`VERCEL_OIDC_TOK
   `https://<domain>/admin/update-password` to the redirect list, or the recovery e-mail
   sends the conductor to a link that will not open.
 
+## Keeping the site and the database awake
+
+Two things go to sleep on this setup:
+
+- The Node app is stopped after a stretch without traffic and starts again on the next
+  request, so the first visit after a quiet period waits for the boot.
+- A **free Supabase project is paused** when the database receives too few queries over a
+  7-day window. Supabase warns the project owner by e-mail about a week before it happens,
+  and a few requests a day are enough to avoid it.
+
+`GET /api/health` runs one real query and answers `{"ok":true}`, with `cache-control:
+no-store` so no cache can answer it without touching the database. Schedule it in
+hPanel → **Cron Jobs**:
+
+```
+*/15 * * * * curl -fsS -o /dev/null https://<domain>/api/health
+```
+
+Hourly is already enough for the database; every 15 minutes also keeps the app warm for
+visitors. An external uptime monitor pointed at the same URL does the same job and warns
+you when the site is down.
+
 ## Check after the first deploy
 
 1. **Contact form** — send a message and confirm it lands in the admin inbox. A "server"
