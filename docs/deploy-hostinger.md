@@ -11,7 +11,7 @@ the server actions and the Supabase session all need a live Node process.
 | Application type | `next` |
 | Node.js version | 22 (LTS) |
 | Root directory | `/` |
-| Build script | `build:webpack` — see *Build host limitations* |
+| Build script | `build` |
 | Output directory | `.next` |
 | Entry file | — (Next apps run the standalone server Hostinger starts) |
 | Package manager | `npm` — set it by hand, do not leave it on auto-detect |
@@ -40,12 +40,20 @@ Error: Cannot find module '.../6ab13f8fabe70.next.config'
 
 Keep the config in `.mjs`. Do not convert it back to `next.config.ts`.
 
-**The build runs on Webpack** (`build:webpack` → `next build --webpack`). Next 16 builds
-with Turbopack by default, and Turbopack only runs from that same native binary. Webpack
-falls back to the WebAssembly build of SWC, which works but is much slower — mind the
-15-minute limit on the build step.
+**`build` runs Webpack** (`next build --webpack`). Next 16 builds with Turbopack by
+default, and Turbopack refuses to start without that same native binary:
 
-Everything local stays on Turbopack: `pnpm dev` and `pnpm build` are unchanged.
+```
+Error: Turbopack is not supported on this platform (linux/x64) because native
+bindings are not available.
+```
+
+Webpack falls back to the WebAssembly build of SWC, which works but is slower — the build
+step has a 15-minute limit. The same build takes ~25s locally with the native binary.
+
+`next dev` still uses Turbopack, so day-to-day work is unaffected, and `pnpm build`
+locally now matches what production does. `pnpm build:turbopack` is there for a quick
+local production build.
 
 ## Package manager
 
