@@ -42,3 +42,6 @@ supabase/.temp
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Supabase CLI scratch (rewritten on every command)
+supabase/.temp/
