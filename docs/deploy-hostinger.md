@@ -11,7 +11,7 @@ the server actions and the Supabase session all need a live Node process.
 | Application type | `next` |
 | Node.js version | 22 (LTS) |
 | Root directory | `/` |
-| Build script | `build` |
+| Build script | `build:webpack` — see *Build host limitations* |
 | Output directory | `.next` |
 | Entry file | — (Next apps run the standalone server Hostinger starts) |
 | Package manager | `npm` — set it by hand, do not leave it on auto-detect |
@@ -21,6 +21,31 @@ Hostinger wraps the Next config to add `output: "standalone"` before building. O
 `withNextIntl(nextConfig)` returns the config, it is not a function. Keep it that way:
 do not set `output` yourself, do not export a function, and do not rename the file
 (only `next.config.{js,mjs,ts,mts}` are read; anything else is silently ignored).
+
+## Build host limitations
+
+The machine that builds the app is older than Next's native toolchain, and two settings
+work around it. Both are already in the repository; the build script is the only one you
+have to select in hPanel.
+
+**The Next config is plain JavaScript** (`next.config.mjs`). Next compiles a TypeScript
+config with SWC before reading it, and SWC's native binary cannot load there:
+
+```
+Attempted to load @next/swc-linux-x64-gnu, but an error occurred:
+/lib64/libm.so.6: version `GLIBC_2.29' not found
+⨯ Failed to load next.config.ts
+Error: Cannot find module '.../6ab13f8fabe70.next.config'
+```
+
+Keep the config in `.mjs`. Do not convert it back to `next.config.ts`.
+
+**The build runs on Webpack** (`build:webpack` → `next build --webpack`). Next 16 builds
+with Turbopack by default, and Turbopack only runs from that same native binary. Webpack
+falls back to the WebAssembly build of SWC, which works but is much slower — mind the
+15-minute limit on the build step.
+
+Everything local stays on Turbopack: `pnpm dev` and `pnpm build` are unchanged.
 
 ## Package manager
 
