@@ -17,7 +17,9 @@ export async function proxy(request: NextRequest) {
     !process.env.NEXT_PUBLIC_SUPABASE_URL ||
     !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
   ) {
-    if (pathname.startsWith("/admin")) {
+    // Sending /admin/login to itself would loop, and the page is the one
+    // place that can explain the missing configuration.
+    if (pathname.startsWith("/admin") && pathname !== "/admin/login") {
       return NextResponse.redirect(new URL("/admin/login", request.url));
     }
 
