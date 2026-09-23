@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import type { ContentStatus } from "@/lib/content-visibility";
-import { MAX_HD_IMAGE_BYTES, MAX_HD_IMAGE_MB } from "@/lib/media-limits";
+import { MAX_PRESS_IMAGE_BYTES, MAX_PRESS_IMAGE_MB } from "@/lib/media-limits";
 import {
   DEFAULT_PRESS_PHOTO_CATEGORY,
   PRESS_PHOTO_CATEGORIES,
@@ -92,14 +92,14 @@ export function PressPhotoForm({
                 </div>
               </fieldset>
               <ImageUploadField
-                maxBytes={MAX_HD_IMAGE_BYTES}
+                maxBytes={MAX_PRESS_IMAGE_BYTES}
                 id="file"
                 name="file"
                 label="Arquivo"
                 existingPath={initialValues?.storagePath}
                 existingPathFieldName="storagePath"
                 required={mode === "create"}
-                description={`Alta resolução. JPEG, PNG, WebP ou GIF. Máximo ${MAX_HD_IMAGE_MB} MB — um JPEG de 4000 a 6000 px no lado maior, em qualidade alta, costuma caber.`}
+                description={`Alta resolução. JPEG, PNG, WebP ou GIF. Máximo ${MAX_PRESS_IMAGE_MB} MB — um JPEG de 4000 a 6000 px no lado maior, em qualidade alta, costuma caber.`}
               />
               <LocalizedField
                 label="Texto alternativo"

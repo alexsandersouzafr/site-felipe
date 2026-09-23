@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { routing } from "@/i18n/routing";
 import { optionalText } from "@/lib/admin-form";
 import { normalizeImageFocus } from "@/lib/image-focus";
-import { MAX_HD_IMAGE_BYTES, validateImageFile } from "@/lib/media-limits";
+import { MAX_IMAGE_BYTES, validateImageFile } from "@/lib/media-limits";
 import {
   type AdminPageCoverKey,
   isAdminPageCoverKey,
@@ -30,7 +30,7 @@ async function uploadCover(
   supabase: Awaited<ReturnType<typeof createClient>>,
   file: File,
 ) {
-  const validation = validateImageFile(file, MAX_HD_IMAGE_BYTES);
+  const validation = validateImageFile(file, MAX_IMAGE_BYTES);
   if (!validation.ok) {
     return { ok: false as const, error: validation.error };
   }

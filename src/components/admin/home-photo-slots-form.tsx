@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/field";
 import { HOME_PHOTO_SLOTS, type HomePhotoSlot } from "@/lib/home-photo-slots";
 import { DEFAULT_IMAGE_FOCUS } from "@/lib/image-focus";
-import { MAX_HD_IMAGE_BYTES, MAX_HD_IMAGE_MB } from "@/lib/media-limits";
+import { MAX_IMAGE_BYTES, MAX_IMAGE_MB } from "@/lib/media-limits";
 
 export type HomePhotoSlotValue = {
   storagePath: string | null;
@@ -63,7 +63,7 @@ export function HomePhotoSlotsForm({
       <FieldDescription>
         Defina a capa/hero da home e as faixas de imagem entre as seções (fundo
         quase fixo com GSAP, sem sobreposição). Uploads em alta definição, até{" "}
-        {MAX_HD_IMAGE_MB} MB. As capas das outras páginas ficam em Capas.
+        {MAX_IMAGE_MB} MB. As capas das outras páginas ficam em Capas.
       </FieldDescription>
 
       {missingBands.length > 0 ? (
@@ -93,7 +93,7 @@ export function HomePhotoSlotsForm({
               </div>
 
               <ImageUploadField
-                maxBytes={MAX_HD_IMAGE_BYTES}
+                maxBytes={MAX_IMAGE_BYTES}
                 id={`file_${slot.key}`}
                 name={`file_${slot.key}`}
                 label="Imagem"
@@ -104,8 +104,8 @@ export function HomePhotoSlotsForm({
                 }
                 description={
                   slot.key === "hero"
-                    ? `Obrigatória. JPEG, PNG, WebP ou GIF. Máximo ${MAX_HD_IMAGE_MB} MB.`
-                    : `JPEG, PNG, WebP ou GIF. Máximo ${MAX_HD_IMAGE_MB} MB.`
+                    ? `Obrigatória. JPEG, PNG, WebP ou GIF. Máximo ${MAX_IMAGE_MB} MB.`
+                    : `JPEG, PNG, WebP ou GIF. Máximo ${MAX_IMAGE_MB} MB.`
                 }
                 onFileChange={(file) =>
                   setPendingFiles((current) => ({

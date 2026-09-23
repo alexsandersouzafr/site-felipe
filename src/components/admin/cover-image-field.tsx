@@ -21,7 +21,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { MAX_BLOG_IMAGE_MB, validateImageFile } from "@/lib/media-limits";
+import { MAX_IMAGE_MB, validateImageFile } from "@/lib/media-limits";
 import { mediaPublicUrl } from "@/lib/media-url";
 import { cn } from "@/lib/utils";
 
@@ -85,7 +85,7 @@ export function CoverImageField({
       <div className="space-y-1">
         <p className="text-sm font-bold">Imagem de capa</p>
         <FieldDescription>
-          Envie uma nova imagem (até {MAX_BLOG_IMAGE_MB} MB) ou escolha uma já
+          Envie uma nova imagem (até {MAX_IMAGE_MB} MB) ou escolha uma já
           enviada na galeria de fotos.
         </FieldDescription>
       </div>

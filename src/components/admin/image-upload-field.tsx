@@ -10,7 +10,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { MAX_BLOG_IMAGE_BYTES, validateImageFile } from "@/lib/media-limits";
+import { MAX_IMAGE_BYTES, validateImageFile } from "@/lib/media-limits";
 import { mediaPublicUrl } from "@/lib/media-url";
 
 function readFileFromChange(event: unknown): File | null {
@@ -37,7 +37,7 @@ export function ImageUploadField({
   existingPathFieldName,
   required = false,
   description,
-  maxBytes = MAX_BLOG_IMAGE_BYTES,
+  maxBytes = MAX_IMAGE_BYTES,
   onFileChange,
 }: {
   id: string;

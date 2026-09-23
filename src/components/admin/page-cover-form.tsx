@@ -10,7 +10,7 @@ import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { Button } from "@/components/ui/button";
 import { FieldDescription, FieldGroup } from "@/components/ui/field";
 import { DEFAULT_IMAGE_FOCUS } from "@/lib/image-focus";
-import { MAX_HD_IMAGE_BYTES, MAX_HD_IMAGE_MB } from "@/lib/media-limits";
+import { MAX_IMAGE_BYTES, MAX_IMAGE_MB } from "@/lib/media-limits";
 import { type AdminPageCoverKey, PAGE_COVER_LABELS } from "@/lib/page-covers";
 
 export type PageCoverValue = {
@@ -37,7 +37,7 @@ export function PageCoverForm({
   return (
     <form action={formAction} className="max-w-3xl space-y-8">
       <FieldDescription>
-        Capa em alta definição (até {MAX_HD_IMAGE_MB} MB) para o topo da página{" "}
+        Capa em alta definição (até {MAX_IMAGE_MB} MB) para o topo da página{" "}
         {PAGE_COVER_LABELS[pageKey]}. Ajuste o enquadramento para preservar
         rostos e pontos importantes.
         {isRequired ? " Esta capa é obrigatória." : ""}
@@ -45,7 +45,7 @@ export function PageCoverForm({
 
       <FieldGroup className="gap-6">
         <ImageUploadField
-          maxBytes={MAX_HD_IMAGE_BYTES}
+          maxBytes={MAX_IMAGE_BYTES}
           id="file"
           name="file"
           label="Arquivo"

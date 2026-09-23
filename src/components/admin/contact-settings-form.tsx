@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { MAX_BLOG_IMAGE_MB } from "@/lib/media-limits";
+import { MAX_IMAGE_MB } from "@/lib/media-limits";
 
 type ContactSettings = {
   id: string;
@@ -91,7 +91,7 @@ export function ContactSettingsForm({
           label="Imagem de fallback do blog"
           existingPath={settings.blog_fallback_cover_path}
           existingPathFieldName="blogFallbackCoverPath"
-          description={`Usada como capa de posts do blog sem imagem própria (deixe em branco para não usar nenhuma). JPEG, PNG, WebP ou GIF. Máximo ${MAX_BLOG_IMAGE_MB} MB.`}
+          description={`Usada como capa de posts do blog sem imagem própria (deixe em branco para não usar nenhuma). JPEG, PNG, WebP ou GIF. Máximo ${MAX_IMAGE_MB} MB.`}
         />
       </FieldGroup>
       <FormFeedback state={state} />

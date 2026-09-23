@@ -138,8 +138,9 @@ you when the site is down.
    last entry of `x-forwarded-for`. Confirm what Hostinger's proxy sends is the visitor's
    address and not an internal hop: if every visitor hashes to the same value, the
    "5 messages per 10 minutes per visitor" rule locks the form for everybody.
-3. **Admin uploads** — save a cover image of a few MB. Server Actions accept 20 MB
-   (`next.config.ts`), but the proxy in front of the app may cut the request earlier; the
-   failure looks like a save that never completes.
+3. **Admin uploads** — save a press photo close to its 30 MB limit. Server Actions
+   accept 40 MB (`next.config.mjs`), but the proxy in front of the app may cut the
+   request earlier; that failure arrives before any application code runs, so it shows
+   as an error page rather than a message on the form.
 4. **Cold start** — an idle app is stopped and restarted on the next request, so the
    first visit after a quiet period waits for the boot. A 5-minute uptime ping keeps it warm.

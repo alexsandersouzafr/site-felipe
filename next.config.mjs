@@ -12,7 +12,7 @@ const nextConfig = {
   // Cover + several block images (5 MB each) can exceed the 1 MB default.
   experimental: {
     serverActions: {
-      bodySizeLimit: "20mb",
+      bodySizeLimit: "40mb",
     },
   },
   images: {

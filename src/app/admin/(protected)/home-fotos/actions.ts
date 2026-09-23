@@ -10,7 +10,7 @@ import {
   isHomePhotoSlot,
 } from "@/lib/home-photo-slots";
 import { normalizeImageFocus } from "@/lib/image-focus";
-import { MAX_HD_IMAGE_BYTES, validateImageFile } from "@/lib/media-limits";
+import { MAX_IMAGE_BYTES, validateImageFile } from "@/lib/media-limits";
 import { createClient } from "@/lib/supabase/server";
 
 export type HomeMediaActionState = {
@@ -30,7 +30,7 @@ async function uploadHdImage(
   file: File,
   folder: "home/parallax" | "covers",
 ) {
-  const validation = validateImageFile(file, MAX_HD_IMAGE_BYTES);
+  const validation = validateImageFile(file, MAX_IMAGE_BYTES);
   if (!validation.ok) {
     return { ok: false as const, error: validation.error };
   }
