@@ -41,13 +41,25 @@ export async function deleteUnusedMedia(
       .limit(1),
   ]);
 
-  const stillUsed = checks.some(
-    (result) => result.error || (result.data?.length ?? 0) > 0,
-  );
+  const failed = checks.find((result) => result.error);
 
-  if (stillUsed) {
+  if (failed) {
+    // Not deleting is the safe outcome, but a check that keeps failing would
+    // quietly fill the bucket, so say so.
+    console.warn(
+      `Não foi possível confirmar se ${path} ainda está em uso:`,
+      failed.error,
+    );
     return;
   }
 
-  await supabase.storage.from("media").remove([path]);
+  if (checks.some((result) => (result.data?.length ?? 0) > 0)) {
+    return;
+  }
+
+  const { error } = await supabase.storage.from("media").remove([path]);
+
+  if (error) {
+    console.warn(`Não foi possível apagar ${path} do bucket:`, error);
+  }
 }

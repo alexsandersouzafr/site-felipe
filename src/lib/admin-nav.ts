@@ -59,7 +59,7 @@ export const adminNavItems: AdminNavItem[] = [
     group: "Conteúdo",
     label: "Destaques",
     description:
-      "Conquistas e highlights curtos exibidos junto à biografia pública",
+      "Conquistas e frases curtas exibidas junto à biografia pública",
     icon: "highlights",
   },
   {
@@ -67,7 +67,7 @@ export const adminNavItems: AdminNavItem[] = [
     group: "Mídia",
     label: "Fotos da home",
     description:
-      "Capa/hero da home e faixas de parallax entre as seções de conteúdo",
+      "Foto de abertura da página inicial e as fotos entre os blocos de texto",
     icon: "homePhotos",
   },
   {
