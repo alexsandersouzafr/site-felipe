@@ -34,6 +34,7 @@ export function PageCoverForm({
   const [cleared, setCleared] = useState(false);
 
   // The saved cover changed, so whatever was pending has already happened.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: the path is the trigger, not something the body reads
   useEffect(() => {
     setCleared(false);
   }, [initialCover.storagePath]);
