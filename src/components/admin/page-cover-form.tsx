@@ -1,7 +1,7 @@
 "use client";
 
 import { FloppyDiskIcon } from "@phosphor-icons/react";
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 
 import type { PageCoverActionState } from "@/app/admin/(protected)/capas/actions";
 import { FormFeedback } from "@/components/admin/form-feedback";
@@ -33,6 +33,11 @@ export function PageCoverForm({
   const [state, formAction, pending] = useActionState(action, {});
   const [cleared, setCleared] = useState(false);
 
+  // The saved cover changed, so whatever was pending has already happened.
+  useEffect(() => {
+    setCleared(false);
+  }, [initialCover.storagePath]);
+
   return (
     <form action={formAction} className="max-w-3xl space-y-8">
       <FieldDescription>
@@ -50,6 +55,13 @@ export function PageCoverForm({
           existingPath={cleared ? null : initialCover.storagePath}
           existingPathFieldName="existing"
           onRemove={() => setCleared(true)}
+          onFileChange={(file) => {
+            // Picking a replacement is the opposite of removing: whichever
+            // came last is what the person means.
+            if (file) {
+              setCleared(false);
+            }
+          }}
           description="JPEG, PNG, WebP ou GIF em alta definição."
         />
         <ImageFocusField

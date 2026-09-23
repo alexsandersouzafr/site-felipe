@@ -125,15 +125,17 @@ async function savePressPhoto(
   };
 
   let error: unknown;
+  let previousPath: string | null = null;
 
   if (id) {
     // A photo moved to the other section goes to the end of that list.
     const { data: existing } = await supabase
       .from("press_photos")
-      .select("category")
+      .select("category, storage_path")
       .eq("id", id)
       .maybeSingle();
     const changedCategory = existing?.category !== category;
+    previousPath = existing?.storage_path ?? null;
 
     ({ error } = await supabase
       .from("press_photos")
@@ -155,6 +157,10 @@ async function savePressPhoto(
 
   if (error) {
     return { error: "Não foi possível salvar a foto de imprensa." };
+  }
+
+  if (previousPath && previousPath !== payload.storage_path) {
+    await deleteUnusedMedia(supabase, previousPath);
   }
 
   revalidatePressPhotos();

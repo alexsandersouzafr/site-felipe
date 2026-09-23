@@ -163,11 +163,6 @@ export async function saveHomePhotoSlots(
       };
     }
 
-    const previousPath = previousPaths.get(slotKey);
-    if (previousPath && previousPath !== storagePath) {
-      await deleteUnusedMedia(supabase, previousPath);
-    }
-
     // Mantém page_covers.home alinhada à capa/hero da home.
     if (slotKey === "hero") {
       const { error: coverError } = await supabase.from("page_covers").upsert({
@@ -181,6 +176,13 @@ export async function saveHomePhotoSlots(
           error: `Hero salvo, mas a capa da home não sincronizou: ${coverError.message}`,
         };
       }
+    }
+
+    // Only now: until the mirror row above stopped pointing at the old file,
+    // it would look like something still uses it.
+    const previousPath = previousPaths.get(slotKey);
+    if (previousPath && previousPath !== storagePath) {
+      await deleteUnusedMedia(supabase, previousPath);
     }
   }
 

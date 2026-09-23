@@ -86,7 +86,14 @@ export function FilePickerButton({
             variant="outline"
             size="sm"
             isDisabled={disabled}
-            onPress={onRemove}
+            onPress={() => {
+              // The input may already hold a replacement; leaving it there
+              // would save the very image the person just asked to drop.
+              if (inputRef.current) {
+                inputRef.current.value = "";
+              }
+              onRemove();
+            }}
           >
             <TrashIcon className="size-3.5" data-icon="inline-start" />
             Remover imagem

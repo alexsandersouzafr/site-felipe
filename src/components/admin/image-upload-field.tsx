@@ -69,6 +69,21 @@ export function ImageUploadField({
     };
   }, [localPreview]);
 
+  // After a save the server sends the stored image back — or nothing, when it
+  // was removed. Either way the local pick is stale and has to go, or the form
+  // would still show an image that is no longer there.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: resets on the saved path, not on the preview it clears
+  useEffect(() => {
+    setLocalPreview((previous) => {
+      if (previous) {
+        URL.revokeObjectURL(previous);
+      }
+      return null;
+    });
+    setFileName(null);
+    setError(null);
+  }, [existingPath]);
+
   return (
     <Field>
       <FieldLabel htmlFor={id} required={required && !existingPath}>

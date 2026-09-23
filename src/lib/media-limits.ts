@@ -11,11 +11,12 @@ export const MAX_PRESS_IMAGE_BYTES = 30 * 1024 * 1024;
 export const MAX_PRESS_IMAGE_MB = MAX_PRESS_IMAGE_BYTES / (1024 * 1024);
 
 /**
- * Everything one submit may carry, matching `serverActions.bodySizeLimit`.
- * A blog post sends its cover and every image block together, so the form
- * checks the total as well as each file.
+ * Everything one submit may carry. Kept under `serverActions.bodySizeLimit`
+ * (40 MB) because the files travel wrapped in multipart framing alongside
+ * every text field, and only the files are counted here. Forms that send more
+ * than one image check this total as well as each file.
  */
-export const MAX_REQUEST_BYTES = 40 * 1024 * 1024;
+export const MAX_REQUEST_BYTES = 36 * 1024 * 1024;
 export const MAX_REQUEST_MB = MAX_REQUEST_BYTES / (1024 * 1024);
 
 export const ALLOWED_IMAGE_MIME_TYPES = [

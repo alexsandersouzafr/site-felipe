@@ -1,13 +1,14 @@
 "use client";
 
 import { FloppyDiskIcon } from "@phosphor-icons/react";
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 
 import type { HomeMediaActionState } from "@/app/admin/(protected)/home-fotos/actions";
 import { FormFeedback } from "@/components/admin/form-feedback";
 import { ImageFocusField } from "@/components/admin/image-focus-field";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { LocalizedField } from "@/components/admin/localized-field";
+import { useAdminToast } from "@/components/admin/toast";
 import { Button } from "@/components/ui/button";
 import {
   FieldDescription,
@@ -16,7 +17,11 @@ import {
 } from "@/components/ui/field";
 import { HOME_PHOTO_SLOTS, type HomePhotoSlot } from "@/lib/home-photo-slots";
 import { DEFAULT_IMAGE_FOCUS } from "@/lib/image-focus";
-import { MAX_IMAGE_BYTES, MAX_IMAGE_MB } from "@/lib/media-limits";
+import {
+  MAX_IMAGE_BYTES,
+  MAX_IMAGE_MB,
+  validateRequestSize,
+} from "@/lib/media-limits";
 
 export type HomePhotoSlotValue = {
   storagePath: string | null;
@@ -37,6 +42,7 @@ export function HomePhotoSlotsForm({
   initialSlots: Record<HomePhotoSlot, HomePhotoSlotValue>;
 }) {
   const [state, formAction, pending] = useActionState(action, {});
+  const toast = useAdminToast();
   const [cleared, setCleared] = useState<Record<HomePhotoSlot, boolean>>(
     () =>
       Object.fromEntries(
@@ -52,12 +58,41 @@ export function HomePhotoSlotsForm({
       ) as Record<HomePhotoSlot, boolean>,
   );
 
+  // What is stored now; when it changes, a save went through and the pending
+  // removals it carried are done.
+  const savedPaths = HOME_PHOTO_SLOTS.map(
+    (slot) => initialSlots[slot.key].storagePath ?? "",
+  ).join("|");
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: keyed on the saved paths, not on the maps it resets
+  useEffect(() => {
+    const allFalse = Object.fromEntries(
+      HOME_PHOTO_SLOTS.map((slot) => [slot.key, false]),
+    ) as Record<HomePhotoSlot, boolean>;
+
+    setCleared(allFalse);
+    setPendingFiles(allFalse);
+  }, [savedPaths]);
+
   const missingSlots = HOME_PHOTO_SLOTS.filter(
     (slot) => !initialSlots[slot.key].storagePath || cleared[slot.key],
   );
 
   return (
-    <form action={formAction} className="max-w-4xl space-y-8">
+    <form
+      action={formAction}
+      className="max-w-4xl space-y-8"
+      // This form sends up to three images at once: each can be inside its
+      // own limit while the request is too large to be accepted.
+      onSubmit={(event) => {
+        const total = validateRequestSize(new FormData(event.currentTarget));
+
+        if (!total.ok) {
+          event.preventDefault();
+          toast({ tone: "error", message: total.error });
+        }
+      }}
+    >
       <FieldDescription>
         As imagens grandes da página inicial: a foto de abertura, no topo, e as
         que aparecem entre os blocos de texto. Use fotos de boa qualidade, de
@@ -101,12 +136,18 @@ export function HomePhotoSlotsForm({
                   setCleared((current) => ({ ...current, [slot.key]: true }))
                 }
                 description={`JPEG, PNG, WebP ou GIF. Máximo ${MAX_IMAGE_MB} MB.`}
-                onFileChange={(file) =>
+                onFileChange={(file) => {
                   setPendingFiles((current) => ({
                     ...current,
                     [slot.key]: Boolean(file),
-                  }))
-                }
+                  }));
+                  if (file) {
+                    setCleared((current) => ({
+                      ...current,
+                      [slot.key]: false,
+                    }));
+                  }
+                }}
               />
 
               <ImageFocusField
