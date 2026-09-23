@@ -94,10 +94,8 @@ export function HomePhotoSlotsForm({
       }}
     >
       <FieldDescription>
-        As imagens grandes da página inicial: a foto de abertura, no topo, e as
-        que aparecem entre os blocos de texto. Use fotos de boa qualidade, de
-        até {MAX_IMAGE_MB} MB cada. As imagens de topo das outras páginas ficam
-        em Capas.
+        Use fotos de boa qualidade, de até {MAX_IMAGE_MB} MB cada. As imagens de
+        topo das outras páginas ficam em Capas.
       </FieldDescription>
 
       {missingSlots.length > 0 ? (
@@ -207,12 +205,6 @@ export function HomePhotoSlotsForm({
       </FieldGroup>
 
       <FormFeedback state={state} />
-      {state.success ? (
-        <p className="text-sm text-foreground" role="status">
-          {state.success}
-        </p>
-      ) : null}
-
       <Button type="submit" isDisabled={pending}>
         <FloppyDiskIcon className="size-4" data-icon="inline-start" />
         {pending ? "Salvando..." : "Salvar fotos da home"}

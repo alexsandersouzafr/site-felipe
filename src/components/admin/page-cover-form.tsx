@@ -89,12 +89,6 @@ export function PageCoverForm({
       </FieldGroup>
 
       <FormFeedback state={state} />
-      {state.success ? (
-        <p className="text-sm text-foreground" role="status">
-          {state.success}
-        </p>
-      ) : null}
-
       <Button type="submit" isDisabled={pending}>
         <FloppyDiskIcon className="size-4" data-icon="inline-start" />
         {pending ? "Salvando..." : "Salvar capa"}

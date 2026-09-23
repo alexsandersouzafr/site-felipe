@@ -95,9 +95,6 @@ export function ContactSettingsForm({
         />
       </FieldGroup>
       <FormFeedback state={state} />
-      {state.success && (
-        <p className="text-sm text-muted-foreground">{state.success}</p>
-      )}
       <Button type="submit" isDisabled={pending}>
         <FloppyDiskIcon className="size-4" data-icon="inline-start" />
         {pending ? "Salvando..." : "Salvar contato"}
