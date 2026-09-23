@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 
 import { routing } from "@/i18n/routing";
 import { optionalText } from "@/lib/admin-form";
+import { withToast } from "@/lib/admin-toast";
 import { eventFormSchema } from "@/lib/event-form";
 import { toEventInsert } from "@/lib/events";
 import { validateImageFile } from "@/lib/media-limits";
@@ -90,7 +91,7 @@ export async function createEvent(
   }
 
   revalidatePath("/admin/agenda");
-  redirect("/admin/agenda");
+  redirect(withToast("/admin/agenda", "saved"));
 }
 
 export async function updateEvent(
@@ -126,7 +127,7 @@ export async function updateEvent(
 
   revalidatePath("/admin/agenda");
   revalidatePath(`/admin/agenda/${id}`);
-  redirect("/admin/agenda");
+  redirect(withToast("/admin/agenda", "saved"));
 }
 
 export async function toggleEventFeatured(formData: FormData) {
@@ -143,8 +144,11 @@ export async function toggleEventFeatured(formData: FormData) {
     .update({ is_featured: !isFeatured })
     .eq("id", id);
 
+  // This runs from a plain form button, with no state to return to, so the
+  // failure travels as a toast instead of an exception the admin would meet
+  // as Next's error screen.
   if (error) {
-    throw new Error("Não foi possível atualizar o destaque do evento.");
+    redirect(withToast("/admin/agenda", "featured-error"));
   }
 
   revalidatePath("/admin/agenda");
@@ -164,9 +168,9 @@ export async function deleteEvent(formData: FormData) {
   const { error } = await supabase.from("events").delete().eq("id", id);
 
   if (error) {
-    throw new Error("Não foi possível excluir o evento.");
+    redirect(withToast("/admin/agenda", "delete-error"));
   }
 
   revalidatePath("/admin/agenda");
-  redirect("/admin/agenda");
+  redirect(withToast("/admin/agenda", "deleted"));
 }

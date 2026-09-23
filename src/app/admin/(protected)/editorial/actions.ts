@@ -9,6 +9,7 @@ import {
   readPublishingFields,
   requireScheduledPublishAt,
 } from "@/lib/admin-form";
+import { withToast } from "@/lib/admin-toast";
 import {
   canEnableHighlightOnPage,
   MAX_BIO_PAGE_HIGHLIGHTS,
@@ -112,7 +113,7 @@ export async function saveBiography(
   }
 
   revalidateBiographyPaths();
-  redirect("/admin/bio");
+  redirect(withToast("/admin/bio", "saved"));
 }
 
 export async function createHighlight(
@@ -212,7 +213,7 @@ async function saveHighlight(
   }
 
   revalidatePath("/admin/destaques");
-  redirect("/admin/destaques");
+  redirect(withToast("/admin/destaques", "saved"));
 }
 
 export async function deleteHighlight(formData: FormData) {
@@ -220,7 +221,7 @@ export async function deleteHighlight(formData: FormData) {
   const supabase = await createClient();
   await supabase.from("highlights").delete().eq("id", id);
   revalidatePath("/admin/destaques");
-  redirect("/admin/destaques");
+  redirect(withToast("/admin/destaques", "deleted"));
 }
 
 export async function moveHighlight(formData: FormData) {
@@ -237,7 +238,17 @@ export async function moveHighlight(formData: FormData) {
     .select("id, display_order")
     .order("display_order", { ascending: true });
 
-  await swapDisplayOrder(supabase, "highlights", data ?? [], id, direction);
+  const moved = await swapDisplayOrder(
+    supabase,
+    "highlights",
+    data ?? [],
+    id,
+    direction,
+  );
+
+  if (!moved) {
+    redirect(withToast("/admin/destaques", "order-error"));
+  }
 
   revalidatePath("/admin/destaques");
 }

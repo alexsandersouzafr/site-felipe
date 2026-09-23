@@ -23,18 +23,19 @@ export async function swapDisplayOrder(
 ) {
   const index = rows.findIndex((row) => row.id === id);
   if (index === -1) {
-    return;
+    return false;
   }
 
   const targetIndex = direction === "up" ? index - 1 : index + 1;
   if (targetIndex < 0 || targetIndex >= rows.length) {
-    return;
+    // Already at the end of the list: nothing to do, and nothing went wrong.
+    return true;
   }
 
   const current = rows[index];
   const target = rows[targetIndex];
 
-  await Promise.all([
+  const results = await Promise.all([
     supabase
       .from(table)
       .update({ display_order: target.display_order })
@@ -44,6 +45,8 @@ export async function swapDisplayOrder(
       .update({ display_order: current.display_order })
       .eq("id", target.id),
   ]);
+
+  return results.every((result) => !result.error);
 }
 
 /** Next display_order to append a new row at the end of the list. */

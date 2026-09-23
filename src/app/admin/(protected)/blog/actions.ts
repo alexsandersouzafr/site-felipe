@@ -9,6 +9,7 @@ import {
   readPublishingFields,
   requireScheduledPublishAt,
 } from "@/lib/admin-form";
+import { withToast } from "@/lib/admin-toast";
 import { type BlogBlock, blogBlocksSchema } from "@/lib/blog-blocks";
 import { validateImageFile } from "@/lib/media-limits";
 import { slugify } from "@/lib/slug";
@@ -202,7 +203,7 @@ export async function createBlogPost(
   }
 
   revalidatePath("/admin/blog");
-  redirect("/admin/blog");
+  redirect(withToast("/admin/blog", "saved"));
 }
 
 export async function updateBlogPost(
@@ -226,7 +227,7 @@ export async function updateBlogPost(
   }
 
   revalidatePath("/admin/blog");
-  redirect("/admin/blog");
+  redirect(withToast("/admin/blog", "saved"));
 }
 
 export async function deleteBlogPost(formData: FormData) {
@@ -234,5 +235,5 @@ export async function deleteBlogPost(formData: FormData) {
   const supabase = await createClient();
   await supabase.from("news_items").delete().eq("id", id);
   revalidatePath("/admin/blog");
-  redirect("/admin/blog");
+  redirect(withToast("/admin/blog", "deleted"));
 }

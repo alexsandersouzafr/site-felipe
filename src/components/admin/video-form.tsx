@@ -4,12 +4,12 @@ import Image from "next/image";
 import { useActionState, useState } from "react";
 
 import type { MediaActionState } from "@/app/admin/(protected)/fotos/actions";
+import { FormFeedback } from "@/components/admin/form-feedback";
 import { LocalizedField } from "@/components/admin/localized-field";
 import { PublishingControls } from "@/components/admin/publishing-fields";
 import {
   Field,
   FieldDescription,
-  FieldError,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
@@ -114,7 +114,7 @@ export function VideoForm({
                 }}
               />
             </FieldGroup>
-            {state.error && <FieldError>{state.error}</FieldError>}
+            <FormFeedback state={state} />
             {actions}
           </>
         )}

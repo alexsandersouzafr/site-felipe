@@ -3,19 +3,19 @@
 import { useActionState } from "react";
 
 import type { PressPhotoActionState } from "@/app/admin/(protected)/imprensa/actions";
+import { FormFeedback } from "@/components/admin/form-feedback";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { LocalizedField } from "@/components/admin/localized-field";
 import { PublishingControls } from "@/components/admin/publishing-fields";
 import {
   Field,
   FieldDescription,
-  FieldError,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import type { ContentStatus } from "@/lib/content-visibility";
-import { MAX_HD_IMAGE_MB } from "@/lib/media-limits";
+import { MAX_HD_IMAGE_BYTES, MAX_HD_IMAGE_MB } from "@/lib/media-limits";
 import {
   DEFAULT_PRESS_PHOTO_CATEGORY,
   PRESS_PHOTO_CATEGORIES,
@@ -92,6 +92,7 @@ export function PressPhotoForm({
                 </div>
               </fieldset>
               <ImageUploadField
+                maxBytes={MAX_HD_IMAGE_BYTES}
                 id="file"
                 name="file"
                 label="Arquivo"
@@ -129,7 +130,7 @@ export function PressPhotoForm({
                 </FieldDescription>
               </Field>
             </FieldGroup>
-            {state.error && <FieldError>{state.error}</FieldError>}
+            <FormFeedback state={state} />
             {actions}
           </>
         )}

@@ -3,15 +3,11 @@
 import { useActionState } from "react";
 
 import type { MediaActionState } from "@/app/admin/(protected)/fotos/actions";
+import { FormFeedback } from "@/components/admin/form-feedback";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { LocalizedField } from "@/components/admin/localized-field";
 import { PublishingControls } from "@/components/admin/publishing-fields";
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import type { ContentStatus } from "@/lib/content-visibility";
 
@@ -89,7 +85,7 @@ export function PhotoForm({
                 </Field>
               </div>
             </FieldGroup>
-            {state.error && <FieldError>{state.error}</FieldError>}
+            <FormFeedback state={state} />
             {actions}
           </>
         )}

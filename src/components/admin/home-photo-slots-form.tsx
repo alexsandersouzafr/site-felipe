@@ -4,19 +4,19 @@ import { FloppyDiskIcon } from "@phosphor-icons/react";
 import { useActionState, useState } from "react";
 
 import type { HomeMediaActionState } from "@/app/admin/(protected)/home-fotos/actions";
+import { FormFeedback } from "@/components/admin/form-feedback";
 import { ImageFocusField } from "@/components/admin/image-focus-field";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { LocalizedField } from "@/components/admin/localized-field";
 import { Button } from "@/components/ui/button";
 import {
   FieldDescription,
-  FieldError,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
 import { HOME_PHOTO_SLOTS, type HomePhotoSlot } from "@/lib/home-photo-slots";
 import { DEFAULT_IMAGE_FOCUS } from "@/lib/image-focus";
-import { MAX_HD_IMAGE_MB } from "@/lib/media-limits";
+import { MAX_HD_IMAGE_BYTES, MAX_HD_IMAGE_MB } from "@/lib/media-limits";
 
 export type HomePhotoSlotValue = {
   storagePath: string | null;
@@ -93,6 +93,7 @@ export function HomePhotoSlotsForm({
               </div>
 
               <ImageUploadField
+                maxBytes={MAX_HD_IMAGE_BYTES}
                 id={`file_${slot.key}`}
                 name={`file_${slot.key}`}
                 label="Imagem"
@@ -165,7 +166,7 @@ export function HomePhotoSlotsForm({
         })}
       </FieldGroup>
 
-      {state.error ? <FieldError>{state.error}</FieldError> : null}
+      <FormFeedback state={state} />
       {state.success ? (
         <p className="text-sm text-foreground" role="status">
           {state.success}

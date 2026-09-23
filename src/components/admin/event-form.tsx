@@ -4,15 +4,11 @@ import { useActionState } from "react";
 
 import type { EventActionState } from "@/app/admin/(protected)/agenda/actions";
 import { DateTimePickerField } from "@/components/admin/date-time-picker-field";
+import { FormFeedback } from "@/components/admin/form-feedback";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { LocalizedField } from "@/components/admin/localized-field";
 import { PublishingControls } from "@/components/admin/publishing-fields";
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { COMMON_TIME_ZONES, type EventFormValues } from "@/lib/event-form";
 
@@ -166,7 +162,7 @@ export function EventForm({ action, initialValues, mode }: EventFormProps) {
               </Field>
             </FieldGroup>
 
-            {state.error && <FieldError>{state.error}</FieldError>}
+            <FormFeedback state={state} />
 
             {actions}
           </>

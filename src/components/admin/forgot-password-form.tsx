@@ -7,6 +7,7 @@ import {
   type AuthActionState,
   requestPasswordReset,
 } from "@/app/admin/actions";
+import { FormFeedback } from "@/components/admin/form-feedback";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,12 +17,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
 const initialState: AuthActionState = {};
@@ -56,7 +52,7 @@ export function ForgotPasswordForm() {
               />
             </Field>
           </FieldGroup>
-          {state.error && <FieldError>{state.error}</FieldError>}
+          <FormFeedback state={state} />
           {state.success && (
             <p className="text-sm text-muted-foreground">{state.success}</p>
           )}

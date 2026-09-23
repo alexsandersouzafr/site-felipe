@@ -4,16 +4,13 @@ import { FloppyDiskIcon } from "@phosphor-icons/react";
 import { useActionState, useState } from "react";
 
 import type { PageCoverActionState } from "@/app/admin/(protected)/capas/actions";
+import { FormFeedback } from "@/components/admin/form-feedback";
 import { ImageFocusField } from "@/components/admin/image-focus-field";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { Button } from "@/components/ui/button";
-import {
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-} from "@/components/ui/field";
+import { FieldDescription, FieldGroup } from "@/components/ui/field";
 import { DEFAULT_IMAGE_FOCUS } from "@/lib/image-focus";
-import { MAX_HD_IMAGE_MB } from "@/lib/media-limits";
+import { MAX_HD_IMAGE_BYTES, MAX_HD_IMAGE_MB } from "@/lib/media-limits";
 import { type AdminPageCoverKey, PAGE_COVER_LABELS } from "@/lib/page-covers";
 
 export type PageCoverValue = {
@@ -48,6 +45,7 @@ export function PageCoverForm({
 
       <FieldGroup className="gap-6">
         <ImageUploadField
+          maxBytes={MAX_HD_IMAGE_BYTES}
           id="file"
           name="file"
           label="Arquivo"
@@ -74,7 +72,7 @@ export function PageCoverForm({
         ) : null}
       </FieldGroup>
 
-      {state.error ? <FieldError>{state.error}</FieldError> : null}
+      <FormFeedback state={state} />
       {state.success ? (
         <p className="text-sm text-foreground" role="status">
           {state.success}

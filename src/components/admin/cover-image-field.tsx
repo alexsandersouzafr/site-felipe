@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 
 import { ImagePreview } from "@/components/admin/image-upload-field";
 import { SmoothReveal } from "@/components/admin/smooth-reveal";
+import { useAdminToast } from "@/components/admin/toast";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -13,9 +14,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { MAX_BLOG_IMAGE_MB } from "@/lib/media-limits";
+import { MAX_BLOG_IMAGE_MB, validateImageFile } from "@/lib/media-limits";
 import { mediaPublicUrl } from "@/lib/media-url";
 import { cn } from "@/lib/utils";
 
@@ -54,6 +60,8 @@ export function CoverImageField({
   );
   const [selectedPath, setSelectedPath] = useState(initialPath ?? "");
   const [localPreview, setLocalPreview] = useState<string | null>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
+  const toast = useAdminToast();
   const [galleryOpen, setGalleryOpen] = useState(false);
 
   useEffect(() => {
@@ -126,6 +134,26 @@ export function CoverImageField({
               tabIndex={mode === "upload" ? undefined : -1}
               onChange={(event) => {
                 const file = readFileFromChange(event);
+                const validation = file
+                  ? validateImageFile(file)
+                  : ({ ok: true } as const);
+
+                // Past the request body limit Next answers with an error page
+                // before the action runs, so the refusal has to happen here.
+                if (!validation.ok) {
+                  setFileError(validation.error);
+                  toast({ tone: "error", message: validation.error });
+                  event.target.value = "";
+                  setLocalPreview((previous) => {
+                    if (previous) {
+                      URL.revokeObjectURL(previous);
+                    }
+                    return null;
+                  });
+                  return;
+                }
+
+                setFileError(null);
                 setLocalPreview((previous) => {
                   if (previous) {
                     URL.revokeObjectURL(previous);
@@ -134,6 +162,7 @@ export function CoverImageField({
                 });
               }}
             />
+            {fileError ? <FieldError>{fileError}</FieldError> : null}
             {mode === "upload" ? (
               <input type="hidden" name="coverImagePath" value={selectedPath} />
             ) : null}

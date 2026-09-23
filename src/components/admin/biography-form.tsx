@@ -4,10 +4,11 @@ import { FloppyDiskIcon } from "@phosphor-icons/react";
 import { useActionState } from "react";
 
 import type { EditorialActionState } from "@/app/admin/(protected)/editorial/actions";
+import { FormFeedback } from "@/components/admin/form-feedback";
 import { LocalizedField } from "@/components/admin/localized-field";
 import { LocalizedRichTextEditor } from "@/components/admin/localized-rich-text-editor";
 import { Button } from "@/components/ui/button";
-import { FieldError, FieldGroup } from "@/components/ui/field";
+import { FieldGroup } from "@/components/ui/field";
 import type { RichTextDocument } from "@/lib/rich-text";
 
 export function BiographyForm({
@@ -62,7 +63,7 @@ export function BiographyForm({
         />
       </FieldGroup>
 
-      {state.error ? <FieldError>{state.error}</FieldError> : null}
+      <FormFeedback state={state} />
 
       <Button type="submit" isDisabled={pending}>
         <FloppyDiskIcon className="size-4" data-icon="inline-start" />

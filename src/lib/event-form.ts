@@ -1,5 +1,9 @@
 import { z } from "zod";
 
+import {
+  isSupportedTimeZone,
+  isValidLocalDateTime,
+} from "@/lib/event-timezone";
 import { toNullableLocalizedText } from "@/lib/localized-fields";
 import { publishingFieldsSchema } from "@/lib/publishing";
 
@@ -11,11 +15,36 @@ export const eventFormSchema = publishingFieldsSchema
     venue: z.string().trim().min(1, "Informe o local."),
     city: z.string().trim().min(1, "Informe a cidade."),
     country: z.string().trim().min(1, "Informe o país."),
-    timeZone: z.string().trim().min(1, "Informe o fuso horário."),
-    startsAtLocal: z.string().trim().min(1, "Informe a data/hora de início."),
-    endsAtLocal: z.string().optional(),
+    timeZone: z
+      .string()
+      .trim()
+      .min(1, "Informe o fuso horário.")
+      .refine(isSupportedTimeZone, "Selecione um fuso horário válido."),
+    startsAtLocal: z
+      .string()
+      .trim()
+      .min(1, "Informe a data/hora de início.")
+      .refine(isValidLocalDateTime, "Informe uma data/hora de início válida."),
+    endsAtLocal: z
+      .string()
+      .optional()
+      .refine(
+        (value) => !value?.trim() || isValidLocalDateTime(value),
+        "Informe uma data/hora de término válida.",
+      ),
     ticketUrl: z.string().optional(),
     imagePath: z.string().optional(),
+  })
+  .superRefine((value, ctx) => {
+    const ends = value.endsAtLocal?.trim();
+
+    if (ends && isValidLocalDateTime(ends) && ends <= value.startsAtLocal) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["endsAtLocal"],
+        message: "O término deve ser depois do início.",
+      });
+    }
   })
   .transform((value) => {
     const titles = toNullableLocalizedText({

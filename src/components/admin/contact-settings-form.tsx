@@ -5,15 +5,11 @@ import { useActionState } from "react";
 
 import type { ContactActionState } from "@/app/admin/(protected)/contato/actions";
 import { updateContactSettings } from "@/app/admin/(protected)/contato/actions";
+import { FormFeedback } from "@/components/admin/form-feedback";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { LocalizedField } from "@/components/admin/localized-field";
 import { Button } from "@/components/ui/button";
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { MAX_BLOG_IMAGE_MB } from "@/lib/media-limits";
@@ -98,7 +94,7 @@ export function ContactSettingsForm({
           description={`Usada como capa de posts do blog sem imagem própria (deixe em branco para não usar nenhuma). JPEG, PNG, WebP ou GIF. Máximo ${MAX_BLOG_IMAGE_MB} MB.`}
         />
       </FieldGroup>
-      {state.error && <FieldError>{state.error}</FieldError>}
+      <FormFeedback state={state} />
       {state.success && (
         <p className="text-sm text-muted-foreground">{state.success}</p>
       )}

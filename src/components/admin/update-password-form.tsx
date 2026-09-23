@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 
 import { type AuthActionState, updatePassword } from "@/app/admin/actions";
+import { FormFeedback } from "@/components/admin/form-feedback";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,12 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
 const initialState: AuthActionState = {};
@@ -63,7 +59,7 @@ export function UpdatePasswordForm() {
               />
             </Field>
           </FieldGroup>
-          {state.error && <FieldError>{state.error}</FieldError>}
+          <FormFeedback state={state} />
           <Button type="submit" className="w-full" isDisabled={pending}>
             {pending ? "Salvando..." : "Atualizar senha"}
           </Button>

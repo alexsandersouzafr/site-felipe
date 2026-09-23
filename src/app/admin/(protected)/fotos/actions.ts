@@ -9,6 +9,7 @@ import {
   readPublishingFields,
   requireScheduledPublishAt,
 } from "@/lib/admin-form";
+import { withToast } from "@/lib/admin-toast";
 import { validateImageFile } from "@/lib/media-limits";
 import {
   nextDisplayOrder,
@@ -110,7 +111,7 @@ async function savePhoto(
   }
 
   revalidatePath("/admin/fotos");
-  redirect("/admin/fotos");
+  redirect(withToast("/admin/fotos", "saved"));
 }
 
 export async function movePhoto(formData: FormData) {
@@ -127,7 +128,17 @@ export async function movePhoto(formData: FormData) {
     .select("id, display_order")
     .order("display_order", { ascending: true });
 
-  await swapDisplayOrder(supabase, "photos", data ?? [], id, direction);
+  const moved = await swapDisplayOrder(
+    supabase,
+    "photos",
+    data ?? [],
+    id,
+    direction,
+  );
+
+  if (!moved) {
+    redirect(withToast("/admin/fotos", "order-error"));
+  }
 
   revalidatePath("/admin/fotos");
 }
@@ -148,7 +159,7 @@ export async function deletePhoto(formData: FormData) {
   }
 
   revalidatePath("/admin/fotos");
-  redirect("/admin/fotos");
+  redirect(withToast("/admin/fotos", "deleted"));
 }
 
 export async function createVideo(
@@ -222,7 +233,7 @@ async function saveVideo(
   }
 
   revalidatePath("/admin/videos");
-  redirect("/admin/videos");
+  redirect(withToast("/admin/videos", "saved"));
 }
 
 export async function deleteVideo(formData: FormData) {
@@ -230,7 +241,7 @@ export async function deleteVideo(formData: FormData) {
   const supabase = await createClient();
   await supabase.from("videos").delete().eq("id", id);
   revalidatePath("/admin/videos");
-  redirect("/admin/videos");
+  redirect(withToast("/admin/videos", "deleted"));
 }
 
 export async function moveVideo(formData: FormData) {
@@ -247,7 +258,17 @@ export async function moveVideo(formData: FormData) {
     .select("id, display_order")
     .order("display_order", { ascending: true });
 
-  await swapDisplayOrder(supabase, "videos", data ?? [], id, direction);
+  const moved = await swapDisplayOrder(
+    supabase,
+    "videos",
+    data ?? [],
+    id,
+    direction,
+  );
+
+  if (!moved) {
+    redirect(withToast("/admin/videos", "order-error"));
+  }
 
   revalidatePath("/admin/videos");
 }

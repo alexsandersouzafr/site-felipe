@@ -3,10 +3,11 @@
 import { useActionState } from "react";
 
 import type { EditorialActionState } from "@/app/admin/(protected)/editorial/actions";
+import { FormFeedback } from "@/components/admin/form-feedback";
 import { LocalizedField } from "@/components/admin/localized-field";
 import { PublishingControls } from "@/components/admin/publishing-fields";
 import { ShowOnPageField } from "@/components/admin/show-on-page-field";
-import { FieldError, FieldGroup } from "@/components/ui/field";
+import { FieldGroup } from "@/components/ui/field";
 import { MAX_BIO_PAGE_HIGHLIGHTS } from "@/lib/bio-page";
 import type { ContentStatus } from "@/lib/content-visibility";
 
@@ -83,7 +84,7 @@ export function HighlightForm({
                 }}
               />
             </FieldGroup>
-            {state.error && <FieldError>{state.error}</FieldError>}
+            <FormFeedback state={state} />
             {actions}
           </>
         )}

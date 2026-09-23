@@ -2,9 +2,15 @@
 
 import { useEffect, useState } from "react";
 
-import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
+import { useAdminToast } from "@/components/admin/toast";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { MAX_BLOG_IMAGE_MB } from "@/lib/media-limits";
+import { MAX_BLOG_IMAGE_BYTES, validateImageFile } from "@/lib/media-limits";
 import { mediaPublicUrl } from "@/lib/media-url";
 
 function readFileFromChange(event: unknown): File | null {
@@ -31,6 +37,7 @@ export function ImageUploadField({
   existingPathFieldName,
   required = false,
   description,
+  maxBytes = MAX_BLOG_IMAGE_BYTES,
   onFileChange,
 }: {
   id: string;
@@ -40,9 +47,13 @@ export function ImageUploadField({
   existingPathFieldName?: string;
   required?: boolean;
   description?: string;
+  /** Keep this in step with the limit the server action checks. */
+  maxBytes?: number;
   onFileChange?: (file: File | null) => void;
 }) {
   const [localPreview, setLocalPreview] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const toast = useAdminToast();
   const remotePreview = mediaPublicUrl(existingPath);
   const previewSrc = localPreview ?? remotePreview;
 
@@ -67,6 +78,28 @@ export function ImageUploadField({
         required={required && !existingPath}
         onChange={(event) => {
           const file = readFileFromChange(event);
+          const validation = file
+            ? validateImageFile(file, maxBytes)
+            : ({ ok: true } as const);
+
+          // Sending a file the action will refuse anyway is worse than a
+          // refusal here: past the request body limit, Next answers with an
+          // error page before the action ever runs.
+          if (!validation.ok) {
+            setError(validation.error);
+            toast({ tone: "error", message: validation.error });
+            event.target.value = "";
+            onFileChange?.(null);
+            setLocalPreview((previous) => {
+              if (previous) {
+                URL.revokeObjectURL(previous);
+              }
+              return null;
+            });
+            return;
+          }
+
+          setError(null);
           onFileChange?.(file);
           setLocalPreview((previous) => {
             if (previous) {
@@ -84,8 +117,10 @@ export function ImageUploadField({
         />
       ) : null}
       <FieldDescription>
-        {description ?? `JPEG, PNG, WebP ou GIF até ${MAX_BLOG_IMAGE_MB} MB.`}
+        {description ??
+          `JPEG, PNG, WebP ou GIF até ${maxBytes / (1024 * 1024)} MB.`}
       </FieldDescription>
+      {error ? <FieldError>{error}</FieldError> : null}
       {previewSrc ? (
         <div className="mt-3 overflow-hidden rounded-2xl border border-border/80 bg-muted/30">
           {/* biome-ignore lint/performance/noImgElement: the preview may be a blob: URL of a file that is not uploaded yet, which next/image cannot load */}

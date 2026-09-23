@@ -10,6 +10,7 @@ import {
   readPublishingFields,
   requireScheduledPublishAt,
 } from "@/lib/admin-form";
+import { withToast } from "@/lib/admin-toast";
 import { MAX_HD_IMAGE_BYTES, validateImageFile } from "@/lib/media-limits";
 import { parsePressPhotoCategory } from "@/lib/press-categories";
 import {
@@ -156,7 +157,7 @@ async function savePressPhoto(
   }
 
   revalidatePressPhotos();
-  redirect(`/admin/imprensa?categoria=${category}`);
+  redirect(withToast(`/admin/imprensa?categoria=${category}`, "saved"));
 }
 
 export async function deletePressPhoto(formData: FormData) {
@@ -176,9 +177,12 @@ export async function deletePressPhoto(formData: FormData) {
 
   revalidatePressPhotos();
   redirect(
-    data?.category
-      ? `/admin/imprensa?categoria=${data.category}`
-      : "/admin/imprensa",
+    withToast(
+      data?.category
+        ? `/admin/imprensa?categoria=${data.category}`
+        : "/admin/imprensa",
+      "deleted",
+    ),
   );
 }
 
@@ -209,7 +213,19 @@ export async function movePressPhoto(formData: FormData) {
     .eq("category", photo.category)
     .order("display_order", { ascending: true });
 
-  await swapDisplayOrder(supabase, "press_photos", data ?? [], id, direction);
+  const moved = await swapDisplayOrder(
+    supabase,
+    "press_photos",
+    data ?? [],
+    id,
+    direction,
+  );
+
+  if (!moved) {
+    redirect(
+      withToast(`/admin/imprensa?categoria=${photo.category}`, "order-error"),
+    );
+  }
 
   revalidatePressPhotos();
 }

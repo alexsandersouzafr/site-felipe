@@ -5,8 +5,8 @@ import { useActionState } from "react";
 
 import type { AppearanceActionState } from "@/app/admin/(protected)/aparencia/actions";
 import { updateAppearance } from "@/app/admin/(protected)/aparencia/actions";
+import { FormFeedback } from "@/components/admin/form-feedback";
 import { Button } from "@/components/ui/button";
-import { FieldError } from "@/components/ui/field";
 import type { SiteTheme } from "@/lib/site-theme";
 import { cn } from "@/lib/utils";
 
@@ -107,7 +107,7 @@ export function AppearanceForm({ defaultTheme }: { defaultTheme: SiteTheme }) {
         </p>
       </fieldset>
 
-      {state.error ? <FieldError>{state.error}</FieldError> : null}
+      <FormFeedback state={state} />
       {state.success ? (
         <p className="text-sm text-foreground" role="status">
           {state.success}

@@ -8,9 +8,10 @@ import {
   CoverImageField,
   type CoverLibraryItem,
 } from "@/components/admin/cover-image-field";
+import { FormFeedback } from "@/components/admin/form-feedback";
 import { LocalizedField } from "@/components/admin/localized-field";
 import { PublishingControls } from "@/components/admin/publishing-fields";
-import { FieldError, FieldGroup } from "@/components/ui/field";
+import { FieldGroup } from "@/components/ui/field";
 import type { BlogBlock } from "@/lib/blog-blocks";
 import type { ContentStatus } from "@/lib/content-visibility";
 
@@ -70,7 +71,7 @@ export function BlogPostForm({
               <BlogBlocksEditor initialBlocks={initialValues?.blocks} />
             </FieldGroup>
 
-            {state.error && <FieldError>{state.error}</FieldError>}
+            <FormFeedback state={state} />
 
             {actions}
           </>

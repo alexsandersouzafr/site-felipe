@@ -27,5 +27,15 @@ export function normalizePublishAt(
     return null;
   }
 
-  return publishAt?.trim() ? new Date(publishAt).toISOString() : null;
+  const raw = publishAt?.trim();
+
+  if (!raw) {
+    return null;
+  }
+
+  // An unparseable value here used to throw a RangeError inside the server
+  // action, which the browser showed as a crash instead of a form error.
+  const date = new Date(raw);
+
+  return Number.isNaN(date.getTime()) ? null : date.toISOString();
 }
