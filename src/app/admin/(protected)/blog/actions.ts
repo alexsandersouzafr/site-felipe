@@ -11,6 +11,7 @@ import {
 } from "@/lib/admin-form";
 import { withToast } from "@/lib/admin-toast";
 import { type BlogBlock, blogBlocksSchema } from "@/lib/blog-blocks";
+import { deleteUnusedMedia } from "@/lib/media-cleanup";
 import { validateImageFile } from "@/lib/media-limits";
 import { slugify } from "@/lib/slug";
 import { createClient } from "@/lib/supabase/server";
@@ -178,6 +179,44 @@ async function parseBlogForm(formData: FormData) {
   };
 }
 
+/** Every file a stored post points at: its cover and its image blocks. */
+function postMediaPaths(row: {
+  cover_image_path?: string | null;
+  blocks?: unknown;
+}) {
+  const paths = new Set<string>();
+
+  if (row.cover_image_path) {
+    paths.add(row.cover_image_path);
+  }
+
+  for (const block of Array.isArray(row.blocks) ? row.blocks : []) {
+    const storagePath =
+      block && typeof block === "object" && "storagePath" in block
+        ? (block as { storagePath?: unknown }).storagePath
+        : null;
+
+    if (typeof storagePath === "string" && storagePath) {
+      paths.add(storagePath);
+    }
+  }
+
+  return paths;
+}
+
+async function readPostMedia(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  id: string,
+) {
+  const { data } = await supabase
+    .from("news_items")
+    .select("cover_image_path, blocks")
+    .eq("id", id)
+    .maybeSingle();
+
+  return data ? postMediaPaths(data) : new Set<string>();
+}
+
 export async function createBlogPost(
   _prev: BlogActionState,
   formData: FormData,
@@ -217,6 +256,8 @@ export async function updateBlogPost(
   }
 
   const supabase = await createClient();
+  const previousPaths = await readPostMedia(supabase, id);
+
   const { error } = await supabase
     .from("news_items")
     .update(parsed.data)
@@ -226,6 +267,15 @@ export async function updateBlogPost(
     return { error: "Não foi possível atualizar o post." };
   }
 
+  // A cover that was swapped, or an image block that was taken out, leaves a
+  // file nothing points at any more.
+  const currentPaths = postMediaPaths(parsed.data);
+  for (const path of previousPaths) {
+    if (!currentPaths.has(path)) {
+      await deleteUnusedMedia(supabase, path);
+    }
+  }
+
   revalidatePath("/admin/blog");
   redirect(withToast("/admin/blog", "saved"));
 }
@@ -233,7 +283,14 @@ export async function updateBlogPost(
 export async function deleteBlogPost(formData: FormData) {
   const id = String(formData.get("id") ?? "");
   const supabase = await createClient();
+  const paths = await readPostMedia(supabase, id);
+
   await supabase.from("news_items").delete().eq("id", id);
+
+  for (const path of paths) {
+    await deleteUnusedMedia(supabase, path);
+  }
+
   revalidatePath("/admin/blog");
   redirect(withToast("/admin/blog", "deleted"));
 }

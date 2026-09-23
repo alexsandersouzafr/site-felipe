@@ -44,7 +44,7 @@ export default async function AdminHomePhotosPage() {
     <div className="space-y-6">
       <AdminPageHeader
         title="Fotos da home"
-        description="Capa/hero da home e faixas de parallax entre as seções de conteúdo."
+        description="As imagens grandes da página inicial: a foto de abertura, no topo, e as fotos que aparecem entre os blocos de texto."
       />
       {photosResult.error ? (
         <p className="text-sm text-destructive">

@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { routing } from "@/i18n/routing";
 import { optionalText, readLocalizedPair } from "@/lib/admin-form";
+import { deleteUnusedMedia } from "@/lib/media-cleanup";
 import { validateImageFile } from "@/lib/media-limits";
 import { createClient } from "@/lib/supabase/server";
 
@@ -67,6 +68,12 @@ export async function updateContactSettings(
 
   const supabase = await createClient();
 
+  const { data: currentSettings } = await supabase
+    .from("site_settings")
+    .select("blog_fallback_cover_path")
+    .maybeSingle();
+  const previousCoverPath = currentSettings?.blog_fallback_cover_path ?? null;
+
   let blogFallbackCoverPath = optionalText(formData, "blogFallbackCoverPath");
   const blogFallbackCoverFile = formData.get("blogFallbackCoverFile");
   if (blogFallbackCoverFile instanceof File && blogFallbackCoverFile.size > 0) {
@@ -97,6 +104,10 @@ export async function updateContactSettings(
 
   if (error) {
     return { error: "Não foi possível salvar as informações de contato." };
+  }
+
+  if (previousCoverPath && previousCoverPath !== blogFallbackCoverPath) {
+    await deleteUnusedMedia(supabase, previousCoverPath);
   }
 
   revalidatePath("/admin/contato");

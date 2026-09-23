@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { routing } from "@/i18n/routing";
 import { optionalText } from "@/lib/admin-form";
 import { normalizeImageFocus } from "@/lib/image-focus";
+import { deleteUnusedMedia } from "@/lib/media-cleanup";
 import { MAX_IMAGE_BYTES, validateImageFile } from "@/lib/media-limits";
 import {
   type AdminPageCoverKey,
@@ -60,6 +61,16 @@ export async function savePageCover(
 
   const supabase = await createClient();
   const updatedAt = new Date().toISOString();
+
+  // Kept to clean up after the write: replacing or removing a cover leaves
+  // the old file behind otherwise.
+  const { data: current } = await supabase
+    .from("page_covers")
+    .select("storage_path")
+    .eq("page_key", pageKey)
+    .maybeSingle();
+  const previousPath = current?.storage_path ?? null;
+
   const clear = booleanish(formData.get("clear"));
   const file = formData.get("file");
   const existing = optionalText(formData, "existing");
@@ -79,10 +90,6 @@ export async function savePageCover(
     storagePath = uploaded.path;
   }
 
-  if (!storagePath && pageKey === "bio") {
-    return { error: "A capa da Biografia é obrigatória." };
-  }
-
   const { error } = await supabase.from("page_covers").upsert({
     page_key: pageKey,
     storage_path: storagePath,
@@ -96,9 +103,15 @@ export async function savePageCover(
     };
   }
 
+  if (previousPath && previousPath !== storagePath) {
+    await deleteUnusedMedia(supabase, previousPath);
+  }
+
   revalidateCover(pageKey);
   return {
-    success: `Capa de ${PAGE_COVER_LABELS[pageKey]} atualizada.`,
+    success: storagePath
+      ? `Capa de ${PAGE_COVER_LABELS[pageKey]} atualizada.`
+      : `Capa de ${PAGE_COVER_LABELS[pageKey]} removida.`,
   };
 }
 

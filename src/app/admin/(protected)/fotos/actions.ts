@@ -10,6 +10,7 @@ import {
   requireScheduledPublishAt,
 } from "@/lib/admin-form";
 import { withToast } from "@/lib/admin-toast";
+import { deleteUnusedMedia } from "@/lib/media-cleanup";
 import { validateImageFile } from "@/lib/media-limits";
 import {
   nextDisplayOrder,
@@ -62,6 +63,15 @@ async function savePhoto(
   const file = formData.get("file");
   let storagePath = optionalText(formData, "storagePath");
 
+  const { data: current } = id
+    ? await supabase
+        .from("photos")
+        .select("storage_path")
+        .eq("id", id)
+        .maybeSingle()
+    : { data: null };
+  const previousPath = current?.storage_path ?? null;
+
   if (file instanceof File && file.size > 0) {
     const validation = validateImageFile(file);
     if (!validation.ok) {
@@ -110,6 +120,10 @@ async function savePhoto(
     return { error: "Não foi possível salvar a foto." };
   }
 
+  if (previousPath && previousPath !== storagePath) {
+    await deleteUnusedMedia(supabase, previousPath);
+  }
+
   revalidatePath("/admin/fotos");
   redirect(withToast("/admin/fotos", "saved"));
 }
@@ -153,10 +167,7 @@ export async function deletePhoto(formData: FormData) {
     .maybeSingle();
 
   await supabase.from("photos").delete().eq("id", id);
-
-  if (data?.storage_path) {
-    await supabase.storage.from("media").remove([data.storage_path]);
-  }
+  await deleteUnusedMedia(supabase, data?.storage_path);
 
   revalidatePath("/admin/fotos");
   redirect(withToast("/admin/fotos", "deleted"));

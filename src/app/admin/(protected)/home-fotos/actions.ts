@@ -10,6 +10,7 @@ import {
   isHomePhotoSlot,
 } from "@/lib/home-photo-slots";
 import { normalizeImageFocus } from "@/lib/image-focus";
+import { deleteUnusedMedia } from "@/lib/media-cleanup";
 import { MAX_IMAGE_BYTES, validateImageFile } from "@/lib/media-limits";
 import { createClient } from "@/lib/supabase/server";
 
@@ -56,6 +57,15 @@ export async function saveHomePhotoSlots(
   const supabase = await createClient();
   const updatedAt = new Date().toISOString();
 
+  // What each slot points at today, so a replaced or removed file can be
+  // taken out of storage once the row stops referencing it.
+  const { data: currentRows } = await supabase
+    .from("home_photos")
+    .select("slot, storage_path");
+  const previousPaths = new Map(
+    (currentRows ?? []).map((row) => [row.slot as string, row.storage_path]),
+  );
+
   for (const slot of HOME_PHOTO_SLOTS) {
     const slotKey = slot.key;
     const clear = booleanish(formData.get(`clear_${slotKey}`));
@@ -71,12 +81,6 @@ export async function saveHomePhotoSlots(
     );
 
     if (clear) {
-      if (slotKey === "hero") {
-        return {
-          error: "A capa/hero da home é obrigatória e não pode ser removida.",
-        };
-      }
-
       const { error } = await supabase
         .from("home_photos")
         .delete()
@@ -84,6 +88,26 @@ export async function saveHomePhotoSlots(
       if (error) {
         return { error: `Não foi possível remover ${slot.label}.` };
       }
+
+      // page_covers.home mirrors the hero, so it has to let go of the image
+      // too — otherwise the home page would ask for a file that is gone.
+      if (slotKey === "hero") {
+        const { error: coverError } = await supabase
+          .from("page_covers")
+          .upsert({
+            page_key: "home",
+            storage_path: null,
+            object_position: objectPosition,
+            updated_at: updatedAt,
+          });
+        if (coverError) {
+          return {
+            error: `Hero removido, mas a capa da home não sincronizou: ${coverError.message}`,
+          };
+        }
+      }
+
+      await deleteUnusedMedia(supabase, previousPaths.get(slotKey));
       continue;
     }
 
@@ -102,9 +126,6 @@ export async function saveHomePhotoSlots(
         return {
           error: `${slot.label}: não foi possível usar o arquivo enviado.`,
         };
-      }
-      if (slotKey === "hero") {
-        return { error: "A capa/hero da home é obrigatória." };
       }
       continue;
     }
@@ -140,6 +161,11 @@ export async function saveHomePhotoSlots(
       return {
         error: `Não foi possível salvar ${slot.label}: ${error.message}`,
       };
+    }
+
+    const previousPath = previousPaths.get(slotKey);
+    if (previousPath && previousPath !== storagePath) {
+      await deleteUnusedMedia(supabase, previousPath);
     }
 
     // Mantém page_covers.home alinhada à capa/hero da home.

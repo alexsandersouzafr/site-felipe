@@ -78,14 +78,13 @@ export function BlogPostForm({
                 }}
               />
 
-              {schedule}
-
               <CoverImageField
                 initialPath={initialValues?.coverImagePath}
                 library={coverLibrary}
               />
 
               <BlogBlocksEditor initialBlocks={initialValues?.blocks} />
+              {schedule}
             </FieldGroup>
 
             <FormFeedback state={state} />

@@ -112,8 +112,6 @@ export function PressPhotoForm({
                 }}
               />
 
-              {schedule}
-
               <Field>
                 <FieldLabel htmlFor="credit" required>
                   Crédito
@@ -129,6 +127,7 @@ export function PressPhotoForm({
                   Aparece como “© Nome” sob a foto na página de imprensa.
                 </FieldDescription>
               </Field>
+              {schedule}
             </FieldGroup>
             <FormFeedback state={state} />
             {actions}

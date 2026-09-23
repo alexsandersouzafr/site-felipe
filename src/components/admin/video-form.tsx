@@ -97,8 +97,6 @@ export function VideoForm({
                 }}
               />
 
-              {schedule}
-
               <LocalizedField
                 label="Descrição"
                 multiline
@@ -113,6 +111,7 @@ export function VideoForm({
                   fr: initialValues?.descriptionFr,
                 }}
               />
+              {schedule}
             </FieldGroup>
             <FormFeedback state={state} />
             {actions}

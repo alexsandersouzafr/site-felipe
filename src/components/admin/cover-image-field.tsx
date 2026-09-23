@@ -3,7 +3,7 @@
 import { CheckIcon, ImagesIcon, UploadSimpleIcon } from "@phosphor-icons/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-
+import { FilePickerButton } from "@/components/admin/file-picker-button";
 import { ImagePreview } from "@/components/admin/image-upload-field";
 import { SmoothReveal } from "@/components/admin/smooth-reveal";
 import { useAdminToast } from "@/components/admin/toast";
@@ -20,7 +20,6 @@ import {
   FieldError,
   FieldLabel,
 } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
 import { MAX_IMAGE_MB, validateImageFile } from "@/lib/media-limits";
 import { mediaPublicUrl } from "@/lib/media-url";
 import { cn } from "@/lib/utils";
@@ -61,6 +60,7 @@ export function CoverImageField({
   const [selectedPath, setSelectedPath] = useState(initialPath ?? "");
   const [localPreview, setLocalPreview] = useState<string | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
   const toast = useAdminToast();
   const [galleryOpen, setGalleryOpen] = useState(false);
 
@@ -126,12 +126,23 @@ export function CoverImageField({
         <SmoothReveal open={mode === "upload"}>
           <Field>
             <FieldLabel htmlFor="coverFile">Arquivo da capa</FieldLabel>
-            <Input
+            <FilePickerButton
               id="coverFile"
-              name={mode === "upload" ? "coverFile" : undefined}
-              type="file"
-              accept="image/jpeg,image/png,image/webp,image/gif"
-              tabIndex={mode === "upload" ? undefined : -1}
+              name="coverFile"
+              disabled={mode !== "upload"}
+              fileName={fileName}
+              hasImage={Boolean(selectedPath)}
+              onRemove={() => {
+                setSelectedPath("");
+                setFileName(null);
+                setFileError(null);
+                setLocalPreview((previous) => {
+                  if (previous) {
+                    URL.revokeObjectURL(previous);
+                  }
+                  return null;
+                });
+              }}
               onChange={(event) => {
                 const file = readFileFromChange(event);
                 const validation = file
@@ -144,6 +155,7 @@ export function CoverImageField({
                   setFileError(validation.error);
                   toast({ tone: "error", message: validation.error });
                   event.target.value = "";
+                  setFileName(null);
                   setLocalPreview((previous) => {
                     if (previous) {
                       URL.revokeObjectURL(previous);
@@ -154,6 +166,7 @@ export function CoverImageField({
                 }
 
                 setFileError(null);
+                setFileName(file?.name ?? null);
                 setLocalPreview((previous) => {
                   if (previous) {
                     URL.revokeObjectURL(previous);

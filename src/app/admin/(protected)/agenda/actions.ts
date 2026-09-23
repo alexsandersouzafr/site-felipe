@@ -8,6 +8,7 @@ import { optionalText } from "@/lib/admin-form";
 import { withToast } from "@/lib/admin-toast";
 import { eventFormSchema } from "@/lib/event-form";
 import { toEventInsert } from "@/lib/events";
+import { deleteUnusedMedia } from "@/lib/media-cleanup";
 import { validateImageFile } from "@/lib/media-limits";
 import { intentFromFormData, statusFromIntent } from "@/lib/publishing-intent";
 import { createClient } from "@/lib/supabase/server";
@@ -111,6 +112,13 @@ export async function updateEvent(
     return { error: image.error };
   }
 
+  const { data: current } = await supabase
+    .from("events")
+    .select("image_path")
+    .eq("id", id)
+    .maybeSingle();
+  const previousPath = current?.image_path ?? null;
+
   const { error } = await supabase
     .from("events")
     .update(
@@ -123,6 +131,10 @@ export async function updateEvent(
 
   if (error) {
     return { error: "Não foi possível atualizar o evento." };
+  }
+
+  if (previousPath && previousPath !== image.path) {
+    await deleteUnusedMedia(supabase, previousPath);
   }
 
   revalidatePath("/admin/agenda");
@@ -165,11 +177,19 @@ export async function deleteEvent(formData: FormData) {
   }
 
   const supabase = await createClient();
+  const { data: current } = await supabase
+    .from("events")
+    .select("image_path")
+    .eq("id", id)
+    .maybeSingle();
+
   const { error } = await supabase.from("events").delete().eq("id", id);
 
   if (error) {
     redirect(withToast("/admin/agenda", "delete-error"));
   }
+
+  await deleteUnusedMedia(supabase, current?.image_path);
 
   revalidatePath("/admin/agenda");
   redirect(withToast("/admin/agenda", "deleted"));

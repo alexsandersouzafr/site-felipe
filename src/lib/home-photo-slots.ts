@@ -1,18 +1,18 @@
 export const HOME_PHOTO_SLOTS = [
   {
     key: "hero",
-    label: "Capa / hero da home",
-    help: "Foto de abertura da home (somente imagem). As seções seguintes passam por cima ao rolar.",
+    label: "Foto de abertura",
+    help: "A primeira imagem da página inicial, no topo. Aparece sozinha, sem texto por cima.",
   },
   {
     key: "band_1",
-    label: "Faixa 1 (entre seções)",
-    help: "Faixa de imagem fixa (~85vh) entre a primeira e a segunda seção.",
+    label: "Foto entre seções 1",
+    help: "Aparece na largura toda, entre o primeiro e o segundo bloco da página inicial.",
   },
   {
     key: "band_2",
-    label: "Faixa 2 (entre seções)",
-    help: "Faixa de imagem fixa (~85vh) entre a segunda e a terceira seção.",
+    label: "Foto entre seções 2",
+    help: "Aparece na largura toda, entre o segundo e o terceiro bloco da página inicial.",
   },
 ] as const;
 

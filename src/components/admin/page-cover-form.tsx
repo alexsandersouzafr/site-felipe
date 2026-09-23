@@ -32,15 +32,13 @@ export function PageCoverForm({
 }) {
   const [state, formAction, pending] = useActionState(action, {});
   const [cleared, setCleared] = useState(false);
-  const isRequired = pageKey === "bio";
 
   return (
     <form action={formAction} className="max-w-3xl space-y-8">
       <FieldDescription>
-        Capa em alta definição (até {MAX_IMAGE_MB} MB) para o topo da página{" "}
-        {PAGE_COVER_LABELS[pageKey]}. Ajuste o enquadramento para preservar
-        rostos e pontos importantes.
-        {isRequired ? " Esta capa é obrigatória." : ""}
+        Imagem do topo da página {PAGE_COVER_LABELS[pageKey]}, de até{" "}
+        {MAX_IMAGE_MB} MB. Ajuste o enquadramento para não cortar rostos nem
+        pontos importantes. Sem imagem, a página abre com um fundo em degradê.
       </FieldDescription>
 
       <FieldGroup className="gap-6">
@@ -51,7 +49,7 @@ export function PageCoverForm({
           label="Arquivo"
           existingPath={cleared ? null : initialCover.storagePath}
           existingPathFieldName="existing"
-          required={isRequired && !initialCover.storagePath}
+          onRemove={() => setCleared(true)}
           description="JPEG, PNG, WebP ou GIF em alta definição."
         />
         <ImageFocusField
@@ -60,15 +58,20 @@ export function PageCoverForm({
           defaultValue={initialCover.objectPosition || DEFAULT_IMAGE_FOCUS}
         />
         <input type="hidden" name="clear" value={cleared ? "true" : "false"} />
-        {initialCover.storagePath && !cleared && !isRequired ? (
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onPress={() => setCleared(true)}
-          >
-            Remover capa
-          </Button>
+        {cleared ? (
+          <div className="flex flex-wrap items-center gap-3">
+            <p className="text-sm text-muted-foreground" role="status">
+              Esta imagem sai da página ao salvar.
+            </p>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onPress={() => setCleared(false)}
+            >
+              Desfazer
+            </Button>
+          </div>
         ) : null}
       </FieldGroup>
 

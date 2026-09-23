@@ -63,8 +63,6 @@ export function EventForm({ action, initialValues, mode }: EventFormProps) {
                 }}
               />
 
-              {schedule}
-
               <ImageUploadField
                 id="imageFile"
                 name="imageFile"
@@ -160,6 +158,7 @@ export function EventForm({ action, initialValues, mode }: EventFormProps) {
                   defaultValue={values.ticketUrl ?? ""}
                 />
               </Field>
+              {schedule}
             </FieldGroup>
 
             <FormFeedback state={state} />

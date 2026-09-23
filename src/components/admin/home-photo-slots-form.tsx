@@ -52,28 +52,26 @@ export function HomePhotoSlotsForm({
       ) as Record<HomePhotoSlot, boolean>,
   );
 
-  const missingBands = HOME_PHOTO_SLOTS.filter(
-    (slot) =>
-      slot.key !== "hero" &&
-      (!initialSlots[slot.key].storagePath || cleared[slot.key]),
+  const missingSlots = HOME_PHOTO_SLOTS.filter(
+    (slot) => !initialSlots[slot.key].storagePath || cleared[slot.key],
   );
 
   return (
     <form action={formAction} className="max-w-4xl space-y-8">
       <FieldDescription>
-        Defina a capa/hero da home e as faixas de imagem entre as seções (fundo
-        quase fixo com GSAP, sem sobreposição). Uploads em alta definição, até{" "}
-        {MAX_IMAGE_MB} MB. As capas das outras páginas ficam em Capas.
+        As imagens grandes da página inicial: a foto de abertura, no topo, e as
+        que aparecem entre os blocos de texto. Use fotos de boa qualidade, de
+        até {MAX_IMAGE_MB} MB cada. As imagens de topo das outras páginas ficam
+        em Capas.
       </FieldDescription>
 
-      {missingBands.length > 0 ? (
+      {missingSlots.length > 0 ? (
         <p
           className="rounded-2xl border border-border/80 bg-muted/40 px-4 py-3 text-sm text-muted-foreground"
           role="status"
         >
-          Ainda sem faixa entre seções na home:{" "}
-          {missingBands.map((slot) => slot.label).join(", ")}. Envie a imagem,
-          preencha o texto alternativo em PT e salve este formulário.
+          Ainda sem imagem: {missingSlots.map((slot) => slot.label).join(", ")}.
+          Escolha a foto, escreva a descrição em português e salve.
         </p>
       ) : null}
 
@@ -99,14 +97,10 @@ export function HomePhotoSlotsForm({
                 label="Imagem"
                 existingPath={isCleared ? null : values.storagePath}
                 existingPathFieldName={`existing_${slot.key}`}
-                required={
-                  slot.key === "hero" && !isCleared && !values.storagePath
+                onRemove={() =>
+                  setCleared((current) => ({ ...current, [slot.key]: true }))
                 }
-                description={
-                  slot.key === "hero"
-                    ? `Obrigatória. JPEG, PNG, WebP ou GIF. Máximo ${MAX_IMAGE_MB} MB.`
-                    : `JPEG, PNG, WebP ou GIF. Máximo ${MAX_IMAGE_MB} MB.`
-                }
+                description={`JPEG, PNG, WebP ou GIF. Máximo ${MAX_IMAGE_MB} MB.`}
                 onFileChange={(file) =>
                   setPendingFiles((current) => ({
                     ...current,
@@ -137,7 +131,7 @@ export function HomePhotoSlotsForm({
                   en: values.altEn,
                   fr: values.altFr,
                 }}
-                placeholder="Obrigatório ao publicar a faixa"
+                placeholder="Descreva a foto para quem não pode vê-la"
               />
 
               <input
@@ -146,20 +140,25 @@ export function HomePhotoSlotsForm({
                 value={isCleared ? "true" : "false"}
               />
 
-              {values.storagePath && !isCleared && slot.key !== "hero" ? (
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onPress={() =>
-                    setCleared((current) => ({
-                      ...current,
-                      [slot.key]: true,
-                    }))
-                  }
-                >
-                  Remover faixa
-                </Button>
+              {isCleared ? (
+                <div className="flex flex-wrap items-center gap-3">
+                  <p className="text-sm text-muted-foreground" role="status">
+                    Esta imagem sai da página ao salvar.
+                  </p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onPress={() =>
+                      setCleared((current) => ({
+                        ...current,
+                        [slot.key]: false,
+                      }))
+                    }
+                  >
+                    Desfazer
+                  </Button>
+                </div>
               ) : null}
             </div>
           );

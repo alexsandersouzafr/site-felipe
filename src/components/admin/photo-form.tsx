@@ -64,8 +64,6 @@ export function PhotoForm({
                 }}
               />
 
-              {schedule}
-
               <div className="grid gap-4 md:grid-cols-2">
                 <Field>
                   <FieldLabel htmlFor="credit">Crédito (opcional)</FieldLabel>
@@ -84,6 +82,7 @@ export function PhotoForm({
                   />
                 </Field>
               </div>
+              {schedule}
             </FieldGroup>
             <FormFeedback state={state} />
             {actions}

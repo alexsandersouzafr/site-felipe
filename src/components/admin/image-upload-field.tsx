@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 
+import { FilePickerButton } from "@/components/admin/file-picker-button";
 import { useAdminToast } from "@/components/admin/toast";
 import {
   Field,
@@ -9,7 +10,6 @@ import {
   FieldError,
   FieldLabel,
 } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
 import { MAX_IMAGE_BYTES, validateImageFile } from "@/lib/media-limits";
 import { mediaPublicUrl } from "@/lib/media-url";
 
@@ -39,6 +39,7 @@ export function ImageUploadField({
   description,
   maxBytes = MAX_IMAGE_BYTES,
   onFileChange,
+  onRemove,
 }: {
   id: string;
   name: string;
@@ -50,8 +51,11 @@ export function ImageUploadField({
   /** Keep this in step with the limit the server action checks. */
   maxBytes?: number;
   onFileChange?: (file: File | null) => void;
+  /** Omit to hide the remove button. */
+  onRemove?: () => void;
 }) {
   const [localPreview, setLocalPreview] = useState<string | null>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const toast = useAdminToast();
   const remotePreview = mediaPublicUrl(existingPath);
@@ -70,12 +74,15 @@ export function ImageUploadField({
       <FieldLabel htmlFor={id} required={required && !existingPath}>
         {label}
       </FieldLabel>
-      <Input
+      <FilePickerButton
         id={id}
         name={name}
-        type="file"
-        accept="image/jpeg,image/png,image/webp,image/gif"
-        required={required && !existingPath}
+        // Deliberately not `required`: the input is off screen, so the browser
+        // would refuse to submit while trying to point at something nobody can
+        // see. The label keeps the asterisk and the action returns the reason.
+        fileName={fileName}
+        hasImage={Boolean(existingPath)}
+        onRemove={onRemove}
         onChange={(event) => {
           const file = readFileFromChange(event);
           const validation = file
@@ -89,6 +96,7 @@ export function ImageUploadField({
             setError(validation.error);
             toast({ tone: "error", message: validation.error });
             event.target.value = "";
+            setFileName(null);
             onFileChange?.(null);
             setLocalPreview((previous) => {
               if (previous) {
@@ -100,6 +108,7 @@ export function ImageUploadField({
           }
 
           setError(null);
+          setFileName(file?.name ?? null);
           onFileChange?.(file);
           setLocalPreview((previous) => {
             if (previous) {

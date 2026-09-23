@@ -66,8 +66,6 @@ export function HighlightForm({
                 }}
               />
 
-              {schedule}
-
               <LocalizedField
                 label="Descrição"
                 required
@@ -83,6 +81,7 @@ export function HighlightForm({
                   fr: initialValues?.descriptionFr,
                 }}
               />
+              {schedule}
             </FieldGroup>
             <FormFeedback state={state} />
             {actions}

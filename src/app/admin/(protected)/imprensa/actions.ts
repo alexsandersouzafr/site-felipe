@@ -11,6 +11,7 @@ import {
   requireScheduledPublishAt,
 } from "@/lib/admin-form";
 import { withToast } from "@/lib/admin-toast";
+import { deleteUnusedMedia } from "@/lib/media-cleanup";
 import { MAX_PRESS_IMAGE_BYTES, validateImageFile } from "@/lib/media-limits";
 import { parsePressPhotoCategory } from "@/lib/press-categories";
 import {
@@ -172,7 +173,7 @@ export async function deletePressPhoto(formData: FormData) {
   await supabase.from("press_photos").delete().eq("id", id);
 
   if (data?.storage_path) {
-    await supabase.storage.from("media").remove([data.storage_path]);
+    await deleteUnusedMedia(supabase, data.storage_path);
   }
 
   revalidatePressPhotos();

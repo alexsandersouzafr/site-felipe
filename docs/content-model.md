@@ -30,7 +30,7 @@ Cover images are chosen by upload (`blog/covers/...`) or by selecting an existin
 ## Home photos and page covers
 
 - **Home photos** (`home_photos`) are ordered full-width parallax bands. The first is the home hero; the rest appear between home sections.
-- **Page covers** (`page_covers`) set the top image for each public page. The Bio cover and the Home hero (`home_photos`, slot `hero`) are required in the admin — there is no image fallback for either.
+- **Page covers** (`page_covers`) set the top image for each public page. Every cover, and every home photo, can be removed: the page then opens on the gradient hero. Removing or replacing one also deletes the stored file, once no row still points at it (`deleteUnusedMedia`).
 - Every upload accepts **15 MB**, and press photos **30 MB**, JPEG/PNG/WebP/GIF, under `home/parallax/...` and `covers/...`.
 
 ## Agenda favorites
