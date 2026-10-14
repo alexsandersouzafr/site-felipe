@@ -8,6 +8,7 @@ import { updateContactSettings } from "@/app/admin/(protected)/contato/actions";
 import { FormFeedback } from "@/components/admin/form-feedback";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { LocalizedField } from "@/components/admin/localized-field";
+import { submitKeepingValues } from "@/components/admin/submit-keeping-values";
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -40,7 +41,10 @@ export function ContactSettingsForm({
     .join("\n");
 
   return (
-    <form action={formAction} className="max-w-3xl space-y-8">
+    <form
+      onSubmit={(event) => submitKeepingValues(event, formAction)}
+      className="max-w-3xl space-y-8"
+    >
       <input type="hidden" name="id" value={settings.id} />
       <FieldGroup>
         <div className="grid gap-4 md:grid-cols-2">

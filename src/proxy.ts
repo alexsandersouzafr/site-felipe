@@ -46,7 +46,13 @@ export async function proxy(request: NextRequest) {
     isAdmin,
   });
 
-  if (access.action === "redirect") {
+  // A Server Action cannot follow a redirect from here: the browser gets the
+  // login page's HTML where it expects the action's reply, and the admin sees
+  // the error screen. Every admin action checks the session itself
+  // (`requireAdmin`) and redirects in a way Next.js handles, so let it through.
+  const isServerAction = request.headers.has("next-action");
+
+  if (access.action === "redirect" && !isServerAction) {
     const redirectResponse = NextResponse.redirect(
       new URL(access.to, request.url),
     );

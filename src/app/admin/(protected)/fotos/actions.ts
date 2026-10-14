@@ -9,6 +9,7 @@ import {
   readPublishingFields,
   requireScheduledPublishAt,
 } from "@/lib/admin-form";
+import { requireAdmin } from "@/lib/admin-session";
 import { withToast } from "@/lib/admin-toast";
 import { deleteUnusedMedia } from "@/lib/media-cleanup";
 import { validateImageFile } from "@/lib/media-limits";
@@ -27,6 +28,8 @@ export async function createPhoto(
   _prev: MediaActionState,
   formData: FormData,
 ): Promise<MediaActionState> {
+  await requireAdmin();
+
   return savePhoto(null, formData);
 }
 
@@ -35,6 +38,8 @@ export async function updatePhoto(
   _prev: MediaActionState,
   formData: FormData,
 ): Promise<MediaActionState> {
+  await requireAdmin();
+
   return savePhoto(id, formData);
 }
 
@@ -129,6 +134,8 @@ async function savePhoto(
 }
 
 export async function movePhoto(formData: FormData) {
+  await requireAdmin();
+
   const id = String(formData.get("id") ?? "");
   const direction = parseReorderDirection(formData.get("direction"));
 
@@ -158,6 +165,8 @@ export async function movePhoto(formData: FormData) {
 }
 
 export async function deletePhoto(formData: FormData) {
+  await requireAdmin();
+
   const id = String(formData.get("id") ?? "");
   const supabase = await createClient();
   const { data } = await supabase
@@ -177,6 +186,8 @@ export async function createVideo(
   _prev: MediaActionState,
   formData: FormData,
 ): Promise<MediaActionState> {
+  await requireAdmin();
+
   return saveVideo(null, formData);
 }
 
@@ -185,6 +196,8 @@ export async function updateVideo(
   _prev: MediaActionState,
   formData: FormData,
 ): Promise<MediaActionState> {
+  await requireAdmin();
+
   return saveVideo(id, formData);
 }
 
@@ -248,6 +261,8 @@ async function saveVideo(
 }
 
 export async function deleteVideo(formData: FormData) {
+  await requireAdmin();
+
   const id = String(formData.get("id") ?? "");
   const supabase = await createClient();
   await supabase.from("videos").delete().eq("id", id);
@@ -256,6 +271,8 @@ export async function deleteVideo(formData: FormData) {
 }
 
 export async function moveVideo(formData: FormData) {
+  await requireAdmin();
+
   const id = String(formData.get("id") ?? "");
   const direction = parseReorderDirection(formData.get("direction"));
 

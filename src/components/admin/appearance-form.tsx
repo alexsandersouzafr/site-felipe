@@ -6,6 +6,7 @@ import { useActionState } from "react";
 import type { AppearanceActionState } from "@/app/admin/(protected)/aparencia/actions";
 import { updateAppearance } from "@/app/admin/(protected)/aparencia/actions";
 import { FormFeedback } from "@/components/admin/form-feedback";
+import { submitKeepingValues } from "@/components/admin/submit-keeping-values";
 import { Button } from "@/components/ui/button";
 import type { SiteTheme } from "@/lib/site-theme";
 import { cn } from "@/lib/utils";
@@ -75,7 +76,10 @@ export function AppearanceForm({ defaultTheme }: { defaultTheme: SiteTheme }) {
   );
 
   return (
-    <form action={formAction} className="max-w-3xl space-y-8">
+    <form
+      onSubmit={(event) => submitKeepingValues(event, formAction)}
+      className="max-w-3xl space-y-8"
+    >
       <fieldset className="space-y-3">
         <legend className="text-sm font-medium">Tema padrão do site</legend>
         <div className="grid gap-3 sm:grid-cols-3">

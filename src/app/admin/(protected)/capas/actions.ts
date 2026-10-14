@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { routing } from "@/i18n/routing";
 import { optionalText } from "@/lib/admin-form";
+import { requireAdmin } from "@/lib/admin-session";
 import { normalizeImageFocus } from "@/lib/image-focus";
 import { deleteUnusedMedia } from "@/lib/media-cleanup";
 import { MAX_IMAGE_BYTES, validateImageFile } from "@/lib/media-limits";
@@ -55,6 +56,8 @@ export async function savePageCover(
   _prev: PageCoverActionState,
   formData: FormData,
 ): Promise<PageCoverActionState> {
+  await requireAdmin();
+
   if (!isAdminPageCoverKey(pageKey)) {
     return { error: "Página inválida." };
   }

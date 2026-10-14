@@ -7,6 +7,7 @@ import { FormFeedback } from "@/components/admin/form-feedback";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { LocalizedField } from "@/components/admin/localized-field";
 import { PublishingControls } from "@/components/admin/publishing-fields";
+import { submitKeepingValues } from "@/components/admin/submit-keeping-values";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import type { ContentStatus } from "@/lib/content-visibility";
@@ -35,7 +36,10 @@ export function PhotoForm({
   const [state, formAction, pending] = useActionState(action, {});
 
   return (
-    <form action={formAction} className="max-w-3xl space-y-8">
+    <form
+      onSubmit={(event) => submitKeepingValues(event, formAction)}
+      className="max-w-3xl space-y-8"
+    >
       <PublishingControls
         mode={mode}
         initialStatus={initialValues?.status}

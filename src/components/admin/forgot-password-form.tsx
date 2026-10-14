@@ -8,6 +8,7 @@ import {
   requestPasswordReset,
 } from "@/app/admin/actions";
 import { FormFeedback } from "@/components/admin/form-feedback";
+import { submitKeepingValues } from "@/components/admin/submit-keeping-values";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -37,7 +38,10 @@ export function ForgotPasswordForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form action={formAction} className="space-y-4">
+        <form
+          onSubmit={(event) => submitKeepingValues(event, formAction)}
+          className="space-y-4"
+        >
           <FieldGroup>
             <Field>
               <FieldLabel htmlFor="email" required>

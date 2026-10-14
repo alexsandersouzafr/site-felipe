@@ -9,6 +9,7 @@ import {
   readPublishingFields,
   requireScheduledPublishAt,
 } from "@/lib/admin-form";
+import { requireAdmin } from "@/lib/admin-session";
 import { withToast } from "@/lib/admin-toast";
 import { type BlogBlock, blogBlocksSchema } from "@/lib/blog-blocks";
 import { deleteUnusedMedia } from "@/lib/media-cleanup";
@@ -221,6 +222,8 @@ export async function createBlogPost(
   _prev: BlogActionState,
   formData: FormData,
 ): Promise<BlogActionState> {
+  await requireAdmin();
+
   const parsed = await parseBlogForm(formData);
   if (!parsed.ok) {
     return { error: parsed.error };
@@ -250,6 +253,8 @@ export async function updateBlogPost(
   _prev: BlogActionState,
   formData: FormData,
 ): Promise<BlogActionState> {
+  await requireAdmin();
+
   const parsed = await parseBlogForm(formData);
   if (!parsed.ok) {
     return { error: parsed.error };
@@ -281,6 +286,8 @@ export async function updateBlogPost(
 }
 
 export async function deleteBlogPost(formData: FormData) {
+  await requireAdmin();
+
   const id = String(formData.get("id") ?? "");
   const supabase = await createClient();
   const paths = await readPostMedia(supabase, id);

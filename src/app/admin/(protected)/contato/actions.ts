@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { routing } from "@/i18n/routing";
 import { optionalText, readLocalizedPair } from "@/lib/admin-form";
+import { requireAdmin } from "@/lib/admin-session";
 import { deleteUnusedMedia } from "@/lib/media-cleanup";
 import { validateImageFile } from "@/lib/media-limits";
 import { createClient } from "@/lib/supabase/server";
@@ -40,6 +41,8 @@ export async function updateContactSettings(
   _prev: ContactActionState,
   formData: FormData,
 ): Promise<ContactActionState> {
+  await requireAdmin();
+
   const id = String(formData.get("id") ?? "");
   const intros = readLocalizedPair(formData, {
     pt: "introPt",

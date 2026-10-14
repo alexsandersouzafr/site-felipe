@@ -11,6 +11,7 @@ import {
 import { FormFeedback } from "@/components/admin/form-feedback";
 import { LocalizedField } from "@/components/admin/localized-field";
 import { PublishingControls } from "@/components/admin/publishing-fields";
+import { submitKeepingValues } from "@/components/admin/submit-keeping-values";
 import { useAdminToast } from "@/components/admin/toast";
 import { FieldGroup } from "@/components/ui/field";
 import type { BlogBlock } from "@/lib/blog-blocks";
@@ -44,7 +45,6 @@ export function BlogPostForm({
 
   return (
     <form
-      action={formAction}
       className="max-w-4xl space-y-8"
       // A post sends its cover and every image block at once: each file can be
       // within its own limit while the request is too large to be accepted,
@@ -55,7 +55,10 @@ export function BlogPostForm({
         if (!total.ok) {
           event.preventDefault();
           toast({ tone: "error", message: total.error });
+          return;
         }
+
+        submitKeepingValues(event, formAction);
       }}
     >
       <PublishingControls

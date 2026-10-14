@@ -9,6 +9,7 @@ import {
   readPublishingFields,
   requireScheduledPublishAt,
 } from "@/lib/admin-form";
+import { requireAdmin } from "@/lib/admin-session";
 import { withToast } from "@/lib/admin-toast";
 import {
   canEnableHighlightOnPage,
@@ -38,6 +39,8 @@ export async function saveBiography(
   _prev: EditorialActionState,
   formData: FormData,
 ): Promise<EditorialActionState> {
+  await requireAdmin();
+
   const summaries = readLocalizedPair(formData, {
     pt: "summaryPt",
     en: "summaryEn",
@@ -120,6 +123,8 @@ export async function createHighlight(
   _prev: EditorialActionState,
   formData: FormData,
 ): Promise<EditorialActionState> {
+  await requireAdmin();
+
   return saveHighlight(null, formData);
 }
 
@@ -128,6 +133,8 @@ export async function updateHighlight(
   _prev: EditorialActionState,
   formData: FormData,
 ): Promise<EditorialActionState> {
+  await requireAdmin();
+
   return saveHighlight(id, formData);
 }
 
@@ -217,6 +224,8 @@ async function saveHighlight(
 }
 
 export async function deleteHighlight(formData: FormData) {
+  await requireAdmin();
+
   const id = String(formData.get("id") ?? "");
   const supabase = await createClient();
   await supabase.from("highlights").delete().eq("id", id);
@@ -225,6 +234,8 @@ export async function deleteHighlight(formData: FormData) {
 }
 
 export async function moveHighlight(formData: FormData) {
+  await requireAdmin();
+
   const id = String(formData.get("id") ?? "");
   const direction = parseReorderDirection(formData.get("direction"));
 

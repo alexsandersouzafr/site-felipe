@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Switch } from "@/components/ui/switch";
 import type { ContentStatus } from "@/lib/content-visibility";
+import { publishingButtonLabels } from "@/lib/publishing-labels";
 
 function PublishingScheduleFields({
   scheduleEnabled,
@@ -65,27 +66,28 @@ function PublishingScheduleFields({
 
 function PublishingSubmitButtons({
   mode,
+  currentStatus,
   scheduleEnabled,
   pending,
 }: {
   mode: "create" | "edit";
+  currentStatus: ContentStatus;
   scheduleEnabled: boolean;
   pending: boolean;
 }) {
   const primaryIntent = scheduleEnabled ? "schedule" : "publish";
-  const primaryLabel =
-    mode === "edit"
-      ? "Salvar"
-      : scheduleEnabled
-        ? "Agendar publicação"
-        : "Publicar";
+  const labels = publishingButtonLabels({
+    mode,
+    currentStatus,
+    scheduleEnabled,
+  });
+  const isLive = mode === "edit" && currentStatus === "published";
 
-  const PrimaryIcon =
-    mode === "edit"
+  const PrimaryIcon = scheduleEnabled
+    ? CalendarPlusIcon
+    : isLive
       ? FloppyDiskIcon
-      : scheduleEnabled
-        ? CalendarPlusIcon
-        : PaperPlaneTiltIcon;
+      : PaperPlaneTiltIcon;
 
   return (
     <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
@@ -97,7 +99,7 @@ function PublishingSubmitButtons({
         isDisabled={pending}
       >
         <NotePencilIcon className="size-4" data-icon="inline-start" />
-        Salvar rascunho
+        {labels.draft}
       </Button>
       <Button
         type="submit"
@@ -106,7 +108,7 @@ function PublishingSubmitButtons({
         isDisabled={pending}
       >
         <PrimaryIcon className="size-4" data-icon="inline-start" />
-        {pending ? "Salvando..." : primaryLabel}
+        {pending ? "Salvando..." : labels.primary}
       </Button>
     </div>
   );
@@ -140,6 +142,7 @@ export function PublishingControls({
     actions: (
       <PublishingSubmitButtons
         mode={mode}
+        currentStatus={initialStatus}
         scheduleEnabled={scheduleEnabled}
         pending={pending}
       />

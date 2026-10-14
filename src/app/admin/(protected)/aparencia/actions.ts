@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
+import { requireAdmin } from "@/lib/admin-session";
 import { parseSiteTheme } from "@/lib/site-theme";
 import { createClient } from "@/lib/supabase/server";
 
@@ -14,6 +15,8 @@ export async function updateAppearance(
   _prev: AppearanceActionState,
   formData: FormData,
 ): Promise<AppearanceActionState> {
+  await requireAdmin();
+
   const theme = parseSiteTheme(formData.get("defaultTheme"));
 
   if (!theme) {

@@ -7,6 +7,7 @@ import type { EditorialActionState } from "@/app/admin/(protected)/editorial/act
 import { FormFeedback } from "@/components/admin/form-feedback";
 import { LocalizedField } from "@/components/admin/localized-field";
 import { LocalizedRichTextEditor } from "@/components/admin/localized-rich-text-editor";
+import { submitKeepingValues } from "@/components/admin/submit-keeping-values";
 import { Button } from "@/components/ui/button";
 import { FieldGroup } from "@/components/ui/field";
 import type { RichTextDocument } from "@/lib/rich-text";
@@ -31,7 +32,10 @@ export function BiographyForm({
   const [state, formAction, pending] = useActionState(action, {});
 
   return (
-    <form action={formAction} className="max-w-3xl space-y-8">
+    <form
+      onSubmit={(event) => submitKeepingValues(event, formAction)}
+      className="max-w-3xl space-y-8"
+    >
       <FieldGroup>
         <LocalizedField
           label="Resumo para a home"

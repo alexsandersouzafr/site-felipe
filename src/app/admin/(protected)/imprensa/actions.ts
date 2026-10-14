@@ -10,6 +10,7 @@ import {
   readPublishingFields,
   requireScheduledPublishAt,
 } from "@/lib/admin-form";
+import { requireAdmin } from "@/lib/admin-session";
 import { withToast } from "@/lib/admin-toast";
 import { deleteUnusedMedia } from "@/lib/media-cleanup";
 import { MAX_PRESS_IMAGE_BYTES, validateImageFile } from "@/lib/media-limits";
@@ -36,6 +37,8 @@ export async function createPressPhoto(
   _prev: PressPhotoActionState,
   formData: FormData,
 ): Promise<PressPhotoActionState> {
+  await requireAdmin();
+
   return savePressPhoto(null, formData);
 }
 
@@ -44,6 +47,8 @@ export async function updatePressPhoto(
   _prev: PressPhotoActionState,
   formData: FormData,
 ): Promise<PressPhotoActionState> {
+  await requireAdmin();
+
   return savePressPhoto(id, formData);
 }
 
@@ -168,6 +173,8 @@ async function savePressPhoto(
 }
 
 export async function deletePressPhoto(formData: FormData) {
+  await requireAdmin();
+
   const id = String(formData.get("id") ?? "");
   const supabase = await createClient();
   const { data } = await supabase
@@ -194,6 +201,8 @@ export async function deletePressPhoto(formData: FormData) {
 }
 
 export async function movePressPhoto(formData: FormData) {
+  await requireAdmin();
+
   const id = String(formData.get("id") ?? "");
   const direction = parseReorderDirection(formData.get("direction"));
 

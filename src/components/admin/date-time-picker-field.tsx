@@ -98,15 +98,12 @@ export function DateTimePickerField({
 
   return (
     <div className="space-y-2">
-      <input
-        type="hidden"
-        id={id}
-        name={name}
-        value={value}
-        required={required}
-      />
+      <input type="hidden" name={name} value={value} required={required} />
       <PopoverTrigger>
+        {/* The id lives on the button, so the field's <label htmlFor> names
+            it; a label pointing at the hidden input reaches nobody. */}
         <Button
+          id={id}
           type="button"
           variant="outline"
           className="h-8 w-full justify-start font-normal"

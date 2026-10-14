@@ -8,6 +8,7 @@ import { FormFeedback } from "@/components/admin/form-feedback";
 import { ImageFocusField } from "@/components/admin/image-focus-field";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { LocalizedField } from "@/components/admin/localized-field";
+import { submitKeepingValues } from "@/components/admin/submit-keeping-values";
 import { useAdminToast } from "@/components/admin/toast";
 import { Button } from "@/components/ui/button";
 import {
@@ -80,7 +81,6 @@ export function HomePhotoSlotsForm({
 
   return (
     <form
-      action={formAction}
       className="max-w-4xl space-y-8"
       // This form sends up to three images at once: each can be inside its
       // own limit while the request is too large to be accepted.
@@ -90,7 +90,10 @@ export function HomePhotoSlotsForm({
         if (!total.ok) {
           event.preventDefault();
           toast({ tone: "error", message: total.error });
+          return;
         }
+
+        submitKeepingValues(event, formAction);
       }}
     >
       <FieldDescription>

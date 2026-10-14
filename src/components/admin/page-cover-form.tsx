@@ -7,6 +7,7 @@ import type { PageCoverActionState } from "@/app/admin/(protected)/capas/actions
 import { FormFeedback } from "@/components/admin/form-feedback";
 import { ImageFocusField } from "@/components/admin/image-focus-field";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
+import { submitKeepingValues } from "@/components/admin/submit-keeping-values";
 import { Button } from "@/components/ui/button";
 import { FieldDescription, FieldGroup } from "@/components/ui/field";
 import { DEFAULT_IMAGE_FOCUS } from "@/lib/image-focus";
@@ -40,7 +41,10 @@ export function PageCoverForm({
   }, [initialCover.storagePath]);
 
   return (
-    <form action={formAction} className="max-w-3xl space-y-8">
+    <form
+      onSubmit={(event) => submitKeepingValues(event, formAction)}
+      className="max-w-3xl space-y-8"
+    >
       <FieldDescription>
         Imagem do topo da página {PAGE_COVER_LABELS[pageKey]}, de até{" "}
         {MAX_IMAGE_MB} MB. Ajuste o enquadramento para não cortar rostos nem

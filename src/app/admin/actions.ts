@@ -49,7 +49,7 @@ export async function signIn(
     .maybeSingle();
 
   if (!profile?.is_admin) {
-    await supabase.auth.signOut();
+    await supabase.auth.signOut({ scope: "local" });
     return { error: "Esta conta não tem permissão de administrador." };
   }
 
@@ -58,7 +58,10 @@ export async function signIn(
 
 export async function signOut() {
   const supabase = await createClient();
-  await supabase.auth.signOut();
+  // "local" ends this browser's session only. The default, "global", revokes
+  // every session of the account — so one person leaving the panel signed out
+  // everyone else using it, and their next save failed.
+  await supabase.auth.signOut({ scope: "local" });
   redirect("/admin/login");
 }
 

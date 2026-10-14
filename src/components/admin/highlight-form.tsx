@@ -7,6 +7,7 @@ import { FormFeedback } from "@/components/admin/form-feedback";
 import { LocalizedField } from "@/components/admin/localized-field";
 import { PublishingControls } from "@/components/admin/publishing-fields";
 import { ShowOnPageField } from "@/components/admin/show-on-page-field";
+import { submitKeepingValues } from "@/components/admin/submit-keeping-values";
 import { FieldGroup } from "@/components/ui/field";
 import { MAX_BIO_PAGE_HIGHLIGHTS } from "@/lib/bio-page";
 import type { ContentStatus } from "@/lib/content-visibility";
@@ -41,7 +42,10 @@ export function HighlightForm({
     : `${onPageCount}/${MAX_BIO_PAGE_HIGHLIGHTS} destaques na página.`;
 
   return (
-    <form action={formAction} className="max-w-3xl space-y-8">
+    <form
+      onSubmit={(event) => submitKeepingValues(event, formAction)}
+      className="max-w-3xl space-y-8"
+    >
       <PublishingControls
         mode={mode}
         initialStatus={initialValues?.status}

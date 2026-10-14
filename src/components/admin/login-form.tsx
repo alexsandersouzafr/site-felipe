@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useActionState } from "react";
 
 import { type AuthActionState, signIn } from "@/app/admin/actions";
+import { submitKeepingValues } from "@/components/admin/submit-keeping-values";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -23,7 +24,14 @@ import { Input } from "@/components/ui/input";
 
 const initialState: AuthActionState = {};
 
-export function LoginForm({ unauthorized }: { unauthorized?: boolean }) {
+export function LoginForm({
+  unauthorized,
+  sessionExpired,
+}: {
+  unauthorized?: boolean;
+  /** Sent here by an action that found no session: say so, kindly. */
+  sessionExpired?: boolean;
+}) {
   const [state, formAction, pending] = useActionState(signIn, initialState);
 
   return (
@@ -35,7 +43,19 @@ export function LoginForm({ unauthorized }: { unauthorized?: boolean }) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form action={formAction} className="space-y-4">
+        {sessionExpired && !state.error ? (
+          <p
+            role="status"
+            className="mb-4 rounded-(--radius) border border-border bg-muted/40 px-3 py-2 text-sm text-muted-foreground"
+          >
+            Sua sessão terminou. Entre novamente para continuar — o que não foi
+            salvo antes disso precisa ser preenchido de novo.
+          </p>
+        ) : null}
+        <form
+          onSubmit={(event) => submitKeepingValues(event, formAction)}
+          className="space-y-4"
+        >
           <FieldGroup>
             <Field>
               <FieldLabel htmlFor="email" required>

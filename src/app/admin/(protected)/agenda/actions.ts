@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 
 import { routing } from "@/i18n/routing";
 import { optionalText } from "@/lib/admin-form";
+import { requireAdmin } from "@/lib/admin-session";
 import { withToast } from "@/lib/admin-toast";
 import { eventFormSchema } from "@/lib/event-form";
 import { toEventInsert } from "@/lib/events";
@@ -68,6 +69,8 @@ export async function createEvent(
   _prev: EventActionState,
   formData: FormData,
 ): Promise<EventActionState> {
+  await requireAdmin();
+
   const parsed = eventFormSchema.safeParse(formDataToObject(formData));
 
   if (!parsed.success) {
@@ -100,6 +103,8 @@ export async function updateEvent(
   _prev: EventActionState,
   formData: FormData,
 ): Promise<EventActionState> {
+  await requireAdmin();
+
   const parsed = eventFormSchema.safeParse(formDataToObject(formData));
 
   if (!parsed.success) {
@@ -143,6 +148,8 @@ export async function updateEvent(
 }
 
 export async function toggleEventFeatured(formData: FormData) {
+  await requireAdmin();
+
   const id = String(formData.get("id") ?? "");
   const isFeatured = String(formData.get("isFeatured") ?? "") === "true";
 
@@ -170,6 +177,8 @@ export async function toggleEventFeatured(formData: FormData) {
 }
 
 export async function deleteEvent(formData: FormData) {
+  await requireAdmin();
+
   const id = String(formData.get("id") ?? "");
 
   if (!id) {

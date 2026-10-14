@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { routing } from "@/i18n/routing";
 import { optionalText, readLocalizedPair } from "@/lib/admin-form";
+import { requireAdmin } from "@/lib/admin-session";
 import {
   HOME_PHOTO_SLOTS,
   type HomePhotoSlot,
@@ -54,6 +55,8 @@ export async function saveHomePhotoSlots(
   _prev: HomeMediaActionState,
   formData: FormData,
 ): Promise<HomeMediaActionState> {
+  await requireAdmin();
+
   const supabase = await createClient();
   const updatedAt = new Date().toISOString();
 

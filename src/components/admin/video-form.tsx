@@ -7,6 +7,7 @@ import type { MediaActionState } from "@/app/admin/(protected)/fotos/actions";
 import { FormFeedback } from "@/components/admin/form-feedback";
 import { LocalizedField } from "@/components/admin/localized-field";
 import { PublishingControls } from "@/components/admin/publishing-fields";
+import { submitKeepingValues } from "@/components/admin/submit-keeping-values";
 import {
   Field,
   FieldDescription,
@@ -44,7 +45,10 @@ export function VideoForm({
   const youtubeId = extractYouTubeId(youtubeUrl.trim());
 
   return (
-    <form action={formAction} className="max-w-3xl space-y-8">
+    <form
+      onSubmit={(event) => submitKeepingValues(event, formAction)}
+      className="max-w-3xl space-y-8"
+    >
       <PublishingControls
         mode={mode}
         initialStatus={initialValues?.status}
