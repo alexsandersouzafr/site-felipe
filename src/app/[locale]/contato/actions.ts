@@ -14,6 +14,10 @@ import {
   turnstileKeys,
   verifyTurnstileToken,
 } from "@/lib/public/contact-protection";
+import {
+  classifyContactMessage,
+  resolveSiteIdentity,
+} from "@/lib/public/contact-spam";
 import { createSecretClient } from "@/lib/supabase/secret";
 
 export type ContactFormState =
@@ -52,7 +56,9 @@ function hashIp(ip: string | null) {
  *  3. Turnstile CAPTCHA, when its keys are configured
  *  4. validation and cleaning of every field
  *  5. links: spam is mostly links
- *  6. insert with the server's secret key, where the database applies the
+ *  6. spam rules: what still looks like spam is stored in the admin's spam
+ *     folder, and the sender is told it was sent all the same
+ *  7. insert with the server's secret key, where the database applies the
  *     per-visitor, per-address and overall rate limits
  */
 export async function submitContactMessage(
@@ -119,12 +125,24 @@ export async function submitContactMessage(
     return { status: "error", message: "server" };
   }
 
+  // Quarantined rather than refused: the folder can be checked, a refusal
+  // would only teach a bot what to change.
+  const verdict = classifyContactMessage(
+    { email, subject, message },
+    resolveSiteIdentity(
+      process.env.NEXT_PUBLIC_SITE_URL,
+      headerList.get("host") ? `https://${headerList.get("host")}` : null,
+    ),
+  );
+
   const { error } = await supabase.from("contact_messages").insert({
     name,
     email,
     subject,
     message,
     ip_hash: hashIp(ip),
+    is_spam: verdict.spam,
+    spam_reason: verdict.spam ? verdict.reason : null,
   });
 
   if (error) {

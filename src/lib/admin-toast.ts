@@ -8,6 +8,15 @@ export const ADMIN_TOASTS = {
   saved: { tone: "success", message: "Alterações salvas." },
   created: { tone: "success", message: "Conteúdo criado." },
   deleted: { tone: "success", message: "Conteúdo excluído." },
+  "message-deleted": { tone: "success", message: "Mensagem apagada." },
+  "message-to-spam": {
+    tone: "success",
+    message: "Mensagem movida para o spam.",
+  },
+  "message-to-inbox": {
+    tone: "success",
+    message: "Mensagem devolvida à caixa de entrada.",
+  },
   "save-error": {
     tone: "error",
     message: "Não foi possível salvar. Tente novamente.",

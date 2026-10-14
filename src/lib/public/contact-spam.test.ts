@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { classifyContactMessage, siteIdentity } from "./contact-spam";
+import {
+  classifyContactMessage,
+  resolveSiteIdentity,
+  siteIdentity,
+} from "./contact-spam";
 
 const site = siteIdentity("https://maestrofelipemagalhaes.com");
 
@@ -24,6 +28,24 @@ describe("siteIdentity", () => {
     expect(siteIdentity("not a url")).toBeNull();
     // Too short to search for inside other domains.
     expect(siteIdentity("https://art.com")).toBeNull();
+  });
+
+  // Found on the local replica: NEXT_PUBLIC_SITE_URL was localhost there, so
+  // the lookalike rule compared the scam against "localhost" and let it in.
+  it("never takes a local address for the site", () => {
+    expect(siteIdentity("http://localhost:3000")).toBeNull();
+    expect(siteIdentity("http://127.0.0.1:3100")).toBeNull();
+    expect(siteIdentity("http://admin.localhost")).toBeNull();
+  });
+
+  it("falls back to the canonical domain when nothing usable is configured", () => {
+    expect(
+      resolveSiteIdentity("http://localhost:3000", "https://localhost:3100")
+        ?.host,
+    ).toBe("maestrofelipemagalhaes.com");
+    expect(resolveSiteIdentity(undefined, null)?.host).toBe(
+      "maestrofelipemagalhaes.com",
+    );
   });
 });
 

@@ -18,6 +18,23 @@ export const SPAM_REASON_LABELS: Record<SpamReason, string> = {
 /** Shorter than this, a brand would turn up inside unrelated domains. */
 const MIN_BRAND_LENGTH = 8;
 
+/**
+ * The site's own address, used when the configured one is not a public
+ * domain — on a local machine NEXT_PUBLIC_SITE_URL is localhost, and a
+ * lookalike of "localhost" catches nothing.
+ */
+export const CANONICAL_SITE_URL = "https://maestrofelipemagalhaes.com";
+
+/** A host that could not be anyone's public site. */
+function isLocalHost(host: string) {
+  return (
+    host === "localhost" ||
+    host.endsWith(".localhost") ||
+    /^\d{1,3}(\.\d{1,3}){3}$/.test(host) ||
+    host.startsWith("[")
+  );
+}
+
 export function siteIdentity(siteUrl: string | null | undefined) {
   if (!siteUrl) {
     return null;
@@ -27,10 +44,29 @@ export function siteIdentity(siteUrl: string | null | undefined) {
     const host = new URL(siteUrl).hostname.replace(/^www\./, "").toLowerCase();
     const brand = host.split(".")[0] ?? "";
 
-    return brand.length >= MIN_BRAND_LENGTH ? { host, brand } : null;
+    if (isLocalHost(host) || brand.length < MIN_BRAND_LENGTH) {
+      return null;
+    }
+
+    return { host, brand };
   } catch {
     return null;
   }
+}
+
+/** The first usable identity among the candidates, else the canonical one. */
+export function resolveSiteIdentity(
+  ...candidates: Array<string | null | undefined>
+) {
+  for (const candidate of candidates) {
+    const identity = siteIdentity(candidate);
+
+    if (identity) {
+      return identity;
+    }
+  }
+
+  return siteIdentity(CANONICAL_SITE_URL);
 }
 
 function plain(text: string) {
