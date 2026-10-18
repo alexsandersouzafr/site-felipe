@@ -8,7 +8,8 @@
       "!**/.agents",
       "!**/.scratch",
       "!public",
-      "!supabase/.temp"
+      "!supabase/.temp",
+      "!src/styles/shadcn-tailwind.css"
     ]
   },
   "formatter": {
