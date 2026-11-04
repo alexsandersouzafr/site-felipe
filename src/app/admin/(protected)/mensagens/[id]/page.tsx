@@ -7,11 +7,10 @@ import {
   setMessageSpam,
 } from "@/app/admin/(protected)/mensagens/actions";
 import { ConfirmDeleteButton } from "@/components/admin/confirm-delete-button";
-import { buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { isSafeEmailAddress } from "@/lib/public/contact";
 import { SPAM_REASON_LABELS, type SpamReason } from "@/lib/public/contact-spam";
 import { createClient } from "@/lib/supabase/server";
-import { cn } from "@/lib/utils";
 
 function spamReasonLabel(reason: string | null) {
   return reason && reason in SPAM_REASON_LABELS
@@ -118,10 +117,7 @@ export default async function MessageDetailPage({
             name="spam"
             value={data.is_spam ? "false" : "true"}
           />
-          <button
-            type="submit"
-            className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
-          >
+          <Button type="submit" variant="outline" size="sm">
             {data.is_spam ? (
               <>
                 <TrayIcon className="size-3.5" data-icon="inline-start" />
@@ -136,7 +132,7 @@ export default async function MessageDetailPage({
                 Marcar como spam
               </>
             )}
-          </button>
+          </Button>
         </form>
         <ConfirmDeleteButton
           action={deleteMessage}
