@@ -10,7 +10,7 @@ import {
   FieldError,
   FieldLabel,
 } from "@/components/ui/field";
-import { MAX_IMAGE_BYTES, validateImageFile } from "@/lib/media-limits";
+import { MAX_IMAGE_BYTES, validatePickedImage } from "@/lib/media-limits";
 import { mediaPublicUrl } from "@/lib/media-url";
 
 function readFileFromChange(event: unknown): File | null {
@@ -101,7 +101,11 @@ export function ImageUploadField({
         onChange={(event) => {
           const file = readFileFromChange(event);
           const validation = file
-            ? validateImageFile(file, maxBytes)
+            ? validatePickedImage(
+                file,
+                new FormData(event.target.form ?? undefined),
+                maxBytes,
+              )
             : ({ ok: true } as const);
 
           // Sending a file the action will refuse anyway is worse than a

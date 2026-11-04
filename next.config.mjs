@@ -9,11 +9,16 @@ import createNextIntlPlugin from "next-intl/plugin";
  * @type {import("next").NextConfig}
  */
 const nextConfig = {
-  // Cover + several block images (5 MB each) can exceed the 1 MB default.
+  // One 40 MB image, plus the multipart framing and text fields around it. See
+  // MAX_REQUEST_BYTES in src/lib/media-limits.ts.
   experimental: {
     serverActions: {
-      bodySizeLimit: "40mb",
+      bodySizeLimit: "45mb",
     },
+    // src/proxy.ts runs on /admin, and Next buffers what passes through a proxy
+    // only up to this size (10 MB by default). Lower than the limit above, the
+    // action receives a form cut in half and fails with "Unexpected end of form".
+    proxyClientMaxBodySize: "45mb",
   },
   images: {
     remotePatterns: [

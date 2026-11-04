@@ -11,7 +11,7 @@ import { submitKeepingValues } from "@/components/admin/submit-keeping-values";
 import { Button } from "@/components/ui/button";
 import { FieldDescription, FieldGroup } from "@/components/ui/field";
 import { DEFAULT_IMAGE_FOCUS } from "@/lib/image-focus";
-import { MAX_IMAGE_BYTES, MAX_IMAGE_MB } from "@/lib/media-limits";
+import { MAX_HD_IMAGE_BYTES, MAX_HD_IMAGE_MB } from "@/lib/media-limits";
 import { type AdminPageCoverKey, PAGE_COVER_LABELS } from "@/lib/page-covers";
 
 export type PageCoverValue = {
@@ -47,13 +47,13 @@ export function PageCoverForm({
     >
       <FieldDescription>
         Imagem do topo da página {PAGE_COVER_LABELS[pageKey]}, de até{" "}
-        {MAX_IMAGE_MB} MB. Ajuste o enquadramento para não cortar rostos nem
+        {MAX_HD_IMAGE_MB} MB. Ajuste o enquadramento para não cortar rostos nem
         pontos importantes. Sem imagem, a página abre com um fundo em degradê.
       </FieldDescription>
 
       <FieldGroup className="gap-6">
         <ImageUploadField
-          maxBytes={MAX_IMAGE_BYTES}
+          maxBytes={MAX_HD_IMAGE_BYTES}
           id="file"
           name="file"
           label="Arquivo"

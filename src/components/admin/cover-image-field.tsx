@@ -20,7 +20,7 @@ import {
   FieldError,
   FieldLabel,
 } from "@/components/ui/field";
-import { MAX_IMAGE_MB, validateImageFile } from "@/lib/media-limits";
+import { MAX_IMAGE_MB, validatePickedImage } from "@/lib/media-limits";
 import { mediaPublicUrl } from "@/lib/media-url";
 import { cn } from "@/lib/utils";
 
@@ -146,7 +146,10 @@ export function CoverImageField({
               onChange={(event) => {
                 const file = readFileFromChange(event);
                 const validation = file
-                  ? validateImageFile(file)
+                  ? validatePickedImage(
+                      file,
+                      new FormData(event.target.form ?? undefined),
+                    )
                   : ({ ok: true } as const);
 
                 // Past the request body limit Next answers with an error page

@@ -13,7 +13,7 @@ import {
 import { requireAdmin } from "@/lib/admin-session";
 import { withToast } from "@/lib/admin-toast";
 import { deleteUnusedMedia } from "@/lib/media-cleanup";
-import { MAX_PRESS_IMAGE_BYTES, validateImageFile } from "@/lib/media-limits";
+import { MAX_HD_IMAGE_BYTES, validateImageFile } from "@/lib/media-limits";
 import { parsePressPhotoCategory } from "@/lib/press-categories";
 import {
   nextDisplayOrder,
@@ -92,7 +92,7 @@ async function savePressPhoto(
   let storagePath = optionalText(formData, "storagePath");
 
   if (file instanceof File && file.size > 0) {
-    const validation = validateImageFile(file, MAX_PRESS_IMAGE_BYTES);
+    const validation = validateImageFile(file, MAX_HD_IMAGE_BYTES);
     if (!validation.ok) {
       return { error: validation.error };
     }

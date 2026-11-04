@@ -19,8 +19,9 @@ import {
 import { HOME_PHOTO_SLOTS, type HomePhotoSlot } from "@/lib/home-photo-slots";
 import { DEFAULT_IMAGE_FOCUS } from "@/lib/image-focus";
 import {
-  MAX_IMAGE_BYTES,
-  MAX_IMAGE_MB,
+  MAX_HD_IMAGE_BYTES,
+  MAX_HD_IMAGE_MB,
+  MAX_REQUEST_MB,
   validateRequestSize,
 } from "@/lib/media-limits";
 
@@ -97,8 +98,9 @@ export function HomePhotoSlotsForm({
       }}
     >
       <FieldDescription>
-        Use fotos de boa qualidade, de até {MAX_IMAGE_MB} MB cada. As imagens de
-        topo das outras páginas ficam em Capas.
+        Use fotos de boa qualidade, de até {MAX_HD_IMAGE_MB} MB cada. Se a soma
+        passar de {MAX_REQUEST_MB} MB, salve uma de cada vez. As imagens de topo
+        das outras páginas ficam em Capas.
       </FieldDescription>
 
       {missingSlots.length > 0 ? (
@@ -127,7 +129,7 @@ export function HomePhotoSlotsForm({
               </div>
 
               <ImageUploadField
-                maxBytes={MAX_IMAGE_BYTES}
+                maxBytes={MAX_HD_IMAGE_BYTES}
                 id={`file_${slot.key}`}
                 name={`file_${slot.key}`}
                 label="Imagem"
@@ -136,7 +138,7 @@ export function HomePhotoSlotsForm({
                 onRemove={() =>
                   setCleared((current) => ({ ...current, [slot.key]: true }))
                 }
-                description={`JPEG, PNG, WebP ou GIF. Máximo ${MAX_IMAGE_MB} MB.`}
+                description={`JPEG, PNG, WebP ou GIF. Máximo ${MAX_HD_IMAGE_MB} MB.`}
                 onFileChange={(file) => {
                   setPendingFiles((current) => ({
                     ...current,

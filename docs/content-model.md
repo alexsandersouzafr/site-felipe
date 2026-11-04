@@ -10,7 +10,7 @@ Each editorial entity has an `id`, `status` (`draft`, `scheduled`, or `published
 | Event | title, image, venue, city, country, start, end, link, and `is_featured` (curated for the home page) |
 | Video | title, YouTube URL/ID, description, cover, and date |
 | Photo (gallery) | file, alternative text, credit, collection, and order |
-| Press photo (`press_photos`) | HD file (30 MB limit), section (`category`: `conductor` = photos of the conductor / publicity, `stage` = on-stage photos), alternative text, credit, and order within its section — separate from the gallery, surfaced on `/imprensa` in one section per category, each photo with a hi-res download |
+| Press photo (`press_photos`) | HD file (40 MB limit), section (`category`: `conductor` = photos of the conductor / publicity, `stage` = on-stage photos), alternative text, credit, and order within its section — separate from the gallery, surfaced on `/imprensa` in one section per category, each photo with a hi-res download |
 | Home photo | ordered HD parallax bands for the home page |
 | Page cover | one top image per public page key (`home`, `bio`, `blog`, `agenda`, `videos`, `fotos`, `contato`, `imprensa`) |
 | Contact / settings | email, phone, social links, introduction text, and the blog fallback cover image |
@@ -31,7 +31,7 @@ Cover images are chosen by upload (`blog/covers/...`) or by selecting an existin
 
 - **Home photos** (`home_photos`) are ordered full-width parallax bands. The first is the home hero; the rest appear between home sections.
 - **Page covers** (`page_covers`) set the top image for each public page. Every cover, and every home photo, can be removed: the page then opens on the gradient hero. Removing or replacing one also deletes the stored file, once no row still points at it (`deleteUnusedMedia`).
-- Every upload accepts **15 MB**, and press photos **30 MB**, JPEG/PNG/WebP/GIF, under `home/parallax/...` and `covers/...`.
+- Home photos, page covers and press photos accept **40 MB**, and every other upload **15 MB**, JPEG/PNG/WebP/GIF, under `home/parallax/...` and `covers/...`. One save carries at most 40 MB of images in total.
 
 ## Agenda favorites
 

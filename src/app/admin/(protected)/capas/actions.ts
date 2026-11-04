@@ -7,7 +7,7 @@ import { optionalText } from "@/lib/admin-form";
 import { requireAdmin } from "@/lib/admin-session";
 import { normalizeImageFocus } from "@/lib/image-focus";
 import { deleteUnusedMedia } from "@/lib/media-cleanup";
-import { MAX_IMAGE_BYTES, validateImageFile } from "@/lib/media-limits";
+import { MAX_HD_IMAGE_BYTES, validateImageFile } from "@/lib/media-limits";
 import {
   type AdminPageCoverKey,
   isAdminPageCoverKey,
@@ -32,7 +32,7 @@ async function uploadCover(
   supabase: Awaited<ReturnType<typeof createClient>>,
   file: File,
 ) {
-  const validation = validateImageFile(file, MAX_IMAGE_BYTES);
+  const validation = validateImageFile(file, MAX_HD_IMAGE_BYTES);
   if (!validation.ok) {
     return { ok: false as const, error: validation.error };
   }
