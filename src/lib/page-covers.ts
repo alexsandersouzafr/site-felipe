@@ -7,6 +7,7 @@ export const ADMIN_PAGE_COVER_KEYS = [
   "fotos",
   "contato",
   "imprensa",
+  "repertorio",
 ] as const;
 
 export type AdminPageCoverKey = (typeof ADMIN_PAGE_COVER_KEYS)[number];
@@ -25,6 +26,7 @@ export const PAGE_COVER_LABELS: Record<PageCoverKey, string> = {
   fotos: "Galeria",
   contato: "Contato",
   imprensa: "Imprensa",
+  repertorio: "Repertório",
 };
 
 export function isPageCoverKey(value: string): value is PageCoverKey {
