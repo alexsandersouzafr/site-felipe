@@ -69,7 +69,7 @@ export function BiographyForm({
 
       <FormFeedback state={state} />
 
-      <Button type="submit" isDisabled={pending}>
+      <Button type="submit" isPending={pending}>
         <FloppyDiskIcon className="size-4" data-icon="inline-start" />
         {pending ? "Salvando..." : "Salvar biografia"}
       </Button>

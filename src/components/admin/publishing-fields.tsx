@@ -6,7 +6,7 @@ import {
   NotePencilIcon,
   PaperPlaneTiltIcon,
 } from "@phosphor-icons/react";
-import { type ReactNode, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 
 import { DateTimePickerField } from "@/components/admin/date-time-picker-field";
 import { SmoothReveal } from "@/components/admin/smooth-reveal";
@@ -89,6 +89,17 @@ function PublishingSubmitButtons({
       ? FloppyDiskIcon
       : PaperPlaneTiltIcon;
 
+  // The spinner goes on the button that was used. Enter in a field submits
+  // with the first button in the form, which is the draft one.
+  const [pressed, setPressed] = useState<"draft" | "primary" | null>(null);
+  const busy = pressed ?? "draft";
+
+  useEffect(() => {
+    if (!pending) {
+      setPressed(null);
+    }
+  }, [pending]);
+
   return (
     <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
       <Button
@@ -96,19 +107,23 @@ function PublishingSubmitButtons({
         name="intent"
         value="draft"
         variant="outline"
-        isDisabled={pending}
+        onPress={() => setPressed("draft")}
+        isPending={pending && busy === "draft"}
+        isDisabled={pending && busy !== "draft"}
       >
         <NotePencilIcon className="size-4" data-icon="inline-start" />
-        {labels.draft}
+        {pending && busy === "draft" ? "Salvando..." : labels.draft}
       </Button>
       <Button
         type="submit"
         name="intent"
         value={primaryIntent}
-        isDisabled={pending}
+        onPress={() => setPressed("primary")}
+        isPending={pending && busy === "primary"}
+        isDisabled={pending && busy !== "primary"}
       >
         <PrimaryIcon className="size-4" data-icon="inline-start" />
-        {pending ? "Salvando..." : labels.primary}
+        {pending && busy === "primary" ? "Salvando..." : labels.primary}
       </Button>
     </div>
   );

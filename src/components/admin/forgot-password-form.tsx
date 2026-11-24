@@ -60,7 +60,7 @@ export function ForgotPasswordForm() {
           {state.success && (
             <p className="text-sm text-muted-foreground">{state.success}</p>
           )}
-          <Button type="submit" className="w-full" isDisabled={pending}>
+          <Button type="submit" className="w-full" isPending={pending}>
             {pending ? "Enviando..." : "Enviar link"}
           </Button>
         </form>

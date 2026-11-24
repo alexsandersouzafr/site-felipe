@@ -89,7 +89,7 @@ export function LoginForm({
                 : state.error}
             </FieldError>
           )}
-          <Button type="submit" className="w-full" isDisabled={pending}>
+          <Button type="submit" className="w-full" isPending={pending}>
             {pending ? "Entrando..." : "Entrar"}
           </Button>
         </form>

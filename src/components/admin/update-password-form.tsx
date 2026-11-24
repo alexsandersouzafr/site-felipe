@@ -64,7 +64,7 @@ export function UpdatePasswordForm() {
             </Field>
           </FieldGroup>
           <FormFeedback state={state} />
-          <Button type="submit" className="w-full" isDisabled={pending}>
+          <Button type="submit" className="w-full" isPending={pending}>
             {pending ? "Salvando..." : "Atualizar senha"}
           </Button>
         </form>
