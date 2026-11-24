@@ -74,6 +74,12 @@ on pnpm; after adding or bumping a dependency, refresh the npm lockfile as well:
 npm install --package-lock-only
 ```
 
+When that fails with an ERESOLVE between `@tiptap/*` versions, or with "Cannot read
+properties of null (reading 'edgesOut')", regenerate the lockfile from `package.json`
+alone, in an empty folder and with npm 11 (Node 24): npm 10.9 crashes resolving
+vitest's peers, and reading pnpm's `node_modules` confuses it. Hostinger's npm 10
+installs from the result without trouble.
+
 Leaving the detection on auto picks pnpm again, because `pnpm-lock.yaml` is in the repo.
 
 ## Deploy source
