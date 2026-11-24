@@ -29,7 +29,7 @@ export function HighlightForm({
     titlePt?: string;
     titleEn?: string | null;
     titleFr?: string | null;
-    descriptionPt?: string;
+    descriptionPt?: string | null;
     descriptionEn?: string | null;
     descriptionFr?: string | null;
   };
@@ -72,8 +72,8 @@ export function HighlightForm({
 
               <LocalizedField
                 label="Descrição"
-                required
                 multiline
+                placeholder="Opcional"
                 names={{
                   pt: "descriptionPt",
                   en: "descriptionEn",

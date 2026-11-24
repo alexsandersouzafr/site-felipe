@@ -58,9 +58,11 @@ export default async function BioPage({ params }: BioPageProps) {
                     <h3 className="font-heading text-lg tracking-tight">
                       {item.title}
                     </h3>
-                    <p className="mt-1.5 text-sm text-muted-foreground">
-                      {item.description}
-                    </p>
+                    {item.description ? (
+                      <p className="mt-1.5 text-sm text-muted-foreground">
+                        {item.description}
+                      </p>
+                    ) : null}
                   </li>
                 ))}
               </ul>

@@ -160,8 +160,8 @@ async function saveHighlight(
     fr: "descriptionFr",
   });
 
-  if (!titles.pt || !descriptions.pt) {
-    return { error: "Título e descrição em português são obrigatórios." };
+  if (!titles.pt) {
+    return { error: "O título em português é obrigatório." };
   }
 
   const showOnPage = booleanField(formData, "showOnPage");
@@ -201,7 +201,7 @@ async function saveHighlight(
     title_pt: titles.pt,
     title_en: titles.en,
     title_fr: titles.fr,
-    description_pt: descriptions.pt,
+    description_pt: descriptions.pt || null,
     description_en: descriptions.en,
     description_fr: descriptions.fr,
     show_on_page: showOnPage,

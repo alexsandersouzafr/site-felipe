@@ -25,7 +25,7 @@ type HighlightRow = {
   title_pt: string;
   title_en: string | null;
   title_fr: string | null;
-  description_pt: string;
+  description_pt: string | null;
   description_en: string | null;
   description_fr: string | null;
 };
@@ -130,7 +130,7 @@ export async function getBioPage(locale: Locale) {
     ),
     description: getLocalizedValue(
       {
-        pt: row.description_pt,
+        pt: row.description_pt ?? "",
         en: row.description_en,
         fr: row.description_fr,
       },
