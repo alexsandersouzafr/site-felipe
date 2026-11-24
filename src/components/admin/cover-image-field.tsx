@@ -1,12 +1,17 @@
 "use client";
 
 import { CheckIcon, ImagesIcon, UploadSimpleIcon } from "@phosphor-icons/react";
-import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
 import { FilePickerButton } from "@/components/admin/file-picker-button";
-import { ImagePreview } from "@/components/admin/image-upload-field";
+import {
+  preparePickedImage,
+  reducedMessage,
+} from "@/components/admin/prepare-picked-image";
+import { SitePreview } from "@/components/admin/site-preview";
 import { SmoothReveal } from "@/components/admin/smooth-reveal";
 import { useAdminToast } from "@/components/admin/toast";
+import { LoadingImage } from "@/components/loading-image";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -20,8 +25,9 @@ import {
   FieldError,
   FieldLabel,
 } from "@/components/ui/field";
-import { MAX_IMAGE_MB, validatePickedImage } from "@/lib/media-limits";
+import { MAX_IMAGE_MB } from "@/lib/media-limits";
 import { mediaPublicUrl } from "@/lib/media-url";
+import { blogCoverFrames } from "@/lib/site-frames";
 import { cn } from "@/lib/utils";
 
 export type CoverLibraryItem = {
@@ -29,21 +35,7 @@ export type CoverLibraryItem = {
   label: string;
 };
 
-function readFileFromChange(event: unknown): File | null {
-  if (
-    event &&
-    typeof event === "object" &&
-    "target" in event &&
-    event.target &&
-    typeof event.target === "object" &&
-    "files" in event.target
-  ) {
-    const files = event.target.files as FileList | null;
-    return files?.[0] ?? null;
-  }
-
-  return null;
-}
+const COVER_FRAMES = blogCoverFrames();
 
 export function CoverImageField({
   initialPath = null,
@@ -61,6 +53,8 @@ export function CoverImageField({
   const [localPreview, setLocalPreview] = useState<string | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
+  const [reducing, setReducing] = useState(false);
+  const latestPick = useRef(0);
   const toast = useAdminToast();
   const [galleryOpen, setGalleryOpen] = useState(false);
 
@@ -79,6 +73,50 @@ export function CoverImageField({
 
   const selectedLabel =
     library.find((item) => item.storagePath === selectedPath)?.label ?? null;
+
+  function showFile(file: File | null) {
+    setFileName(file?.name ?? null);
+    setLocalPreview((previous) => {
+      if (previous) {
+        URL.revokeObjectURL(previous);
+      }
+      return file ? URL.createObjectURL(file) : null;
+    });
+  }
+
+  async function handlePick(input: HTMLInputElement) {
+    const pick = ++latestPick.current;
+    const prepared = await preparePickedImage(input, {
+      onReducing: (active) => {
+        if (pick === latestPick.current) {
+          setReducing(active);
+        }
+      },
+    });
+
+    if (pick !== latestPick.current) {
+      return;
+    }
+
+    // Past the request body limit Next answers with an error page before the
+    // action runs, so the refusal has to happen here.
+    if (!prepared.ok) {
+      setFileError(prepared.error);
+      toast({ tone: "error", message: prepared.error });
+      showFile(null);
+      return;
+    }
+
+    setFileError(null);
+    showFile(prepared.file);
+
+    if (prepared.file && prepared.reducedFrom) {
+      toast({
+        tone: "success",
+        message: reducedMessage(prepared.reducedFrom, prepared.file.size),
+      });
+    }
+  }
 
   return (
     <div className="space-y-4 rounded-3xl border border-border/80 bg-muted/20 p-4">
@@ -130,7 +168,7 @@ export function CoverImageField({
               id="coverFile"
               name="coverFile"
               disabled={mode !== "upload"}
-              fileName={fileName}
+              fileName={reducing ? "Reduzindo a imagem…" : fileName}
               hasImage={Boolean(selectedPath)}
               onRemove={() => {
                 setSelectedPath("");
@@ -144,38 +182,7 @@ export function CoverImageField({
                 });
               }}
               onChange={(event) => {
-                const file = readFileFromChange(event);
-                const validation = file
-                  ? validatePickedImage(
-                      file,
-                      new FormData(event.target.form ?? undefined),
-                    )
-                  : ({ ok: true } as const);
-
-                // Past the request body limit Next answers with an error page
-                // before the action runs, so the refusal has to happen here.
-                if (!validation.ok) {
-                  setFileError(validation.error);
-                  toast({ tone: "error", message: validation.error });
-                  event.target.value = "";
-                  setFileName(null);
-                  setLocalPreview((previous) => {
-                    if (previous) {
-                      URL.revokeObjectURL(previous);
-                    }
-                    return null;
-                  });
-                  return;
-                }
-
-                setFileError(null);
-                setFileName(file?.name ?? null);
-                setLocalPreview((previous) => {
-                  if (previous) {
-                    URL.revokeObjectURL(previous);
-                  }
-                  return file ? URL.createObjectURL(file) : null;
-                });
+                void handlePick(event.target);
               }}
             />
             {fileError ? <FieldError>{fileError}</FieldError> : null}
@@ -218,7 +225,11 @@ export function CoverImageField({
         </SmoothReveal>
       </div>
 
-      <ImagePreview src={previewSrc} alt="Pré-visualização da capa" />
+      <SitePreview
+        src={previewSrc ?? null}
+        focus="50% 50%"
+        frames={COVER_FRAMES}
+      />
 
       <Dialog
         isOpen={galleryOpen}
@@ -261,12 +272,12 @@ export function CoverImageField({
                 >
                   <div className="relative aspect-square overflow-hidden bg-muted">
                     {src ? (
-                      <Image
+                      <LoadingImage
                         src={src}
                         alt={item.label}
                         fill
                         sizes="(max-width: 640px) 33vw, 160px"
-                        className="object-cover transition-transform group-hover:scale-[1.02]"
+                        className="object-cover transition-[opacity,scale] group-hover:scale-[1.02]"
                       />
                     ) : (
                       <div className="flex size-full items-center justify-center text-xs text-muted-foreground">

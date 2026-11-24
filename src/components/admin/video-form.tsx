@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useActionState, useState } from "react";
 
 import type { MediaActionState } from "@/app/admin/(protected)/fotos/actions";
@@ -8,6 +7,7 @@ import { FormFeedback } from "@/components/admin/form-feedback";
 import { LocalizedField } from "@/components/admin/localized-field";
 import { PublishingControls } from "@/components/admin/publishing-fields";
 import { submitKeepingValues } from "@/components/admin/submit-keeping-values";
+import { LoadingImage } from "@/components/loading-image";
 import {
   Field,
   FieldDescription,
@@ -74,7 +74,7 @@ export function VideoForm({
                 {youtubeUrl.trim() ? (
                   youtubeId ? (
                     <div className="relative mt-3 aspect-video w-full max-w-sm overflow-hidden rounded-2xl border border-border/80 bg-muted/30">
-                      <Image
+                      <LoadingImage
                         src={`https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`}
                         alt="Pré-visualização do vídeo"
                         fill

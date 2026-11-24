@@ -1,5 +1,6 @@
 import { ParallaxBand } from "@/components/public/parallax-band";
 import { Reveal } from "@/components/public/reveal";
+import { PAGE_HERO_VEIL } from "@/lib/site-overlays";
 import { cn } from "@/lib/utils";
 
 type PageHeroProps = {
@@ -10,23 +11,12 @@ type PageHeroProps = {
    * How much of the photo dissolves into the page behind the title. `strong`
    * carries the fade higher, for long titles that run over several lines.
    */
-  veil?: keyof typeof VEIL;
+  veil?: keyof typeof PAGE_HERO_VEIL;
   className?: string;
 };
 
 const HERO_HEIGHT =
   "h-[min(56vh,32rem)] min-h-[22rem] sm:h-[min(56vh,32rem)] md:h-[min(56vh,32rem)] lg:h-[min(56vh,32rem)]";
-
-/**
- * Two layers: the top one darkens the photo under the header, the bottom one
- * fades it into `--background` so the title keeps its contrast in both themes.
- */
-const VEIL = {
-  default:
-    "bg-[linear-gradient(to_bottom,rgb(0_0_0/0.5),transparent_40%),linear-gradient(to_top,var(--background),color-mix(in_oklch,var(--background)_45%,transparent)_30%,transparent_65%)]",
-  strong:
-    "bg-[linear-gradient(to_bottom,rgb(0_0_0/0.5),transparent_35%),linear-gradient(to_top,var(--background),color-mix(in_oklch,var(--background)_72%,transparent)_42%,color-mix(in_oklch,var(--background)_34%,transparent)_70%,transparent_92%)]",
-};
 
 export function PageHero({
   title,
@@ -71,7 +61,7 @@ export function PageHero({
       headerOverlay
       intro
       className={HERO_HEIGHT}
-      overlayClassName={VEIL[veil]}
+      overlayClassName={PAGE_HERO_VEIL[veil]}
     >
       {content}
     </ParallaxBand>

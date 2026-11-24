@@ -5,7 +5,7 @@ Each editorial entity has an `id`, `status` (`draft`, `scheduled`, or `published
 | Entity | Key fields |
 | --- | --- |
 | Bio | singleton: TipTap body, home summary; top image is the Bio page cover; highlights listed on the Bio page |
-| Highlight | title, description, `display_order`, `show_on_page` |
+| Highlight | title, optional description, `display_order`, `show_on_page` |
 | Blog post (`news_items`) | slug, title, cover image path, ordered `blocks` |
 | Event | title, image, venue, city, country, start, end, link, and `is_featured` (curated for the home page) |
 | Video | title, YouTube URL/ID, description, cover, and date |
@@ -32,6 +32,8 @@ Cover images are chosen by upload (`blog/covers/...`) or by selecting an existin
 - **Home photos** (`home_photos`) are ordered full-width parallax bands. The first is the home hero; the rest appear between home sections.
 - **Page covers** (`page_covers`) set the top image for each public page. Every cover, and every home photo, can be removed: the page then opens on the gradient hero. Removing or replacing one also deletes the stored file, once no row still points at it (`deleteUnusedMedia`).
 - Home photos, page covers and press photos accept **40 MB**, and every other upload **15 MB**, JPEG/PNG/WebP/GIF, under `home/parallax/...` and `covers/...`. One save carries at most 40 MB of images in total.
+- Framing (`object_position`) is chosen from a 3×3 grid of icons or by tapping the photo; the admin previews each photo cut the way the site cuts it, on a 1440×900 and a 390×844 screen (`src/lib/site-frames.ts`, which has to follow the classes in `parallax-band.tsx` and `page-hero.tsx`).
+- To spare the small Supabase storage, every photo the site shows is re-encoded in the browser before upload when it is over 1 MB: WebP (JPEG where the browser cannot write WebP) at quality 0.85, at most 3840 px on the longest side, the widest the site serves (`src/lib/image-reduction.ts`). Press photos are hi-res originals for print and go up untouched, as do GIFs and transparent PNGs.
 
 ## Agenda favorites
 

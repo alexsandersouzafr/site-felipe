@@ -37,6 +37,7 @@ import {
   createVideoBlock,
 } from "@/lib/blog-blocks";
 import { isRichTextEmpty } from "@/lib/rich-text";
+import { BLOG_IMAGE_FRAMES } from "@/lib/site-frames";
 import { cn } from "@/lib/utils";
 
 const ADMIN_STICKY_HEADER_OFFSET = 88;
@@ -343,6 +344,7 @@ export function BlogBlocksEditor({
                     label="Arquivo"
                     existingPath={block.storagePath || null}
                     required={!block.storagePath}
+                    frames={BLOG_IMAGE_FRAMES}
                     description={
                       block.storagePath
                         ? "Envie outra imagem para substituir a atual."

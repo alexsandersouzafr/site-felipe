@@ -5,7 +5,7 @@ import { useActionState, useEffect, useState } from "react";
 
 import type { HomeMediaActionState } from "@/app/admin/(protected)/home-fotos/actions";
 import { FormFeedback } from "@/components/admin/form-feedback";
-import { ImageFocusField } from "@/components/admin/image-focus-field";
+import { ImageFramingField } from "@/components/admin/image-framing-field";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { LocalizedField } from "@/components/admin/localized-field";
 import { submitKeepingValues } from "@/components/admin/submit-keeping-values";
@@ -24,6 +24,10 @@ import {
   MAX_REQUEST_MB,
   validateRequestSize,
 } from "@/lib/media-limits";
+import { homeBandFrames, homeHeroFrames } from "@/lib/site-frames";
+
+const HERO_FRAMES = homeHeroFrames();
+const BAND_FRAMES = homeBandFrames();
 
 export type HomePhotoSlotValue = {
   storagePath: string | null;
@@ -51,6 +55,9 @@ export function HomePhotoSlotsForm({
         HOME_PHOTO_SLOTS.map((slot) => [slot.key, false]),
       ) as Record<HomePhotoSlot, boolean>,
   );
+  const [previews, setPreviews] = useState<
+    Partial<Record<HomePhotoSlot, string | null>>
+  >({});
   const [pendingFiles, setPendingFiles] = useState<
     Record<HomePhotoSlot, boolean>
   >(
@@ -139,6 +146,9 @@ export function HomePhotoSlotsForm({
                   setCleared((current) => ({ ...current, [slot.key]: true }))
                 }
                 description={`JPEG, PNG, WebP ou GIF. Máximo ${MAX_HD_IMAGE_MB} MB.`}
+                onPreviewChange={(src) =>
+                  setPreviews((current) => ({ ...current, [slot.key]: src }))
+                }
                 onFileChange={(file) => {
                   setPendingFiles((current) => ({
                     ...current,
@@ -153,10 +163,12 @@ export function HomePhotoSlotsForm({
                 }}
               />
 
-              <ImageFocusField
+              <ImageFramingField
                 id={`focus_${slot.key}`}
                 name={`focus_${slot.key}`}
                 defaultValue={values.objectPosition || DEFAULT_IMAGE_FOCUS}
+                src={previews[slot.key] ?? null}
+                frames={slot.key === "hero" ? HERO_FRAMES : BAND_FRAMES}
               />
 
               <LocalizedField
@@ -210,7 +222,7 @@ export function HomePhotoSlotsForm({
       </FieldGroup>
 
       <FormFeedback state={state} />
-      <Button type="submit" isDisabled={pending}>
+      <Button type="submit" isPending={pending}>
         <FloppyDiskIcon className="size-4" data-icon="inline-start" />
         {pending ? "Salvando..." : "Salvar fotos da home"}
       </Button>

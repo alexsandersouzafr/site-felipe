@@ -1,6 +1,6 @@
 import { MusicNotesIcon } from "@phosphor-icons/react/dist/ssr";
-import Image from "next/image";
 
+import { LoadingImage } from "@/components/loading-image";
 import { RichTextView } from "@/components/public/rich-text-view";
 import {
   AUDIO_PROVIDER_LABELS,
@@ -41,7 +41,7 @@ export function BlogBlocksView({ blocks }: BlogBlocksViewProps) {
           return (
             <figure key={block.id} className="space-y-3">
               <div className="relative aspect-[16/10] w-full overflow-hidden bg-muted">
-                <Image
+                <LoadingImage
                   src={src}
                   alt={block.caption || ""}
                   fill

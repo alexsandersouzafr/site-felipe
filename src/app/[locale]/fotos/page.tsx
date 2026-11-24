@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { PageHero } from "@/components/public/page-hero";
 import { PublicPaginationNav } from "@/components/public/pagination-nav";
+import { PhotoGallery } from "@/components/public/photo-gallery";
 import { SectionReveal } from "@/components/public/section-reveal";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
@@ -32,6 +32,7 @@ export default async function PhotosPage({
   const requestedPage = parsePage((await searchParams).page);
   setRequestLocale(locale);
   const t = await getTranslations("Photos");
+  const tPress = await getTranslations("Press");
   const [{ photos, page, totalPages }, pageCover] = await Promise.all([
     listPhotosPage(locale as Locale, requestedPage, PUBLIC_PAGE_SIZE),
     getPageCover("fotos"),
@@ -56,32 +57,16 @@ export default async function PhotosPage({
         {photos.length === 0 ? (
           <p className="text-muted-foreground">{t("empty")}</p>
         ) : (
-          <ul className="columns-1 gap-6 sm:columns-2 lg:columns-3">
-            {photos.map((photo) =>
-              photo.src ? (
-                <li key={photo.id} className="mb-6 break-inside-avoid">
-                  <figure>
-                    <div className="relative aspect-[4/5] overflow-hidden bg-muted">
-                      <Image
-                        src={photo.src}
-                        alt={photo.alt}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      />
-                    </div>
-                    {(photo.credit || photo.alt) && (
-                      <figcaption className="mt-2 text-xs text-muted-foreground">
-                        {photo.credit
-                          ? `${t("credit")}: ${photo.credit}`
-                          : photo.alt}
-                      </figcaption>
-                    )}
-                  </figure>
-                </li>
-              ) : null,
-            )}
-          </ul>
+          <PhotoGallery
+            photos={photos}
+            labels={{
+              credit: t("credit"),
+              open: tPress("open"),
+              close: tPress("close"),
+              previous: tPress("previous"),
+              next: tPress("next"),
+            }}
+          />
         )}
         <PublicPaginationNav
           basePath="/fotos"

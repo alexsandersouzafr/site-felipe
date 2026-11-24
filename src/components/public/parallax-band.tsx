@@ -2,9 +2,9 @@
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Image from "next/image";
 import { type ReactNode, useEffect, useRef } from "react";
 
+import { LoadingImage } from "@/components/loading-image";
 import { cn } from "@/lib/utils";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -141,7 +141,7 @@ export function ParallaxBand({
             imageClassName,
           )}
         >
-          <Image
+          <LoadingImage
             src={src}
             alt={alt}
             fill

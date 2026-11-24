@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 
 import type { PressPhotoActionState } from "@/app/admin/(protected)/imprensa/actions";
 import { FormFeedback } from "@/components/admin/form-feedback";
@@ -23,6 +23,7 @@ import {
   PRESS_PHOTO_CATEGORY_LABELS,
   type PressPhotoCategory,
 } from "@/lib/press-categories";
+import { PRESS_FRAMES } from "@/lib/site-frames";
 
 export function PressPhotoForm({
   action,
@@ -46,6 +47,9 @@ export function PressPhotoForm({
   mode: "create" | "edit";
 }) {
   const [state, formAction, pending] = useActionState(action, {});
+  const [category, setCategory] = useState(
+    initialValues?.category ?? DEFAULT_PRESS_PHOTO_CATEGORY,
+  );
 
   return (
     <form
@@ -69,27 +73,25 @@ export function PressPhotoForm({
                   </span>
                 </legend>
                 <div className="grid gap-3 sm:grid-cols-2">
-                  {PRESS_PHOTO_CATEGORIES.map((category) => (
+                  {PRESS_PHOTO_CATEGORIES.map((option) => (
                     <label
-                      key={category}
+                      key={option}
                       className="flex cursor-pointer flex-col gap-1 rounded-xl border border-border p-4 transition-colors hover:bg-muted/40 has-[:checked]:border-primary has-[:checked]:bg-primary/5 has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/30"
                     >
                       <input
                         type="radio"
                         name="category"
-                        value={category}
+                        value={option}
                         required
-                        defaultChecked={
-                          (initialValues?.category ??
-                            DEFAULT_PRESS_PHOTO_CATEGORY) === category
-                        }
+                        checked={category === option}
+                        onChange={() => setCategory(option)}
                         className="sr-only"
                       />
                       <span className="font-medium">
-                        {PRESS_PHOTO_CATEGORY_LABELS[category].label}
+                        {PRESS_PHOTO_CATEGORY_LABELS[option].label}
                       </span>
                       <span className="text-xs text-muted-foreground">
-                        {PRESS_PHOTO_CATEGORY_LABELS[category].description}
+                        {PRESS_PHOTO_CATEGORY_LABELS[option].description}
                       </span>
                     </label>
                   ))}
@@ -97,6 +99,10 @@ export function PressPhotoForm({
               </fieldset>
               <ImageUploadField
                 maxBytes={MAX_HD_IMAGE_BYTES}
+                // Hi-res originals for print: they go up exactly as chosen
+                // (see src/lib/image-reduction.ts).
+                reduction={null}
+                frames={PRESS_FRAMES[category]}
                 id="file"
                 name="file"
                 label="Arquivo"

@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 import { deleteVideo, moveVideo } from "@/app/admin/(protected)/fotos/actions";
 import {
   AdminCreateLink,
@@ -14,6 +12,7 @@ import {
 import { ConfirmDeleteButton } from "@/components/admin/confirm-delete-button";
 import { ReorderButtons } from "@/components/admin/reorder-buttons";
 import { StatusLabel } from "@/components/admin/status-label";
+import { LoadingImage } from "@/components/loading-image";
 import {
   ADMIN_PAGE_SIZE,
   clampPage,
@@ -88,7 +87,8 @@ export default async function AdminVideosPage({
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
                       {youtubeId ? (
-                        <Image
+                        <LoadingImage
+                          wrapperClassName="shrink-0 rounded-xl"
                           src={`https://i.ytimg.com/vi/${youtubeId}/default.jpg`}
                           alt=""
                           width={56}

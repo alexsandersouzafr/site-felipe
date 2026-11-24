@@ -33,7 +33,7 @@ export const ALLOWED_IMAGE_MIME_TYPES = [
 export type ImageValidationResult = { ok: true } | { ok: false; error: string };
 
 /** Rounded up, so a file just over the limit never reads as equal to it. */
-function formatMegabytes(bytes: number) {
+export function formatMegabytes(bytes: number) {
   return (Math.ceil((bytes / (1024 * 1024)) * 10) / 10).toLocaleString("pt-BR");
 }
 

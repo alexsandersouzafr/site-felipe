@@ -14,6 +14,9 @@ import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { MAX_IMAGE_MB } from "@/lib/media-limits";
+import { blogCoverFrames } from "@/lib/site-frames";
+
+const BLOG_COVER_FRAMES = blogCoverFrames();
 
 type ContactSettings = {
   id: string;
@@ -95,11 +98,12 @@ export function ContactSettingsForm({
           label="Imagem de fallback do blog"
           existingPath={settings.blog_fallback_cover_path}
           existingPathFieldName="blogFallbackCoverPath"
+          frames={BLOG_COVER_FRAMES}
           description={`Usada como capa de posts do blog sem imagem própria (deixe em branco para não usar nenhuma). JPEG, PNG, WebP ou GIF. Máximo ${MAX_IMAGE_MB} MB.`}
         />
       </FieldGroup>
       <FormFeedback state={state} />
-      <Button type="submit" isDisabled={pending}>
+      <Button type="submit" isPending={pending}>
         <FloppyDiskIcon className="size-4" data-icon="inline-start" />
         {pending ? "Salvando..." : "Salvar contato"}
       </Button>

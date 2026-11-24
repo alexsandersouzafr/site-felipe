@@ -1,7 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 
 import { AdminPageHeader } from "@/components/admin/admin-list";
+import { LoadingImage } from "@/components/loading-image";
 import { mediaPublicUrl } from "@/lib/media-url";
 import { ADMIN_PAGE_COVER_KEYS, PAGE_COVER_LABELS } from "@/lib/page-covers";
 import { createClient } from "@/lib/supabase/server";
@@ -44,12 +44,12 @@ export default async function AdminCoversIndexPage() {
                     {preview ? (
                       // Covers are HD (up to 15 MB): show a resized copy.
                       <div className="relative aspect-[16/10]">
-                        <Image
+                        <LoadingImage
                           src={preview}
                           alt=""
                           fill
                           sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
-                          className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                          className="object-cover transition-[opacity,scale] duration-500 group-hover:scale-[1.02]"
                         />
                       </div>
                     ) : (

@@ -1,5 +1,4 @@
-import Image from "next/image";
-
+import { LoadingImage } from "@/components/loading-image";
 import { Link } from "@/i18n/navigation";
 import type { PublicBlogPostSummary } from "@/lib/public/blog";
 import { cn } from "@/lib/utils";
@@ -68,11 +67,11 @@ export function BlogCard({
         )}
       >
         {post.coverUrl ? (
-          <Image
+          <LoadingImage
             src={post.coverUrl}
             alt=""
             fill
-            className="object-cover transition-[scale] duration-1000 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-[1.04]"
+            className="object-cover transition-[opacity,scale] duration-1000 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-[1.04]"
             sizes={
               feature
                 ? "(max-width: 768px) 100vw, 60vw"

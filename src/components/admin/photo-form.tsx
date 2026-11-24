@@ -11,6 +11,7 @@ import { submitKeepingValues } from "@/components/admin/submit-keeping-values";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import type { ContentStatus } from "@/lib/content-visibility";
+import { GALLERY_FRAMES } from "@/lib/site-frames";
 
 export function PhotoForm({
   action,
@@ -56,6 +57,7 @@ export function PhotoForm({
                 existingPath={initialValues?.storagePath}
                 existingPathFieldName="storagePath"
                 required={mode === "create"}
+                frames={GALLERY_FRAMES}
               />
               <LocalizedField
                 label="Texto alternativo"

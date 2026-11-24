@@ -1,6 +1,6 @@
 import { StarIcon } from "@phosphor-icons/react/dist/ssr";
-import Image from "next/image";
 
+import { LoadingImage } from "@/components/loading-image";
 import { formatEventDisplay } from "@/lib/event-time";
 import type { PublicEvent } from "@/lib/public/events";
 import { cn } from "@/lib/utils";
@@ -88,11 +88,11 @@ export function EventRows({
                 data-reveal={reveal ? "image" : undefined}
                 className="relative order-first aspect-[16/10] overflow-hidden bg-muted sm:col-span-2 md:order-none md:col-span-1 md:aspect-[4/3]"
               >
-                <Image
+                <LoadingImage
                   src={event.imageUrl}
                   alt=""
                   fill
-                  className="object-cover transition-[scale] duration-1000 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-[1.05]"
+                  className="object-cover transition-[opacity,scale] duration-1000 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-[1.05]"
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 144px, 208px"
                 />
               </div>

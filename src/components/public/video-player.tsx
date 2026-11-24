@@ -1,9 +1,9 @@
 "use client";
 
 import { PlayIcon } from "@phosphor-icons/react";
-import Image from "next/image";
 import { useState } from "react";
 
+import { LoadingImage } from "@/components/loading-image";
 import { cn } from "@/lib/utils";
 
 /**
@@ -46,14 +46,14 @@ export function VideoPlayer({
       aria-label={`${playLabel}: ${title}`}
       className="group absolute inset-0 block size-full cursor-pointer"
     >
-      <Image
+      <LoadingImage
         src={thumb}
         alt=""
         fill
         onError={() =>
           setThumb(`https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`)
         }
-        className="object-cover transition-[scale] duration-1000 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-[1.04]"
+        className="object-cover transition-[opacity,scale] duration-1000 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-[1.04]"
         sizes={
           featured
             ? "(max-width: 1152px) 100vw, 1152px"

@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 import { deleteBlogPost } from "@/app/admin/(protected)/blog/actions";
 import {
   AdminCreateLink,
@@ -13,6 +11,7 @@ import {
 } from "@/components/admin/admin-list";
 import { ConfirmDeleteButton } from "@/components/admin/confirm-delete-button";
 import { StatusLabel } from "@/components/admin/status-label";
+import { LoadingImage } from "@/components/loading-image";
 import { mediaPublicUrl } from "@/lib/media-url";
 import {
   ADMIN_PAGE_SIZE,
@@ -74,7 +73,8 @@ export default async function AdminBlogPage({
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
                     {mediaPublicUrl(item.cover_image_path) ? (
-                      <Image
+                      <LoadingImage
+                        wrapperClassName="shrink-0 rounded-xl"
                         src={mediaPublicUrl(item.cover_image_path) as string}
                         alt=""
                         width={40}

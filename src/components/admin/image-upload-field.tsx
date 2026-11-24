@@ -1,8 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { FilePickerButton } from "@/components/admin/file-picker-button";
+import {
+  preparePickedImage,
+  reducedMessage,
+} from "@/components/admin/prepare-picked-image";
+import { SitePreview } from "@/components/admin/site-preview";
 import { useAdminToast } from "@/components/admin/toast";
 import {
   Field,
@@ -10,24 +15,13 @@ import {
   FieldError,
   FieldLabel,
 } from "@/components/ui/field";
-import { MAX_IMAGE_BYTES, validatePickedImage } from "@/lib/media-limits";
+import {
+  type ReductionProfile,
+  SITE_PHOTO_REDUCTION,
+} from "@/lib/image-reduction";
+import { MAX_IMAGE_BYTES } from "@/lib/media-limits";
 import { mediaPublicUrl } from "@/lib/media-url";
-
-function readFileFromChange(event: unknown): File | null {
-  if (
-    event &&
-    typeof event === "object" &&
-    "target" in event &&
-    event.target &&
-    typeof event.target === "object" &&
-    "files" in event.target
-  ) {
-    const files = event.target.files as FileList | null;
-    return files?.[0] ?? null;
-  }
-
-  return null;
-}
+import type { SiteFrame } from "@/lib/site-frames";
 
 export function ImageUploadField({
   id,
@@ -38,7 +32,10 @@ export function ImageUploadField({
   required = false,
   description,
   maxBytes = MAX_IMAGE_BYTES,
+  reduction = SITE_PHOTO_REDUCTION,
+  frames,
   onFileChange,
+  onPreviewChange,
   onRemove,
 }: {
   id: string;
@@ -50,13 +47,21 @@ export function ImageUploadField({
   description?: string;
   /** Keep this in step with the limit the server action checks. */
   maxBytes?: number;
+  /** How the photo is shrunk before upload; null sends it as chosen. */
+  reduction?: ReductionProfile | null;
+  /** The site's frames for this photo, shown under the field. */
+  frames?: readonly SiteFrame[];
   onFileChange?: (file: File | null) => void;
+  /** For a form that shows the photo itself, framing included. */
+  onPreviewChange?: (src: string | null) => void;
   /** Omit to hide the remove button. */
   onRemove?: () => void;
 }) {
   const [localPreview, setLocalPreview] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [reducing, setReducing] = useState(false);
+  const latestPick = useRef(0);
   const toast = useAdminToast();
   const remotePreview = mediaPublicUrl(existingPath);
   const previewSrc = localPreview ?? remotePreview;
@@ -84,6 +89,60 @@ export function ImageUploadField({
     setError(null);
   }, [existingPath]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: reports the photo, not the callback identity
+  useEffect(() => {
+    onPreviewChange?.(previewSrc);
+  }, [previewSrc]);
+
+  function showFile(file: File | null) {
+    setFileName(file?.name ?? null);
+    onFileChange?.(file);
+    setLocalPreview((previous) => {
+      if (previous) {
+        URL.revokeObjectURL(previous);
+      }
+      return file ? URL.createObjectURL(file) : null;
+    });
+  }
+
+  async function handlePick(input: HTMLInputElement) {
+    const pick = ++latestPick.current;
+    const prepared = await preparePickedImage(input, {
+      maxBytes,
+      reduction,
+      onReducing: (active) => {
+        if (pick === latestPick.current) {
+          setReducing(active);
+        }
+      },
+    });
+
+    // A second file was chosen while this one was being reduced.
+    if (pick !== latestPick.current) {
+      return;
+    }
+
+    // Sending a file the action will refuse anyway is worse than a refusal
+    // here: past the request body limit, Next answers with an error page before
+    // the action ever runs.
+    if (!prepared.ok) {
+      setError(prepared.error);
+      toast({ tone: "error", message: prepared.error });
+      showFile(null);
+      return;
+    }
+
+    setError(null);
+    showFile(prepared.file);
+
+    if (prepared.file && prepared.reducedFrom) {
+      toast({
+        tone: "success",
+        message: reducedMessage(prepared.reducedFrom, prepared.file.size),
+      });
+    }
+  }
+
   return (
     <Field>
       <FieldLabel htmlFor={id} required={required && !existingPath}>
@@ -95,46 +154,11 @@ export function ImageUploadField({
         // Deliberately not `required`: the input is off screen, so the browser
         // would refuse to submit while trying to point at something nobody can
         // see. The label keeps the asterisk and the action returns the reason.
-        fileName={fileName}
+        fileName={reducing ? "Reduzindo a imagem…" : fileName}
         hasImage={Boolean(existingPath)}
         onRemove={onRemove}
         onChange={(event) => {
-          const file = readFileFromChange(event);
-          const validation = file
-            ? validatePickedImage(
-                file,
-                new FormData(event.target.form ?? undefined),
-                maxBytes,
-              )
-            : ({ ok: true } as const);
-
-          // Sending a file the action will refuse anyway is worse than a
-          // refusal here: past the request body limit, Next answers with an
-          // error page before the action ever runs.
-          if (!validation.ok) {
-            setError(validation.error);
-            toast({ tone: "error", message: validation.error });
-            event.target.value = "";
-            setFileName(null);
-            onFileChange?.(null);
-            setLocalPreview((previous) => {
-              if (previous) {
-                URL.revokeObjectURL(previous);
-              }
-              return null;
-            });
-            return;
-          }
-
-          setError(null);
-          setFileName(file?.name ?? null);
-          onFileChange?.(file);
-          setLocalPreview((previous) => {
-            if (previous) {
-              URL.revokeObjectURL(previous);
-            }
-            return file ? URL.createObjectURL(file) : null;
-          });
+          void handlePick(event.target);
         }}
       />
       {existingPathFieldName ? (
@@ -149,20 +173,18 @@ export function ImageUploadField({
           `JPEG, PNG, WebP ou GIF até ${maxBytes / (1024 * 1024)} MB.`}
       </FieldDescription>
       {error ? <FieldError>{error}</FieldError> : null}
-      {previewSrc ? (
-        <div className="mt-3 overflow-hidden rounded-2xl border border-border/80 bg-muted/30">
-          {/* biome-ignore lint/performance/noImgElement: the preview may be a blob: URL of a file that is not uploaded yet, which next/image cannot load */}
-          <img
-            src={previewSrc}
-            alt="Pré-visualização"
-            className="max-h-56 w-full object-cover"
-          />
+      {onPreviewChange ? null : frames ? (
+        <div className="mt-3">
+          <SitePreview src={previewSrc} focus="50% 50%" frames={frames} />
         </div>
-      ) : null}
+      ) : (
+        <ImagePreview src={previewSrc} />
+      )}
     </Field>
   );
 }
 
+/** The whole photo, uncropped, for a field the site shows in no fixed shape. */
 export function ImagePreview({
   src,
   alt = "Pré-visualização",
@@ -175,9 +197,9 @@ export function ImagePreview({
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-border/80 bg-muted/30">
+    <div className="mt-3 overflow-hidden rounded-2xl border border-border/80 bg-muted/30">
       {/* biome-ignore lint/performance/noImgElement: the preview may be a blob: URL of a file that is not uploaded yet, which next/image cannot load */}
-      <img src={src} alt={alt} className="max-h-56 w-full object-cover" />
+      <img src={src} alt={alt} className="max-h-56 w-full object-contain" />
     </div>
   );
 }

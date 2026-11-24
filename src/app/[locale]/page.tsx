@@ -18,6 +18,7 @@ import { listBlogPosts } from "@/lib/public/blog";
 import type { PublicEvent } from "@/lib/public/events";
 import { listHomeEvents } from "@/lib/public/events";
 import { getPageCover, listHomePhotos } from "@/lib/public/site-images";
+import { HOME_HERO_OVERLAY } from "@/lib/site-overlays";
 import { cn } from "@/lib/utils";
 
 type HomePageProps = {
@@ -240,7 +241,7 @@ export default async function HomePage({ params }: HomePageProps) {
           headerOverlay
           intro
           className="h-svh min-h-[34rem] sm:h-svh md:h-svh lg:h-svh"
-          overlayClassName="bg-[linear-gradient(to_bottom,rgb(0_0_0/0.45),transparent_28%,transparent_45%,rgb(0_0_0/0.62))]"
+          overlayClassName={HOME_HERO_OVERLAY}
         >
           {heroContent}
         </ParallaxBand>
@@ -313,7 +314,7 @@ function HeroContent({
         variant="chars"
         immediate
         delay={0.75}
-        className="font-heading text-[clamp(3.25rem,11vw,10rem)] leading-none tracking-[-0.025em]"
+        className="font-heading text-[clamp(2.75rem,9.5vw,8.5rem)] leading-none tracking-[-0.025em]"
       >
         {t("eyebrow")}
       </Reveal>

@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 import { deletePhoto, movePhoto } from "@/app/admin/(protected)/fotos/actions";
 import {
   AdminCreateLink,
@@ -14,6 +12,7 @@ import {
 import { ConfirmDeleteButton } from "@/components/admin/confirm-delete-button";
 import { ReorderButtons } from "@/components/admin/reorder-buttons";
 import { StatusLabel } from "@/components/admin/status-label";
+import { LoadingImage } from "@/components/loading-image";
 import { mediaPublicUrl } from "@/lib/media-url";
 import {
   ADMIN_PAGE_SIZE,
@@ -82,7 +81,8 @@ export default async function AdminPhotosPage({
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
                     {mediaPublicUrl(item.storage_path) ? (
-                      <Image
+                      <LoadingImage
+                        wrapperClassName="shrink-0 rounded-xl"
                         src={mediaPublicUrl(item.storage_path) as string}
                         alt=""
                         width={40}

@@ -12,6 +12,7 @@ import { submitKeepingValues } from "@/components/admin/submit-keeping-values";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { COMMON_TIME_ZONES, type EventFormValues } from "@/lib/event-form";
+import { EVENT_FRAMES } from "@/lib/site-frames";
 
 type EventFormProps = {
   action: (
@@ -74,6 +75,7 @@ export function EventForm({ action, initialValues, mode }: EventFormProps) {
                 existingPath={values.imagePath}
                 existingPathFieldName="imagePath"
                 description="Imagem de divulgação do concerto ou compromisso (opcional)."
+                frames={EVENT_FRAMES}
               />
 
               <div className="grid gap-4 md:grid-cols-3">

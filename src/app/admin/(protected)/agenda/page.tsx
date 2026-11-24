@@ -1,5 +1,4 @@
 import { StarIcon } from "@phosphor-icons/react/dist/ssr";
-import Image from "next/image";
 
 import { toggleEventFeatured } from "@/app/admin/(protected)/agenda/actions";
 import {
@@ -16,6 +15,7 @@ import {
 import { DeleteEventButton } from "@/components/admin/delete-event-button";
 import { FeaturedToggleButton } from "@/components/admin/featured-toggle-button";
 import { StatusLabel } from "@/components/admin/status-label";
+import { LoadingImage } from "@/components/loading-image";
 import { getEventLocalDateTime } from "@/lib/event-time";
 import type { EventRecord } from "@/lib/events";
 import { mediaPublicUrl } from "@/lib/media-url";
@@ -150,7 +150,8 @@ export default async function AdminAgendaPage({
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
                       {mediaPublicUrl(event.image_path) ? (
-                        <Image
+                        <LoadingImage
+                          wrapperClassName="shrink-0 rounded-xl"
                           src={mediaPublicUrl(event.image_path) as string}
                           alt=""
                           width={40}

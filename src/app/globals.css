@@ -177,6 +177,28 @@
   }
 }
 
+/* A photo stays behind its placeholder until it has fully loaded (see
+ * `LoadingImage`); without JavaScript it shows as it arrives. */
+html.js .image-loading {
+  opacity: 0;
+}
+
+/* The placeholder breathes, strongly enough to read as "loading" on the pale
+ * backgrounds where photos sit. */
+@keyframes skeleton {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.animate-skeleton {
+  animation: skeleton 1.4s ease-in-out infinite;
+}
+
 /* SplitText masks clip their text; leave room for accents (ã, É) and
  * descenders (ç, g) so they are never cut off. */
 .rv-line-mask,

@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 import {
   deletePressPhoto,
   movePressPhoto,
@@ -18,6 +16,7 @@ import {
 import { ConfirmDeleteButton } from "@/components/admin/confirm-delete-button";
 import { ReorderButtons } from "@/components/admin/reorder-buttons";
 import { StatusLabel } from "@/components/admin/status-label";
+import { LoadingImage } from "@/components/loading-image";
 import { mediaPublicUrl } from "@/lib/media-url";
 import {
   ADMIN_PAGE_SIZE,
@@ -131,7 +130,8 @@ export default async function AdminPressPhotosPage({
                       {src ? (
                         // The originals are large (up to 15 MB): let Next
                         // serve a thumbnail instead of the file itself.
-                        <Image
+                        <LoadingImage
+                          wrapperClassName="shrink-0 rounded-xl"
                           src={src}
                           alt=""
                           width={40}
