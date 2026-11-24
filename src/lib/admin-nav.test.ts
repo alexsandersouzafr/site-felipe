@@ -14,6 +14,7 @@ describe("adminNavItems", () => {
       "/admin/blog",
       "/admin/bio",
       "/admin/destaques",
+      "/admin/repertorio",
       "/admin/home-fotos",
       "/admin/capas",
       "/admin/fotos",

@@ -3,6 +3,7 @@ export const PUBLIC_NAV_ITEMS = [
   { href: "/", key: "home" },
   { href: "/blog", key: "news" },
   { href: "/bio", key: "bio" },
+  { href: "/repertorio", key: "repertoire" },
   { href: "/agenda", key: "schedule" },
   { href: "/videos", key: "videos" },
   { href: "/fotos", key: "photos" },

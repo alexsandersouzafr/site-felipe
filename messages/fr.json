@@ -10,7 +10,8 @@
     "brand": "Felipe Magalhães",
     "menu": "Menu",
     "closeMenu": "Fermer le menu",
-    "press": "Presse"
+    "press": "Presse",
+    "repertoire": "Répertoire"
   },
   "LocaleSwitcher": {
     "label": "Langue",
@@ -118,5 +119,11 @@
     "previous": "Précédent",
     "next": "Suivant",
     "pageOf": "Page {page} sur {totalPages}"
+  },
+  "Repertoire": {
+    "title": "Répertoire",
+    "classical": "Classique",
+    "popular": "Populaire",
+    "empty": "Le répertoire sera bientôt publié."
   }
 }

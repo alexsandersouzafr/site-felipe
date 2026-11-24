@@ -4,6 +4,7 @@ export type AdminNavIconName =
   | "news"
   | "bio"
   | "highlights"
+  | "repertoire"
   | "homePhotos"
   | "covers"
   | "photos"
@@ -61,6 +62,14 @@ export const adminNavItems: AdminNavItem[] = [
     description:
       "Conquistas e frases curtas exibidas junto à biografia pública",
     icon: "highlights",
+  },
+  {
+    href: "/admin/repertorio",
+    group: "Conteúdo",
+    label: "Repertório",
+    description:
+      "Obras que o maestro rege, separadas em erudito e popular e agrupadas por compositor",
+    icon: "repertoire",
   },
   {
     href: "/admin/home-fotos",
