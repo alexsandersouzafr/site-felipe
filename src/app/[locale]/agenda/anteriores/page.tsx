@@ -10,6 +10,7 @@ import type { Locale } from "@/i18n/routing";
 import { PUBLIC_PAGE_SIZE, parsePage } from "@/lib/pagination";
 import { listPastEventsPage } from "@/lib/public/events";
 import { getPageCover } from "@/lib/public/site-images";
+import { pageMetadata } from "@/lib/seo";
 
 type PastEventsPageProps = {
   params: Promise<{ locale: string }>;
@@ -21,7 +22,11 @@ export async function generateMetadata({
 }: PastEventsPageProps): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Schedule" });
-  return { title: t("pastTitle") };
+  return pageMetadata({
+    locale,
+    path: "/agenda/anteriores",
+    title: t("pastTitle"),
+  });
 }
 
 export default async function PastEventsPage({

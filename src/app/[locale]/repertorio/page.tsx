@@ -6,6 +6,7 @@ import { SectionReveal } from "@/components/public/section-reveal";
 import { listRepertoire } from "@/lib/public/repertoire";
 import { getPageCover } from "@/lib/public/site-images";
 import { groupRepertoire, REPERTOIRE_GENRES } from "@/lib/repertoire";
+import { pageMetadata } from "@/lib/seo";
 
 type RepertoirePageProps = {
   params: Promise<{ locale: string }>;
@@ -16,7 +17,7 @@ export async function generateMetadata({
 }: RepertoirePageProps): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Repertoire" });
-  return { title: t("title") };
+  return pageMetadata({ locale, path: "/repertorio", title: t("title") });
 }
 
 export default async function RepertoirePage({ params }: RepertoirePageProps) {

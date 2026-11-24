@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { DM_Sans, Playfair_Display } from "next/font/google";
 
 import { Providers } from "@/components/providers";
+import { SITE_URL } from "@/lib/seo";
 import { getDefaultSiteTheme } from "@/lib/site-theme";
 
 import "./globals.css";
@@ -15,6 +16,8 @@ const heading = Playfair_Display({
 const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
+  // Share cards and canonical links need absolute addresses.
+  metadataBase: new URL(SITE_URL),
   title: { default: "Felipe Magalhães", template: "%s | Felipe Magalhães" },
   description: "Site oficial do maestro Felipe Magalhães.",
 };

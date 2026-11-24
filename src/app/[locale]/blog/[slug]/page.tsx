@@ -9,6 +9,7 @@ import { SectionReveal } from "@/components/public/section-reveal";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { getBlogPostBySlug } from "@/lib/public/blog";
+import { pageMetadata } from "@/lib/seo";
 
 type BlogPostPageProps = {
   params: Promise<{ locale: string; slug: string }>;
@@ -22,7 +23,12 @@ export async function generateMetadata({
   if (!post) {
     return {};
   }
-  return { title: post.title };
+  return pageMetadata({
+    locale,
+    path: `/blog/${slug}`,
+    title: post.title,
+    description: post.excerpt,
+  });
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {

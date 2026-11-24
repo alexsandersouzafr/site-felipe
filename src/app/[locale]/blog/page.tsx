@@ -9,6 +9,7 @@ import type { Locale } from "@/i18n/routing";
 import { PUBLIC_PAGE_SIZE, parsePage } from "@/lib/pagination";
 import { listBlogPostsPage } from "@/lib/public/blog";
 import { getPageCover } from "@/lib/public/site-images";
+import { pageMetadata } from "@/lib/seo";
 
 type BlogPageProps = {
   params: Promise<{ locale: string }>;
@@ -20,7 +21,7 @@ export async function generateMetadata({
 }: BlogPageProps): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Blog" });
-  return { title: t("title") };
+  return pageMetadata({ locale, path: "/blog", title: t("title") });
 }
 
 export default async function BlogPage({

@@ -125,5 +125,8 @@
     "classical": "Classique",
     "popular": "Populaire",
     "empty": "Le répertoire sera bientôt publié."
+  },
+  "Metadata": {
+    "description": "Site officiel du chef d'orchestre Felipe Magalhães : agenda des concerts, biographie, répertoire, photos et vidéos."
   }
 }

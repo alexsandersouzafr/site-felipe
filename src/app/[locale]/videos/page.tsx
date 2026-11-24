@@ -7,6 +7,7 @@ import { VideoPlayer } from "@/components/public/video-player";
 import type { Locale } from "@/i18n/routing";
 import { listVideos, type PublicVideo } from "@/lib/public/media";
 import { getPageCover } from "@/lib/public/site-images";
+import { pageMetadata } from "@/lib/seo";
 
 type VideosPageProps = {
   params: Promise<{ locale: string }>;
@@ -17,7 +18,7 @@ export async function generateMetadata({
 }: VideosPageProps): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Videos" });
-  return { title: t("title") };
+  return pageMetadata({ locale, path: "/videos", title: t("title") });
 }
 
 export default async function VideosPage({ params }: VideosPageProps) {

@@ -11,6 +11,7 @@ import {
 } from "@/lib/public/contact-protection";
 import { getSiteSettings } from "@/lib/public/settings";
 import { getPageCover } from "@/lib/public/site-images";
+import { pageMetadata } from "@/lib/seo";
 
 type ContactPageProps = {
   params: Promise<{ locale: string }>;
@@ -21,7 +22,7 @@ export async function generateMetadata({
 }: ContactPageProps): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Contact" });
-  return { title: t("title") };
+  return pageMetadata({ locale, path: "/contato", title: t("title") });
 }
 
 export default async function ContactPage({ params }: ContactPageProps) {

@@ -125,5 +125,8 @@
     "classical": "Erudito",
     "popular": "Popular",
     "empty": "O repertório será publicado em breve."
+  },
+  "Metadata": {
+    "description": "Site oficial do maestro Felipe Magalhães: agenda de concertos, biografia, repertório, fotos e vídeos."
   }
 }

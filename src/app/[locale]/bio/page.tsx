@@ -7,6 +7,7 @@ import { SectionReveal } from "@/components/public/section-reveal";
 import type { Locale } from "@/i18n/routing";
 import { getBioPage } from "@/lib/public/bio";
 import { getPageCover } from "@/lib/public/site-images";
+import { pageMetadata } from "@/lib/seo";
 
 type BioPageProps = {
   params: Promise<{ locale: string }>;
@@ -17,7 +18,7 @@ export async function generateMetadata({
 }: BioPageProps): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Bio" });
-  return { title: t("title") };
+  return pageMetadata({ locale, path: "/bio", title: t("title") });
 }
 
 export default async function BioPage({ params }: BioPageProps) {

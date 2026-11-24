@@ -10,6 +10,7 @@ import type { Locale } from "@/i18n/routing";
 import { PUBLIC_PAGE_SIZE, parsePage } from "@/lib/pagination";
 import { listPhotosPage } from "@/lib/public/media";
 import { getPageCover } from "@/lib/public/site-images";
+import { pageMetadata } from "@/lib/seo";
 
 type PhotosPageProps = {
   params: Promise<{ locale: string }>;
@@ -21,7 +22,7 @@ export async function generateMetadata({
 }: PhotosPageProps): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Photos" });
-  return { title: t("title") };
+  return pageMetadata({ locale, path: "/fotos", title: t("title") });
 }
 
 export default async function PhotosPage({

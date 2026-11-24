@@ -1,4 +1,5 @@
 import { ArrowUpRightIcon } from "@phosphor-icons/react/dist/ssr";
+import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Fragment, type ReactNode } from "react";
 
@@ -18,6 +19,7 @@ import { listBlogPosts } from "@/lib/public/blog";
 import type { PublicEvent } from "@/lib/public/events";
 import { listHomeEvents } from "@/lib/public/events";
 import { getPageCover, listHomePhotos } from "@/lib/public/site-images";
+import { pageMetadata } from "@/lib/seo";
 import { HOME_HERO_OVERLAY } from "@/lib/site-overlays";
 import { cn } from "@/lib/utils";
 
@@ -26,6 +28,15 @@ type HomePageProps = {
 };
 
 type Translate = (key: string) => string;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return pageMetadata({ locale, path: "/" });
+}
 
 export default async function HomePage({ params }: HomePageProps) {
   const { locale } = await params;

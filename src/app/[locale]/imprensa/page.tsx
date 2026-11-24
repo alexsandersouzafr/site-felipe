@@ -8,6 +8,7 @@ import type { Locale } from "@/i18n/routing";
 import { getBioSummary } from "@/lib/public/bio";
 import { listPressPhotos } from "@/lib/public/press";
 import { getPageCover } from "@/lib/public/site-images";
+import { pageMetadata } from "@/lib/seo";
 
 type PressPageProps = {
   params: Promise<{ locale: string }>;
@@ -18,7 +19,7 @@ export async function generateMetadata({
 }: PressPageProps): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Press" });
-  return { title: t("title") };
+  return pageMetadata({ locale, path: "/imprensa", title: t("title") });
 }
 
 export default async function PressPage({ params }: PressPageProps) {
